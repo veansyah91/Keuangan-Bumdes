@@ -171,9 +171,16 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
+        App\Providers\IdentityHelperServiceProvider::class,
+        App\Providers\IncomingItemServiceProvider::class,
+        App\Providers\BusinessIncomeServiceProvider::class,
+
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -229,6 +236,12 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
+        'IdentityHelp' => App\Helpers\IdentityHelper::class,
+        'IncomingItemHelper' => App\Helpers\IncomingItemHelper::class,
+        'BusinessIncomeHelper' => App\Helpers\BusinessIncomeHelper::class,
     ],
 
 ];

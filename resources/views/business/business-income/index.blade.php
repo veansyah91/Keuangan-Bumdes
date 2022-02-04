@@ -1,0 +1,152 @@
+@extends('layouts.app')
+
+@section('navmenu')
+    <x-navbar :kategori="$business->kategori" :id="$business->id"/>
+@endsection
+
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-12">
+            <div class="card">
+                <div class="card-header fs-4 fw-bold">
+                    <div class="row">
+                        <div class="col-6">
+                            Pendapatan
+                        </div>
+                        <div class="col-6 text-end">
+                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-filter"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div class="list-group">
+                                @foreach ($tanggal as $t)
+                                    @php
+                                        $date = Carbon\Carbon::parse($t)->locale('id');
+                                    @endphp
+                                    <div class="list-group-item list-group-item-action" aria-current="true">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">{{ $date->translatedFormat('jS F Y') }}</h5>
+                                            <div class="fs-4 fw-bold">
+                                                Rp. {{ number_format(BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id),0,",",".") }} 
+
+                                                @if (BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id) > 0)
+                                                    @if (BusinessIncomeHelper::getStatusClosing($t, $business->id))
+                                                        <i class="bi bi-check-circle-fill text-primary"></i>
+                                                    @else
+                                                        <button class="btn btn-link update-balance" data-date="{{ $t }}" data-amount="{{ BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id) }}" data-bs-toggle="modal" data-bs-target="#saveModal">
+                                                            <i class="bi bi-question-circle-fill text-danger"></i>
+                                                        </button>                                                                                                            
+                                                    @endif
+                                                @endif
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="w-50">
+                                            <table class="table">
+                                                <tr>
+                                                    <td>Kasir</td>
+                                                    <td>: Rp. {{ number_format(BusinessIncomeHelper::getCashier($t, $business->id),0,",",".") }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Piutang</td>
+                                                    <td>: Rp. {{ number_format(BusinessIncomeHelper::getAccountReservePayment($t, $business->id),0,",",".") }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                    </div>
+    
+                                @endforeach
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Filter --}}
+    <form action="/{{ $business->id }}/business-income" method="get">
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">Filter</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="dari" class="col-sm-2 col-form-label">Dari</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="dari" name="dari" value="{{ request('dari') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="ke" class="col-sm-2 col-form-label">Ke</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="ke" name="ke" value="{{ request('ke') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Save Modal --}}
+    <form method="post" action="{{ route('business.business-income.update-business-balance', $business->id) }}">
+        @csrf
+        <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <input type="hidden" id="date" name="tanggal">
+                        <input type="hidden" id="amount" name="jumlah">
+                        <h3 class="modal-title text-center" id="deleteModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" id="submit-delete-button">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+@endsection
+
+@section('script')
+<script type="text/javascript">
+    
+    const updateBalances = Array.from(document.getElementsByClassName('update-balance'));
+
+    updateBalances.map(updateBalance => {
+        updateBalance.addEventListener('click', function(){
+            const date = document.getElementById('date');
+            const amount = document.getElementById('amount');
+
+            date.value = updateBalance.dataset.date;
+            amount.value = updateBalance.dataset.amount;
+            console.log(updateBalance.dataset.date);
+        })
+    })
+
+</script>
+@endsection
