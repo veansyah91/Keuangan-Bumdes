@@ -318,7 +318,7 @@ Route::group(['middleware' => ['auth']], function(){
 
         // Income Page
             Route::get('/{business}/business-income', [BusinessIncomeController::class, 'index'])->name('business.business-income.index');
-            Route::post('/{business}/business-income', [BusinessIncomeController::class, 'updateBusinessBalance'])->name('business.business-income.update-business-balance');
+            Route::patch('/{business}/business-income', [BusinessIncomeController::class, 'updateBusinessBalance'])->name('business.business-income.update-business-balance');
 
         //Outcome Page
             Route::get('/{business}/expense', [DailyOutcomeController::class, 'index'])->name('business.expense.index');
@@ -329,6 +329,8 @@ Route::group(['middleware' => ['auth']], function(){
         // Finance Page
             Route::get('/{business}/account-receivable', [AccountReceivableController::class, 'index'])->name('business.account-receivable.index');
             Route::post('/{business}/account-receivable', [AccountReceivableController::class, 'store'])->name('business.account-receivable.store');
+            Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLater'])->name('business.account-receivable.pay-later');
+
             
         // 
     //

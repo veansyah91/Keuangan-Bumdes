@@ -18,7 +18,10 @@ class DailyIncomeController extends Controller
     {
         $invoices = Invoice::where('business_id', $business['id'])->whereDate('created_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
 
-        $accountReservePayments = AccountReceivablePayment::whereDate('created_at', Carbon::today()
+        $accountReservePayments = AccountReceivablePayment::whereHas('accountReceivable', function($query) use ($business){
+                                                                $query->where('business_id', $business['id']);
+                                                            })
+                                                            ->whereDate('created_at', Carbon::today()
                                                             ->toDateString())
                                                             ->orderBy('id', 'desc')
                                                             ->get();

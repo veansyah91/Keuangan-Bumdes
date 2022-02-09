@@ -39,7 +39,7 @@
                                                 <td class="text-end">Rp. {{ number_format($expense->jumlah,0,",",".") }}</td>
                                                 <td class="text-center">{{ $expense->operator }}</td>
                                                 <td>
-                                                    @if (Auth::user()['name'] == $expense->operator)
+                                                    @if (Auth::user()['name'] == $expense->operator || Auth::user()->hasRole('writer'))
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-link btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                                 <i class="bi bi-three-dots-vertical"></i>
@@ -60,6 +60,28 @@
                                                             </ul>
                                                         </div>
                                                     @endif
+{{-- 
+                                                    @role('ADMIN')
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-link btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="bi bi-three-dots-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li>
+                                                                    <button class="dropdown-item btn btn-outline-danger delete-expense" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $expense->id }}">
+                                                                        <i class="bi bi-trash-fill text-danger"></i>
+                                                                        Hapus
+                                                                    </button>
+                                                                </li>
+                                                                <li>
+                                                                    <button class="dropdown-item btn btn-outline-danger edit-expense" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ $expense->id }}">
+                                                                        <i class="bi bi-pencil-square text-success" ></i>
+                                                                        Ubah
+                                                                    </button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    @endrole --}}
                                                     
                                                     
                                                 </td>
@@ -112,7 +134,7 @@
                             <div class="form-check">
                                 <input class="form-check-input kas" type="checkbox" value="1" name="kas"  id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">
-                                    Menggunakan Uang Kas
+                                    Menggunakan Uang Kas / Harian
                                 </label>
                             </div>
                         </div>

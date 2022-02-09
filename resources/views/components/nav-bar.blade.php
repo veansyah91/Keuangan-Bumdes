@@ -124,7 +124,7 @@
 
         @php
             $kategori_harian = ['Retail', 'Restoran'];
-            $harian = ['cashier', 'daily-incomes', 'daily-outcomes', 'account-receivable'];
+            $harian = ['cashier', 'daily-incomes', 'daily-outcomes', 'account-receivable', 'pay-later'];
         @endphp
         
         @if (in_array($kategori, $kategori_harian))
@@ -146,16 +146,31 @@
                             </a>
                         </li> 
 
-                        <li>
-                            <a 
-                                class="dropdown-item 
-                                        @if($pageMaster[1] == 'account-receivable') 
-                                            active 
-                                        @endif" 
-                                        href="{{ route('business.account-receivable.index', $business_id) }}">
-                                Piutang
-                            </a>
-                        </li> 
+                        @if ($kategori == 'Retail')
+                            <li>
+                                <a 
+                                    class="dropdown-item 
+                                            @if($pageMaster[1] == 'account-receivable') 
+                                                active 
+                                            @endif" 
+                                            href="{{ route('business.account-receivable.index', $business_id) }}">
+                                    Piutang
+                                </a>
+                            </li> 
+                        @endif
+                        
+                        @if ($kategori == 'Restoran')
+                            <li>
+                                <a 
+                                    class="dropdown-item 
+                                            @if($pageMaster[1] == 'pay-later') 
+                                                active 
+                                            @endif" 
+                                            href="{{ route('business.account-receivable.pay-later', $business_id) }}">
+                                    Belum Bayar
+                                </a>
+                            </li> 
+                        @endif
                         
                         <li>
                             <a 
@@ -183,7 +198,7 @@
                     Keuangan
                 </a>
                 <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
-                    @if ($kategori == 'Retail')
+                    {{-- @if ($kategori == 'Retail') --}}
                         <li>
                             <a 
                                 class="dropdown-item 
@@ -206,9 +221,7 @@
                             </a>
                         </li> 
                         
-                        
-                    @endif
-                    
+                    {{-- @endif --}}
                 </ul>
             </li>
         @endif

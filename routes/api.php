@@ -136,6 +136,7 @@ Route::get('/incoming-item/stock/{stock}', [IncomingItemController::class, 'getS
 
 Route::get('/{business}/stock/{stock}', [StockController::class, 'detail']);
 Route::post('/{business}/stock', [StockController::class, 'apiValidate']);
+Route::get('/stock/{product}', [StockController::class, 'search']);
 
 Route::get('/asset/{asset}', [AssetController::class, 'detail']);
 Route::post('/asset', [AssetController::class, 'apiValidate']);

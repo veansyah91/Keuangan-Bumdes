@@ -98,7 +98,10 @@
                                             <td>{{ $product->pemasok }}</td>
                                         @endif
 
-                                        <td>Rp. {{ number_format($product->modal,0,",",".") }}</td>
+                                        @if ($business->kategori == 'Retail')
+                                            <td>Rp. {{ number_format($product->modal,0,",",".") }}</td>
+                                        @endif
+                                        
                                         <td>Rp. {{ number_format($product->jual,0,",",".") }}</td>
                                         <td>
                                             <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="deleteConfirmation({{ $business->id }}, {{ $product->id }}, 'create')">hapus</button>

@@ -36,8 +36,13 @@
                                                 @if (BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id) > 0)
                                                     @if (BusinessIncomeHelper::getStatusClosing($t, $business->id))
                                                         <i class="bi bi-check-circle-fill text-primary"></i>
+                                                        @role('ADMIN')
+                                                            <button class="btn btn-sm btn-outline-success save-balance" data-date="{{ $t }}" data-amount="{{ BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id) }}" data-bs-toggle="modal" data-bs-target="#saveModal">
+                                                                update
+                                                            </button>        
+                                                        @endrole
                                                     @else
-                                                        <button class="btn btn-link update-balance" data-date="{{ $t }}" data-amount="{{ BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id) }}" data-bs-toggle="modal" data-bs-target="#saveModal">
+                                                        <button class="btn btn-link save-balance" data-date="{{ $t }}" data-amount="{{ BusinessIncomeHelper::getCashier($t, $business->id) + BusinessIncomeHelper::getAccountReservePayment($t, $business->id) }}" data-bs-toggle="modal" data-bs-target="#saveModal">
                                                             <i class="bi bi-question-circle-fill text-danger"></i>
                                                         </button>                                                                                                            
                                                     @endif
@@ -59,7 +64,6 @@
                                         </div>
                                         
                                     </div>
-    
                                 @endforeach
                                 
                             </div>
@@ -113,17 +117,39 @@
     {{-- Save Modal --}}
     <form method="post" action="{{ route('business.business-income.update-business-balance', $business->id) }}">
         @csrf
+        @method('patch')
         <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <input type="hidden" id="date" name="tanggal" class="date">
+                        <input type="hidden" id="amount" name="jumlah" class="amount">
+                        <h3 class="modal-title text-center" id="saveModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" id="submit-save-button">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {{-- Update Modal --}}
+    <form method="post" action="{{ route('business.business-income.update-business-balance', $business->id) }}">
+        @csrf
+        @method('patch')
+        <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <input type="hidden" id="date" name="tanggal">
                         <input type="hidden" id="amount" name="jumlah">
-                        <h3 class="modal-title text-center" id="deleteModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
+                        <h3 class="modal-title text-center" id="updateModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary" id="submit-delete-button">Simpan</button>
+                        <button type="submit" class="btn btn-primary" id="submit-update-button">Simpan</button>
                     </div>
                 </div>
             </div>
@@ -135,16 +161,22 @@
 @section('script')
 <script type="text/javascript">
     
-    const updateBalances = Array.from(document.getElementsByClassName('update-balance'));
+    const saveBalances = Array.from(document.getElementsByClassName('save-balance'));
+    const date = document.getElementsByClassName('date');
+    const amount = document.getElementsByClassName('amount');
 
+    saveBalances.map(saveBalance => {
+        saveBalance.addEventListener('click', function(){
+            date[0].value = saveBalance.dataset.date;
+            amount[0].value = saveBalance.dataset.amount;
+        })
+    })
+
+    const updateBalances = Array.from(document.getElementsByClassName('update-balance'));
     updateBalances.map(updateBalance => {
         updateBalance.addEventListener('click', function(){
-            const date = document.getElementById('date');
-            const amount = document.getElementById('amount');
-
-            date.value = updateBalance.dataset.date;
-            amount.value = updateBalance.dataset.amount;
-            console.log(updateBalance.dataset.date);
+            date[1].value = updateBalance.dataset.date;
+            amount[1].value = updateBalance.dataset.amount;
         })
     })
 

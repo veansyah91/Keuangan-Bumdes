@@ -16,11 +16,9 @@ class StockController extends Controller
     public function index(Business $business, Request $request)
     {   
         $search = $request['search'];
-        $stocks = Stock::whereHas('product', function($query) use ($search){
+        $stocks = Stock::whereHas('product', function($query) use ($search, $business){
                         $query->where('nama_produk', 'like', '%' . $search . '%')
                               ->orWhere('kode', 'like', '%' . $search . '%');
-                    })
-                    ->whereHas('product', function($query) use ($business){
                         $query->where('business_id', $business['id']);
                     })
                     ->orderBy('created_at', 'desc')
@@ -141,6 +139,23 @@ class StockController extends Controller
         $response = [
             'message' => "Data Telah Tervalidasi",
             'status' => 1,
+        ];
+
+        try {
+            return response()->json($response, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json($th, 500);
+        }
+    }
+
+    public function search($product)
+    {
+        $data = Stock::where('product_id', $product)->first();
+
+        $response = [
+            'message' => "Data Telah Tervalidasi",
+            'status' => 'Success',
+            'data' => $data
         ];
 
         try {

@@ -43,43 +43,65 @@ class BusinessIncomeController extends Controller
         // check saldo 
         $balance = BusinessBalance::where('business_id', $business['id'])->first();
 
-        $closing = ClosingIncomeActivity::create([
-            'tanggal' => $request->tanggal,
-            'business_id' => $business['id'],
-            'jumlah' => $request->jumlah
-        ]);
+        // cek apakah sudah diinput
+        $closing = ClosingIncomeActivity::where('tanggal', $request->tanggal)->first();
 
-        if ($balance) {
-            $old = $balance['sisa'];
+        if ($closing) {
+            $old = $balance['sisa'] - $closing['jumlah'];
+
             $balance->update([
                 'sisa' => $old + $request->jumlah
             ]);
 
-            $businessBalanceActivity = BusinessBalanceActivity::create([
-                'business_balance_id' => $balance['id'],
-                'tanggal' => $request->tanggal,
-                'uang_masuk' => $request->jumlah,
-                'uang_keluar' => 0,
-                'business_expense_id' => null,
-                'keterangan' => 'Uang Masuk Harian'
-            ]);
-            
-        } else {
-            $balance = BusinessBalance::create([
-                'business_id' => $business['id'],
-                'sisa' => $request->jumlah,
+            $closing->update([
+                'jumlah' => $request->jumlah
             ]);
 
-            $businessBalanceActivity = BusinessBalanceActivity::create([
-                'business_balance_id' => $balance['id'],
-                'tanggal' => $request->tanggal,
+            BusinessBalanceActivity::where('tanggal', $request->tanggal)->where('uang_masuk', '>', 0)->first()->update([
                 'uang_masuk' => $request->jumlah,
-                'uang_keluar' => 0,
-                'business_expense_id' => null,
-                'keterangan' => 'Uang Masuk Harian'
             ]);
+
+            
+        } else {
+            $closing = ClosingIncomeActivity::create([
+                'tanggal' => $request->tanggal,
+                'business_id' => $business['id'],
+                'jumlah' => $request->jumlah
+            ]);
+    
+            if ($balance) {
+                $old = $balance['sisa'];
+                $balance->update([
+                    'sisa' => $old + $request->jumlah
+                ]);
+    
+                $businessBalanceActivity = BusinessBalanceActivity::create([
+                    'business_balance_id' => $balance['id'],
+                    'tanggal' => $request->tanggal,
+                    'uang_masuk' => $request->jumlah,
+                    'uang_keluar' => 0,
+                    'business_expense_id' => null,
+                    'keterangan' => 'Uang Masuk Harian',
+                    'closing_income_activity_id' => $closing['id']
+                ]);
+                
+            } else {
+                $balance = BusinessBalance::create([
+                    'business_id' => $business['id'],
+                    'sisa' => $request->jumlah,
+                ]);
+    
+                $businessBalanceActivity = BusinessBalanceActivity::create([
+                    'business_balance_id' => $balance['id'],
+                    'tanggal' => $request->tanggal,
+                    'uang_masuk' => $request->jumlah,
+                    'uang_keluar' => 0,
+                    'business_expense_id' => null,
+                    'keterangan' => 'Uang Masuk Harian',
+                    'closing_income_activity_id' => $closing['id']
+                ]);
+            }
         }
-        
 
         return redirect('/' . $business['id'] . '/business-income?dari=' . $request->dari . '&ke=' . $request->ke)->with('Success', 'Berhasil Memperbaharui Kas');
     }

@@ -154,7 +154,7 @@
                         <ol class="list-group" id="list-product">
                             
                                     
-                            </li>
+                            
                         </ol>
                     </div>
                 </div>
@@ -336,10 +336,18 @@
         }
 
         const selectProduct = (id, nama, kodeBarang, jual) => {
-            kode.value = kodeBarang;
-            namaProduk.value = nama;
-            harga.value = jual;
-            idProduk.value = id;
+            axios.get(`/api/stock/${id}`)
+            .then(res => {
+                kode.value = kodeBarang;
+                namaProduk.value = nama;
+                harga.value = jual;
+                idProduk.value = id;
+
+                jumlah.setAttribute('max', res.data.data.jumlah);
+            })
+            .catch(err => {
+                console.log(err);
+            });
 
             // reset 
             errCariKode.classList.add('d-none');
@@ -396,15 +404,16 @@
                 return
             }
 
+            let jumlahOrder = jumlah.value > parseInt(jumlah.getAttribute('max')) ? parseInt(jumlah.getAttribute('max')) : parseInt(jumlah.value);
             let data = [{
                 kode : kode.value,
                 namaProduk : namaProduk.value,
                 idProduk : parseInt(idProduk.value),
                 harga : parseInt(harga.value),
-                jumlah : parseInt(jumlah.value)
+                jumlah : jumlahOrder
             }]
 
-            total += harga.value * jumlah.value;
+            total += harga.value * jumlahOrder;
             let currency = Intl.NumberFormat(['ban', 'id']).format(total);
             amount.innerHTML = `Rp. ${currency}`;
 
@@ -598,12 +607,26 @@
                         <td class="text-end">${Intl.NumberFormat(['ban', 'id']).format(sisaBayar)}</td>
                     </tr>
                 </table>
-                    <button id="batal-print" class="btn btn-sm btn-secondary d-print-none">
-                        batal cetak
-                    </button>
-                    <button class="btn btn-sm btn-primary d-print-none" id="print-btn" >
-                        cetak
-                    </button>`
+                    <div class='row'>
+
+                            <button class="btn btn-sm btn-primary d-print-none" id="print-btn" >
+                                cetak
+                            </button>
+                        
+                            <button id="batal-print" class="btn btn-sm btn-secondary d-print-none">
+                                batal cetak
+                            </button>
+                        
+                        
+                            <button id="new-invoice" class="btn btn-sm btn-success d-print-none d-none">
+                                nota baru
+                            </button>
+                        
+                        
+                            
+                        
+                    </div>
+                    `
 
             printInvoice.innerHTML = list
 
@@ -612,11 +635,16 @@
 
             const printBtn = document.getElementById('print-btn');
             const batalPrint = document.getElementById('batal-print');
+            const newInvoice = document.getElementById('new-invoice');
             
             batalPrint.addEventListener('click', function(){
                 console.log("batal cetak");
                 printInvoice.classList.add('d-none');
                 app.classList.remove('d-none');
+            })
+
+            newInvoice.addEventListener('click', function(){
+                window.location=`/${cariProduk.dataset.businessId}/cashier`;
             })
 
             printBtn.addEventListener('click', function(){
@@ -633,8 +661,10 @@
                 axios.post(`/api/${cariProduk.dataset.businessId}/cashier`, data)
                 .then(res => {
                     window.print();
-
-                    window.location=`/${cariProduk.dataset.businessId}/cashier`;
+                    batalPrint.classList.add('d-none');
+                    newInvoice.classList.remove('d-none');
+                    newInvoice.classList.add('d-block');
+                    // window.location=`/${cariProduk.dataset.businessId}/cashier`;
                 })
                 .catch(err => {
                     console.log(err);
