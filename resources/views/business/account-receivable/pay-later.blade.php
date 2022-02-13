@@ -194,7 +194,7 @@
         const totalOrder = document.getElementById('total-order');
         
         let focusId = 0;
-        let selectInvoiceId = 0;
+        let selectInvoice = 0;
         let invoiceDetailList = [];
         let newOrder = [];
 
@@ -594,7 +594,7 @@
                 'harga' : harga.value,
                 'jumlah' : jumlah.value,
                 'productId' : idProduk.value,
-                'invoiceId' : selectInvoiceId,
+                'invoiceId' : selectInvoice.id,
                 'id' : focusId
             }
 
@@ -602,7 +602,6 @@
 
             axios.post(`/api/cashier/add-order`, data)
             .then(res => {
-                
                 loadDetail(focusId);
                 addProduct.classList.add('disabled');
             })
