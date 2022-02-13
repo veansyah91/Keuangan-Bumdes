@@ -529,8 +529,11 @@
             createListProduct(cariProduk.dataset.businessId, inputCode.value);
             
             inputCode.addEventListener('keyup', function()
-            {
-                createListProduct(cariProduk.dataset.businessId, inputCode.value);
+            {   
+                setTimeout(() => {
+                    createListProduct(cariProduk.dataset.businessId, inputCode.value);
+                }, 200);
+                
             })
         })
 
