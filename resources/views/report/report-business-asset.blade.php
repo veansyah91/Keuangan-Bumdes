@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Pengeluaran Unit Usaha</title>
+    <title>Laporan Asset Unit Usaha</title>
     <style>
         .text-center{
             text-align:center
@@ -33,28 +33,34 @@
         <h4>{{ $business['nama'] }}</h4>
     </center>
     <center>
-        <h2>Laporan Uang Keluar</h2>
+        <h2>Laporan Asset</h2>
 
         <table class="border">
             <thead>
                 <tr class="text-center">
-                    <th class="border">Tanggal</th>
-                    <th class="border">Keterangan</th>
+                    <th class="border">Tanggal Masuk</th>
+                    <th class="border">Kode</th>
+                    <th class="border">Nama Item</th>
+                    <th class="border">Harga</th>
+                    <th class="border">Qty</th>
                     <th class="border">Jumlah</th>
                 </tr>
             </thead>
             <tbody>
-                @if ($expenses->isNotEmpty())
-                    @foreach ($expenses as $expense)
+                @if ($assets->isNotEmpty())
+                    @foreach ($assets as $asset)
                         <tr class="text-center">
-                            <td class="text-center border">{{ $expense->tanggal_keluar }}</td>
-                            <td class="text-center border">{{ $expense->keterangan }}</td>
-                            <td class="text-right border">Rp. {{ number_format($expense->jumlah,0,",",".") }}</td>
+                            <td class="text-center border">{{ $asset->tanggal_masuk }}</td>
+                            <td class="text-center border">{{ $asset->kode }}</td>
+                            <td class="text-center border">{{ $asset->nama_item }}</td>
+                            <td class="text-right border">Rp. {{ number_format($asset->harga,0,",",".") }}</td>
+                            <td class="text-center border">{{ $asset->jumlah_bagus }}</td>
+                            <td class="text-right border">Rp. {{ number_format($asset->jumlah,0,",",".") }}</td>
                         </tr>
                     @endforeach
 
                     <tr>
-                        <td colspan="2" class="text-center border" style="font-size: 20px"> 
+                        <td colspan="5" class="text-center border" style="font-size: 20px"> 
                             <strong>Jumlah</strong>                            
                         </td>
                         <td class="text-right border" style="font-size: 20px">

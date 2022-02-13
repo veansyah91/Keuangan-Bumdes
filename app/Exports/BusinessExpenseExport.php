@@ -31,7 +31,7 @@ class BusinessExpenseExport implements FromQuery, WithHeadings
     {
         
         $expenses = ($this->tanggal_awal && $this->tanggal_akhir ) ? 
-                      BusinessExpense::query()->where('business_id', $this->businessId)->whereBetween('tanggal_keluar', [$this->tanggal_awal, $this->tanggal_akhir ])->orderBy('tanggal_keluar', 'asc')->select('jumlah','keterangan','tanggal_keluar')
+                      BusinessExpense::query()->where('business_id', $this->businessId)->whereBetween('tanggal_keluar', [$this->tanggal_awal, $this->tanggal_akhir ])->orderBy('tanggal_keluar', 'asc')->select('tanggal_keluar','jumlah','keterangan')
                     : BusinessExpense::query()->where('business_id', $this->businessId)->orderBy('tanggal_keluar', 'asc')->select('tanggal_keluar','jumlah','keterangan');
                     
                     

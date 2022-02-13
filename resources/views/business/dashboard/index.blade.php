@@ -11,11 +11,6 @@
                 <div class="card-header fs-4 fw-bold">{{ __('Dashboard') }}</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
                     
                     <div class="row justify-content-start fs-3 fw-bold">
                         <div class="col-md-4 col-12">
@@ -41,12 +36,23 @@
 
                     <hr>
 
-                    <div class="row justify-content-start fs-3 fw-bold">
+                    <div class="row justify-content-start fs-3 fw-bold mt-2">
                         <h4 class="fs-3 fw-bold">
                             Cash Flow
                         </h4>
                         <div>
                             <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row justify-content-start fs-3 fw-bold mt-2">
+                        <div class="col-md-4 col-12">
+                            Asset
+                        </div>
+                        <div class="col-md-8 col-12">
+                            : Rp. {{ number_format($sumAsset,0,",",".") }}
                         </div>
                     </div>
                 </div>

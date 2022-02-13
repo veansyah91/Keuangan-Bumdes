@@ -20,9 +20,10 @@ class IncomeExport implements FromQuery, WithHeadings
     public function headings(): array
     {
         return [
-            'Tanggal',
+            'Tanggal Masuk',
+            'Nama Item',
+            'Harga',
             'Jumlah',
-            'Keterangan',
         ];
     }
 

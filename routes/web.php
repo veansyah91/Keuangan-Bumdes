@@ -1,23 +1,25 @@
 <?php
 
+use App\Models\Asset;
 use App\Models\Income;
 use App\Models\Outcome;
 use App\Models\Regency;
 use App\Models\Village;
 use App\Models\Business;
-use App\Models\District;
 
+use App\Models\District;
 use App\Models\Identity;
 use App\Models\Province;
+use App\Exports\AssetExport;
 use Illuminate\Http\Request;
 use App\Exports\IncomeExport;
 use App\Exports\OutcomeExport;
 use App\Imports\RegencyImport;
 use App\Imports\VillageImport;
 use App\Imports\DistrictImport;
+
 use App\Imports\ProvinceImport;
 use App\Models\BusinessExpense;
-
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Exports\BusinessExpenseExport;
@@ -300,6 +302,35 @@ Route::group(['middleware' => ['auth']], function(){
             Route::post('/{business}/asset', [AssetController::class, 'store'])->name('business.asset.store');
             Route::patch('/{business}/asset/{asset}', [AssetController::class, 'update'])->name('business.asset.update');
             Route::delete('/{business}/asset/{asset}', [AssetController::class, 'delete'])->name('business.asset.delete');
+
+            // Excel
+            Route::get('/{business}/asset/excel', function(Business $business){
+                try {                        
+                    return (new AssetExport($business['id']))->download('Laporan Aset ' . $business['nama'] . '.xlsx');
+                } catch (\Throwable $th) {
+                    abort(403, 'Data Terlalu Besar');
+                } 
+            })->name('business.asset.excel');
+
+            // PDF
+            Route::get('/{business}/asset/pdf', function(Business $business){        
+                $identity = Identity::first();
+        
+                $assets = Asset::where('business_id', $business['id'])->select('name_item','harga_satuan','jumlah_bagus', 'tanggal_masuk', 'kode', DB::raw('(jumlah_bagus * harga_satuan) as jumlah'))->get();
+        
+                try {
+                    $pdf = PDF::loadview('report.report-business-asset', [
+                                                                    'assets' => $assets,
+                                                                    'identity' => $identity,
+                                                                    'business' => $business,
+                                                                    'total' => $assets->sum('jumlah')
+                                                                ]);
+                    return $pdf->download('Laporan Asset ' . $business['nama'] . '.xlsx');
+                } catch (\Throwable $th) {
+                    abort(403, 'Data Terlalu Besar');
+                }
+                
+            })->name('business.asset.pdf');
         // 
 
         // Cashier Page
@@ -350,8 +381,8 @@ Route::group(['middleware' => ['auth']], function(){
                 $identity = Identity::first();
         
                 $expenses = ($tanggal_awal && $tanggal_akhir) ? 
-                            BusinessExpense::whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->orderBy('tanggal_keluar', 'asc')->get()
-                            : BusinessExpense::orderBy('tanggal_keluar', 'asc')->get();
+                            BusinessExpense::where('business_id', $business['id'])->whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->orderBy('tanggal_keluar', 'asc')->get()
+                            : BusinessExpense::where('business_id', $business['id'])->orderBy('tanggal_keluar', 'asc')->get();
         
                 try {
                     $pdf = PDF::loadview('report.report-business-expense', [

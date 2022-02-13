@@ -13,10 +13,18 @@ class AssetController extends Controller
     public function index(Business $business)
     {
         $assets = Asset::orderBy('created_at', 'desc')
+                        ->orderBy('jumlah_bagus')
                         ->where('business_id', $business['id'])
                         ->paginate(10)
                         ->withQueryString();
-        return view('business.asset.index', compact('business', 'assets'));
+
+        $getAsset = Asset::where('business_id', $business['id'])->get();
+        $sumAsset = $getAsset->sum(function ($query){
+            return $query['harga_satuan'] * $query['jumlah_bagus'];
+        });
+
+
+        return view('business.asset.index', compact('business', 'assets', 'sumAsset'));
     }
 
     public function store(Business $business, Request $request)

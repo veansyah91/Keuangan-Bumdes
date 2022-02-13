@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Business;
 
 use Carbon\Carbon;
+use App\Models\Asset;
 use App\Models\Business;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -52,7 +53,12 @@ class DashboardController extends Controller
                                                 ->sum('jumlah');
         }
 
-        return view('business.dashboard.index', compact('business', 'businessBalance'));
+        $getAsset = Asset::where('business_id', $business['id'])->get();
+        $sumAsset = $getAsset->sum(function ($query){
+            return $query['harga_satuan'] * $query['jumlah_bagus'];
+        });
+
+        return view('business.dashboard.index', compact('business', 'businessBalance', 'sumAsset'));
     }
 
     public function cashflow(Business $business)

@@ -13,8 +13,17 @@
                 <div class="card-body">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
 
+                    <div class="row justify-content-center mt-2">
+                        <div class="col-12 col-md-6 fs-5 fw-bold">
+                            Nilai Asset: Rp. {{ number_format($sumAsset,0,",",".") }}
+                        </div>
+                        <div class="col-12 col-md-6 fs-5 fw-bold text-center text-md-end mt-2 mt-md-0">
+                            <a href="{{ route('business.asset.excel', $business->id) }}" class="btn btn-success btn-sm"><i class="bi bi-file-spreadsheet-fill"></i>Excel</a>
+                            <a href="{{ route('business.asset.pdf', $business->id) }}" class="btn btn-danger btn-sm"><i class="bi bi-file-pdf-fill"></i>PDF</a>
+                        </div>
+                    </div>
 
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center mt-2">
                         <div class="col-12 table-responsive">
                             <table class="table">
                                 <thead>
@@ -33,7 +42,7 @@
                                         @foreach ($assets as $asset)
                                             <tr>
                                                 <td>{{ $asset->kode }}</td>
-                                                <td>{{ $asset->name_item }}</td>
+                                                <td>{{ strtoupper($asset->name_item) }}</td>
                                                 <td class="text-end">Rp. {{ number_format($asset->harga_satuan,0,",",".") }}</td>
                                                 <td class="text-center">{{ $asset->jumlah_bagus }}</td>
                                                 <td class="text-center">{{ $asset->jumlah_rusak }}</td>
@@ -208,11 +217,9 @@
                     "jumlah_rusak" : jumlahRusak[index].value,
                     "tanggal_masuk" : tanggalMasuk[index].value,
                 }
-                console.log(data);
                 // validasi
                 axios.post(`/api/asset`, data)
                 .then((res) => {
-                    console.log(res);
                     formInput[index].submit();
                 })
                 .catch((err) => {
@@ -258,7 +265,6 @@
 
             axios.get(`/api/asset/${id}`)
             .then((res) => {
-                console.log(res);
 
                 nama[1].value = res.data.data.name_item;
                 kode[1].value = res.data.data.kode;
