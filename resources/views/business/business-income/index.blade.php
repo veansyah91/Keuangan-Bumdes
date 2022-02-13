@@ -14,7 +14,7 @@
                             Pendapatan
                         </div>
                         <div class="col-6 text-end">
-                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-filter"></i></button>
+                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-filter"></i>Filter</button>
                         </div>
                     </div>
                 </div>

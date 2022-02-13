@@ -53,6 +53,7 @@ class CashierController extends Controller
                 'nama_konsumen' => strtoupper($request->namaPelanggan),
                 'customer_id' => $customer ? $customer['id'] : null,
                 'business_id' => $business['id'],
+                'invoice_id' => $invoice['id']
             ]);
         }
         
@@ -115,5 +116,95 @@ class CashierController extends Controller
             'invoice' => $invoice ? $invoice['nomor'] + 1 : 1,
             'identity' => $identity
         ]);
+    }
+
+    public function deleteInvoiceDetail($invoiceId, $productId)
+    {
+        // kurangi piutang
+
+        $accountReceivable = AccountReceivable::where('invoice_id', $invoiceId)->first();
+        $old = $accountReceivable['sisa'];
+
+        $data = DB::table('invoice_product')->where('invoice_id', $invoiceId)->where('product_id', $productId)->first();
+
+        $accountReceivable->update([
+            'sisa' => $old - $data->harga * $data->jumlah
+        ]);
+
+        $data = DB::table('invoice_product')->where('invoice_id', $invoiceId)->where('product_id', $productId)->delete();
+
+        $response = [
+            'message' => "Berhasil Menghapus Data",
+            'status' => 200,
+        ];
+
+        try {
+            return response()->json($response, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json($th, 500);
+        }
+    }
+
+    public function addOrder(Request $request)
+    {
+        // cari apakah sudah order 
+        $piutang = DB::table('invoice_product')->where('invoice_id', $request->invoiceId)->where('product_id', $request->productId)->first();
+
+        if ($piutang) {
+            DB::table('invoice_product')->where('invoice_id', $request->invoiceId)->where('product_id', $request->productId)->update([
+                'jumlah' => $request->jumlah + $piutang->jumlah,
+            ]);
+        } else {
+            DB::table('invoice_product')->insert([
+                'jumlah' => $request->jumlah,
+                'harga' => $request->harga,
+                'product_id' => $request->productId,
+                'invoice_id' => $request->invoiceId,
+            ]);
+        }
+        
+        $accountReceivable = AccountReceivable::find($request->id);
+        $old = $accountReceivable['sisa'];
+
+        $accountReceivable->update([
+            'sisa' => $old + $request->jumlah * $request->harga
+        ]);
+
+        $response = [
+            'message' => "Berhasil Menambah Data",
+            'status' => 200,
+        ];
+
+        try {
+            return response()->json($response, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json($th, 500);
+        }
+    }
+
+    public function invoiceUpdate(Invoice $invoice, Request $request)
+    {
+        $old = $invoice['jumlah'];
+
+        $invoice->update([
+            'jumlah' => $old + $request['total']
+        ]);
+
+        $accountReceivable = AccountReceivable::where('invoice_id', $invoice['id'])->first();
+        $old = $accountReceivable['sisa'];
+        $accountReceivable->update([
+            'sisa' => $old - $request['total']
+        ]);
+
+        $response = [
+            'message' => "Berhasil Menghapus Data",
+            'status' => 200,
+        ];
+
+        try {
+            return response()->json($response, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json($th, 500);
+        }
     }
 }

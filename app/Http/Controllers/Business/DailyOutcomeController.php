@@ -14,9 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DailyOutcomeController extends Controller
 {
-    public function index(Business $business)
+    public function index(Business $business, Request $request)
     {
-        $expenses = BusinessExpense::where('business_id', $business['id'])->orderBy('tanggal_keluar', 'desc')->paginate(10);
+        $tanggal_awal = $request['tanggal_awal'];
+        $tanggal_akhir = $request['tanggal_akhir'];
+
+        $expenses = ($tanggal_awal && $tanggal_akhir) 
+                    ? BusinessExpense::whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->where('business_id', $business['id'])->orderBy('tanggal_keluar', 'desc')->paginate(10)
+                    : BusinessExpense::where('business_id', $business['id'])->orderBy('tanggal_keluar', 'desc')->paginate(10);
 
         return view('business.daily-outcome.index', compact('business', 'expenses'));
     }

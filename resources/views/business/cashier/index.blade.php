@@ -52,8 +52,7 @@
                                                     <small id="err-cari-kode" class="text-danger d-none">
                                                         masukkan kode dengan benar
                                                     </small>
-                                                </div>
-                                                
+                                                </div>                                                
                                             </div>
                                         </form>
                                         <div class="mb-3 row">
@@ -222,7 +221,7 @@
         const kode = document.getElementById('kode');
         const errCariKode = document.getElementById('err-cari-kode');
         const namaProduk = document.getElementById('nama-produk');
-        const idProduk = document.getElementById('product-id')
+        const idProduk = document.getElementById('product-id');
         const harga = document.getElementById('harga');
         const jumlah = document.getElementById('jumlah');
         const addProduct = document.getElementById('add-product');
@@ -263,7 +262,7 @@
                         list += `<li class="list-group-item d-flex justify-content-between align-items-start">
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold">${customer.nama}</div>
-                                    <small>${customer.alamat}, ${customer.no_hp}</small>
+                                    <small>${customer.alamat ?? ''}, ${customer.no_hp ?? ''}</small>
                                 </div>
                                 <button 
                                     class="btn btn-sm btn-primary" 
@@ -343,7 +342,7 @@
                 harga.value = jual;
                 idProduk.value = id;
 
-                jumlah.setAttribute('max', res.data.data.jumlah);
+                res.data.status == 200 ? jumlah.setAttribute('max', res.data.data.jumlah) : '';
             })
             .catch(err => {
                 console.log(err);
@@ -469,7 +468,8 @@
                             </li>`
 
                 
-            })
+            });
+
             let totalCurrency = Intl.NumberFormat(['ban', 'id']).format(total);
             list += `<li class="list-group-item d-flex justify-content-between align-items-start fs-4">
                         <div class="ms-2 me-auto fw-bold">
@@ -581,7 +581,7 @@
 
             list += `<table style="width: 100%;font-size: 12px; font-family: 'Times New Roman', Times, serif;margin-bottom:10px">
                 <tr style="border-top: solid black">
-                    
+                    <td></td>
                 </tr>`
 
             detailProducts.map(product => {
@@ -636,6 +636,8 @@
             const printBtn = document.getElementById('print-btn');
             const batalPrint = document.getElementById('batal-print');
             const newInvoice = document.getElementById('new-invoice');
+
+            let printStatus = false;
             
             batalPrint.addEventListener('click', function(){
                 console.log("batal cetak");
@@ -658,17 +660,22 @@
                     operator: invoiceSave.dataset.operator
                 }
 
-                axios.post(`/api/${cariProduk.dataset.businessId}/cashier`, data)
-                .then(res => {
-                    window.print();
-                    batalPrint.classList.add('d-none');
-                    newInvoice.classList.remove('d-none');
-                    newInvoice.classList.add('d-block');
-                    // window.location=`/${cariProduk.dataset.businessId}/cashier`;
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+                printStatus
+                ? window.print()
+                : axios.post(`/api/${cariProduk.dataset.businessId}/cashier`, data)
+                    .then(res => {
+                        printStatus = true;
+                        window.print();
+
+                        batalPrint.classList.add('d-none');
+                        newInvoice.classList.remove('d-none');
+                        newInvoice.classList.add('d-block');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
+                
             })
         });
 

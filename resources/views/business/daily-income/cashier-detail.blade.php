@@ -108,7 +108,6 @@
         
         axios.get(`/api/invoice-detail/${id}`)
         .then(res => {
-            console.log(res);
             let list = '';
             let invoicesLists = res.data.data;
             let total = 0;

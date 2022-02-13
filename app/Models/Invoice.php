@@ -25,4 +25,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function accountReceivable()
+    {
+        return $this->hasOne(AccountReceivable::class);
+    }
 }

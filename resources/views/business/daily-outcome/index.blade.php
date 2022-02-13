@@ -9,17 +9,29 @@
         <div class="col-md-8 col-12">
             <div class="card">
                 <div class="card-header fs-4 fw-bold">
-                    <div class="row">
-                        <div class="col-6">
+                    <div class="row justify-content-between">
+                        <div class="col-12 col-md-6">
                             Pengeluaran
+                        </div>
+                        <div class="col-12 col-md-6 text-end">
+                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-filter"></i>Filter</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <div class="row justify-content-center">
-                        <div class="col-12">
+                    <div class="row justify-content-between">
+                        <div class="col-12 col-md-6">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah</button>
+                        </div>
+                        <div class="col-12 col-md-6 text-end">
+                            <a href="{{ route('business.expense.excel', $business->id) }}" class="btn btn-success btn-sm"><i class="bi bi-file-spreadsheet-fill"></i>Excel</a>
+                            <a href="{{ route('business.expense.pdf', $business->id) }}" class="btn btn-danger btn-sm"><i class="bi bi-file-pdf-fill"></i>PDF</a>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-12 table-responsive">
+                            
                             <table class="table">
                                 <thead>
                                     <tr class="text-center">
@@ -39,7 +51,7 @@
                                                 <td class="text-end">Rp. {{ number_format($expense->jumlah,0,",",".") }}</td>
                                                 <td class="text-center">{{ $expense->operator }}</td>
                                                 <td>
-                                                    @if (Auth::user()['name'] == $expense->operator || Auth::user()->hasRole('writer'))
+                                                    @if (Auth::user()['name'] == $expense->operator || Auth::user()->hasRole('ADMIN'))
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-link btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                                 <i class="bi bi-three-dots-vertical"></i>
@@ -106,6 +118,44 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal Filter --}}
+    <form action="/{{ $business->id }}/expense" method="get">
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">Filter</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="dari" class="col-sm-2 col-form-label">Dari</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="dari" name="tanggal_awal" value="{{ request('tanggal_awal') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="ke" class="col-sm-2 col-form-label">Ke</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="ke" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <!-- Input Modal -->
     <form action="{{ route('business.expense.store', $business->id) }}" method="post" class="form-input">

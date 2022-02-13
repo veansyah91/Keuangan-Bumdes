@@ -154,7 +154,7 @@ class StockController extends Controller
 
         $response = [
             'message' => "Data Telah Tervalidasi",
-            'status' => 'Success',
+            'status' => $data ? 200 : 402,
             'data' => $data
         ];
 

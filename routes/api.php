@@ -144,8 +144,13 @@ Route::post('/asset', [AssetController::class, 'apiValidate']);
 Route::post('/{business}/cashier', [CashierController::class, 'store']);
 
 Route::get('/invoice-detail/{invoice}', [CashierController::class, 'invoiceDetail']);
+Route::delete('/invoice-detail/{invoiceId}/{productId}', [CashierController::class, 'deleteInvoiceDetail']);
+Route::post('/cashier/add-order', [CashierController::class, 'addOrder']);
+Route::post('/cashier/{invoice}/update', [CashierController::class, 'invoiceUpdate']);
 
 Route::get('/{business}/account-receivable/{accountReceivable}', [AccountReceivableController::class, 'detail']);
+Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLaterList']);
+Route::get('/pay-later/detail/{id}', [AccountReceivableController::class, 'payLaterDetail']);
 
 Route::get('/expense/{expense}', [DailyOutcomeController::class, 'detail']);
 Route::post('/{business}/expense', [DailyOutcomeController::class, 'apiValidate']);

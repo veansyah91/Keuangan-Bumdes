@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Pengeluaran Bumdes</title>
+    <title>Laporan Pengeluaran Unit Usaha</title>
     <style>
         .text-center{
             text-align:center
@@ -31,6 +31,7 @@
     <center>
         <h2>{{ $identity['nama_desa'] }}</h2>
         <h4>Kecamatan {{ $identity['nama_kecamatan'] }}, {{ $identity['nama_kabupaten'] }}, {{ $identity['nama_provinsi'] }}</h4>
+        <h4>{{ $business['nama'] }}</h4>
     </center>
     <center>
         <h2>Laporan Uang Keluar</h2>
@@ -44,14 +45,15 @@
                 </tr>
             </thead>
             <tbody>
-                @if ($outcomes->isNotEmpty())
-                    @foreach ($outcomes as $outcome)
+                @if ($expenses->isNotEmpty())
+                    @foreach ($expenses as $expense)
                         <tr class="text-center">
-                            <td class="text-center border">{{ $outcome->tanggal_keluar }}</td>
-                            <td class="text-center border">{{ $outcome->keterangan }}</td>
-                            <td class="text-right border">Rp. {{ number_format($outcome->jumlah,0,",",".") }}</td>
+                            <td class="text-center border">{{ $expense->tanggal_keluar }}</td>
+                            <td class="text-center border">{{ $expense->keterangan }}</td>
+                            <td class="text-right border">Rp. {{ number_format($expense->jumlah,0,",",".") }}</td>
                         </tr>
                     @endforeach
+
                     <tr>
                         <td colspan="2" class="text-center border" style="font-size: 20px"> 
                             <strong>Jumlah</strong>                            

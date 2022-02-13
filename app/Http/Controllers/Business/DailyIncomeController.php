@@ -16,7 +16,7 @@ class DailyIncomeController extends Controller
 {
     public function index(Business $business)
     {
-        $invoices = Invoice::where('business_id', $business['id'])->whereDate('created_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
+        $invoices = Invoice::where('business_id', $business['id'])->whereDate('updated_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
 
         $accountReservePayments = AccountReceivablePayment::whereHas('accountReceivable', function($query) use ($business){
                                                                 $query->where('business_id', $business['id']);
@@ -35,7 +35,7 @@ class DailyIncomeController extends Controller
 
     public function cashierDetail(Business $business)
     {
-        $invoices = Invoice::where('business_id', $business['id'])->whereDate('created_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
+        $invoices = Invoice::where('business_id', $business['id'])->whereDate('updated_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
 
         return view('business.daily-income.cashier-detail', compact('business', 'invoices'));
     }
@@ -134,11 +134,5 @@ class DailyIncomeController extends Controller
         }
 
         return redirect('/' . $business['id'] . '/daily-incomes')->with('Success', 'Berhasil Memperbaharui Kas');
-    }
-
-    public function cashierRestaurant(Business $business)
-    {
-
-        return view('business.daily-income.cashier-restaurant', compact('business'));
     }
 }

@@ -18,6 +18,11 @@ class AccountReceivable extends Model
 
     public function accountReceivablePayment()
     {
-        return $this->hasMany(AccountReceivable::class);
+        return $this->hasMany(AccountReceivablePayment::class);
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

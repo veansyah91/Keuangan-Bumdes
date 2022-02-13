@@ -16,9 +16,11 @@ use App\Imports\RegencyImport;
 use App\Imports\VillageImport;
 use App\Imports\DistrictImport;
 use App\Imports\ProvinceImport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\BusinessExpense;
 
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use App\Exports\BusinessExpenseExport;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolesController;
@@ -114,8 +116,7 @@ Route::group(['middleware' => ['auth']], function(){
                 return (new OutcomeExport($tanggal_awal, $tanggal_akhir))->download('outcomes.xlsx');
             } catch (\Throwable $th) {
                 abort(403, 'Data Terlalu Besar');
-            }
-    
+            }    
             
         });
     
@@ -129,16 +130,16 @@ Route::group(['middleware' => ['auth']], function(){
                           Outcome::whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->orderBy('tanggal_keluar', 'asc')->get()
                         : Outcome::orderBy('tanggal_keluar', 'asc')->get();
     
-                        try {
-                            $pdf = PDF::loadview('report.report-outcome', [
-                                                                            'outcomes' => $outcomes,
-                                                                            'identity' => $identity,
-                                                                            'total' => $outcomes->sum('jumlah')
-                                                                        ]);
-                            return $pdf->download('report-outcome.pdf');
-                        } catch (\Throwable $th) {
-                            abort(403, 'Data Terlalu Besar');
-                        }
+            try {
+                $pdf = PDF::loadview('report.report-outcome', [
+                                                                'outcomes' => $outcomes,
+                                                                'identity' => $identity,
+                                                                'total' => $outcomes->sum('jumlah')
+                                                            ]);
+                return $pdf->download('report-outcome.pdf');
+            } catch (\Throwable $th) {
+                abort(403, 'Data Terlalu Besar');
+            }
     
             
         });
@@ -320,11 +321,53 @@ Route::group(['middleware' => ['auth']], function(){
             Route::get('/{business}/business-income', [BusinessIncomeController::class, 'index'])->name('business.business-income.index');
             Route::patch('/{business}/business-income', [BusinessIncomeController::class, 'updateBusinessBalance'])->name('business.business-income.update-business-balance');
 
+        //
+
         //Outcome Page
             Route::get('/{business}/expense', [DailyOutcomeController::class, 'index'])->name('business.expense.index');
             Route::post('/{business}/expense', [DailyOutcomeController::class, 'store'])->name('business.expense.store');
             Route::patch('/{business}/expense/{expense}', [DailyOutcomeController::class, 'update'])->name('business.expense.update');
             Route::delete('/{business}/expense/{expense}', [DailyOutcomeController::class, 'delete'])->name('business.expense.delete');
+
+            // Excel
+            Route::get('/{business}/business-expense/excel', function(Business $business, Request $request){
+                $tanggal_awal = $request['tanggal_awal'];
+                $tanggal_akhir = $request['tanggal_akhir'];
+                
+                
+                try {                        
+                    return (new BusinessExpenseExport($business['id'], $tanggal_awal, $tanggal_akhir))->download('Laporan Pengeluaran ' . $business['nama'] . '.xlsx');
+                } catch (\Throwable $th) {
+                    abort(403, 'Data Terlalu Besar');
+                } 
+            })->name('business.expense.excel');
+
+            // PDF
+            Route::get('/{business}/business-expense/pdf', function(Business $business, Request $request){
+                $tanggal_awal = $request['tanggal_awal'];
+                $tanggal_akhir = $request['tanggal_akhir'];
+        
+                $identity = Identity::first();
+        
+                $expenses = ($tanggal_awal && $tanggal_akhir) ? 
+                            BusinessExpense::whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->orderBy('tanggal_keluar', 'asc')->get()
+                            : BusinessExpense::orderBy('tanggal_keluar', 'asc')->get();
+        
+                try {
+                    $pdf = PDF::loadview('report.report-business-expense', [
+                                                                    'expenses' => $expenses,
+                                                                    'identity' => $identity,
+                                                                    'business' => $business,
+                                                                    'total' => $expenses->sum('jumlah')
+                                                                ]);
+                    return $pdf->download('Laporan Pengeluaran ' . $business['nama'] . '.xlsx');
+                } catch (\Throwable $th) {
+                    abort(403, 'Data Terlalu Besar');
+                }
+                
+            })->name('business.expense.pdf');
+
+        // 
 
         // Finance Page
             Route::get('/{business}/account-receivable', [AccountReceivableController::class, 'index'])->name('business.account-receivable.index');
