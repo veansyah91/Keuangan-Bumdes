@@ -325,7 +325,7 @@ Route::group(['middleware' => ['auth']], function(){
                                                                     'business' => $business,
                                                                     'total' => $assets->sum('jumlah')
                                                                 ]);
-                    return $pdf->download('Laporan Asset ' . $business['nama'] . '.xlsx');
+                    return $pdf->download('Laporan Asset ' . $business['nama'] . '.pdf');
                 } catch (\Throwable $th) {
                     abort(403, 'Data Terlalu Besar');
                 }
@@ -391,7 +391,7 @@ Route::group(['middleware' => ['auth']], function(){
                                                                     'business' => $business,
                                                                     'total' => $expenses->sum('jumlah')
                                                                 ]);
-                    return $pdf->download('Laporan Pengeluaran ' . $business['nama'] . '.xlsx');
+                    return $pdf->download('Laporan Pengeluaran ' . $business['nama'] . '.pdf');
                 } catch (\Throwable $th) {
                     abort(403, 'Data Terlalu Besar');
                 }
