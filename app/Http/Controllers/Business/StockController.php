@@ -16,14 +16,17 @@ class StockController extends Controller
     public function index(Business $business, Request $request)
     {   
         $search = $request['search'];
+        
         $stocks = Stock::whereHas('product', function($query) use ($search, $business){
                         $query->where('nama_produk', 'like', '%' . $search . '%')
                               ->orWhere('kode', 'like', '%' . $search . '%');
                         $query->where('business_id', $business['id']);
+                        $query->orderBy('kategori', 'asc');
                     })
                     ->orderBy('created_at', 'desc')
                     ->paginate(10)
                     ->withQueryString();
+
         return view('business.stock.index', compact('business','request','stocks'));
     }
 

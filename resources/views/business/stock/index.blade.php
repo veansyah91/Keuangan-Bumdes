@@ -15,15 +15,21 @@
                         <div class="col-12 col-md-6">
                             <a class="btn btn-primary" href="{{ route('business.stock.create', $business->id) }}">Tambah Data</a>
                         </div>
-                            <div class="col-12 col-md-6">
-                                <form action="" method="get">
+                    </div>
+                    <div class="row justify-content-between mt-2">   
+                        <div class="col-12 col-md-6 text-end">
+                            <a href="{{ route('business.stock.excel', $business->id) }}" class="btn btn-success btn-sm"><i class="bi bi-file-spreadsheet-fill"></i>Excel</a>
+                            <a href="{{ route('business.stock.pdf', $business->id) }}" class="btn btn-danger btn-sm"><i class="bi bi-file-pdf-fill"></i>PDF</a>
+                        </div>
+                        <div class="col-12 col-md-6 mt-2 mt-md-0">
+                            <form action="" method="get">
 
-                                    <div class="input-group mb-3">                                        
-                                            <input type="text" class="form-control" placeholder="Masukkan Kode / Nama Produk" aria-label="Masukkan Kode / Nama Produk" aria-describedby="button-addon2" name="search" value="{{ request('search') }}">
-                                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Cari</button>                                        
-                                    </div>
-                                </form>
-                            </div>
+                                <div class="input-group mb-3">                                        
+                                        <input type="text" class="form-control" placeholder="Masukkan Kode / Nama Produk" aria-label="Masukkan Kode / Nama Produk" aria-describedby="button-addon2" name="search" value="{{ request('search') }}">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Cari</button>                                        
+                                </div>
+                            </form>
+                        </div>
 
                     </div>
 

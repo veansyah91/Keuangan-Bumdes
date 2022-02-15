@@ -3,21 +3,23 @@
 use App\Models\Asset;
 use App\Models\Income;
 use App\Models\Outcome;
+use App\Models\Product;
 use App\Models\Regency;
 use App\Models\Village;
-use App\Models\Business;
 
+use App\Models\Business;
 use App\Models\District;
 use App\Models\Identity;
 use App\Models\Province;
 use App\Exports\AssetExport;
+use App\Exports\StockExport;
 use Illuminate\Http\Request;
 use App\Exports\IncomeExport;
 use App\Exports\OutcomeExport;
 use App\Imports\RegencyImport;
+
 use App\Imports\VillageImport;
 use App\Imports\DistrictImport;
-
 use App\Imports\ProvinceImport;
 use App\Models\BusinessExpense;
 use Maatwebsite\Excel\Facades\Excel;
@@ -104,7 +106,7 @@ Route::group(['middleware' => ['auth']], function(){
             try {                        
                 return (new IncomeExport($tanggal_awal, $tanggal_akhir))->download('incomes.xlsx');
             } catch (\Throwable $th) {
-                abort(403, 'Data Terlalu Besar');
+                abort(503, 'Terjadi Kesalahan');
             }
     
             
@@ -117,7 +119,7 @@ Route::group(['middleware' => ['auth']], function(){
             try {                        
                 return (new OutcomeExport($tanggal_awal, $tanggal_akhir))->download('outcomes.xlsx');
             } catch (\Throwable $th) {
-                abort(403, 'Data Terlalu Besar');
+                abort(503, 'Terjadi Kesalahan');
             }    
             
         });
@@ -140,7 +142,7 @@ Route::group(['middleware' => ['auth']], function(){
                                                             ]);
                 return $pdf->download('report-outcome.pdf');
             } catch (\Throwable $th) {
-                abort(403, 'Data Terlalu Besar');
+                abort(503, 'Terjadi Kesalahan');
             }
     
             
@@ -171,7 +173,7 @@ Route::group(['middleware' => ['auth']], function(){
                 try {
                     Excel::import(new VillageImport, $file);
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Yang Anda Masukkan Tidak Tepat');
+                    abort(503, 'Terjadi Kesalahan');
                 }
     
                 return redirect('/import-asset');
@@ -187,7 +189,7 @@ Route::group(['middleware' => ['auth']], function(){
                 try {
                     Excel::import(new DistrictImport, $file);
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Yang Anda Masukkan Tidak Tepat');
+                    abort(503, 'Terjadi Kesalahan');
                 }
     
                 return redirect('/import-asset');
@@ -203,7 +205,7 @@ Route::group(['middleware' => ['auth']], function(){
                 try {
                     Excel::import(new RegencyImport, $file);
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Yang Anda Masukkan Tidak Tepat');
+                    abort(503, 'Terjadi Kesalahan');
                 }
     
                 return redirect('/import-asset');
@@ -219,7 +221,7 @@ Route::group(['middleware' => ['auth']], function(){
                 try {
                     Excel::import(new ProvinceImport, $file);
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Yang Anda Masukkan Tidak Tepat');
+                    abort(503, 'Terjadi Kesalahan');
                 }
     
                 return redirect('/import-asset');
@@ -295,6 +297,49 @@ Route::group(['middleware' => ['auth']], function(){
             Route::post('/{business}/stock', [StockController::class, 'store'])->name('business.stock.store');
             Route::patch('/{business}/stock/{stock}', [StockController::class, 'update'])->name('business.stock.update');
             Route::delete('/{business}/stock/{stock}', [StockController::class, 'delete'])->name('business.stock.delete');
+
+            // Excel
+            Route::get('/{business}/stock/excel', function(Business $business){
+
+                try {                        
+                    return Excel::download(new StockExport($business['id']), 'Laporan Stok Barang ' . $business['nama'] . '.xlsx');
+                } catch (\Throwable $th) {
+                    abort(503, 'Terjadi Kesalahan');
+                } 
+            })->name('business.stock.excel');
+
+            // PDF
+            Route::get('/{business}/stock/pdf', function(Business $business){        
+                $identity = Identity::first();
+        
+                $products = Product::query()->whereHas('stock', function($query){
+                                $query->where('jumlah', '>', 0);
+                            })           
+                            ->with('stock')             
+                            ->where('business_id', $business['id'])
+                            ->orderBy('created_at')
+                            ->orderBy('kategori')
+                            ->get();
+
+                $total = 0;
+                
+                foreach ($products as $key => $product) {
+                    $total += $product->modal * $product->stock->jumlah;
+                }
+
+                try {
+                    $pdf = PDF::loadview('report.report-business-stock', [
+                                                                    'products' => $products,
+                                                                    'identity' => $identity,
+                                                                    'business' => $business,
+                                                                    'total' => $total
+                                                                ]);
+                    return $pdf->download('Laporan Stock ' . $business['nama'] . '.pdf');
+                } catch (\Throwable $th) {
+                    abort(503, 'Terjadi Kesalahan');
+                }
+                
+            })->name('business.stock.pdf');
         // 
 
         // Asset Page
@@ -369,7 +414,7 @@ Route::group(['middleware' => ['auth']], function(){
                 try {                        
                     return (new BusinessExpenseExport($business['id'], $tanggal_awal, $tanggal_akhir))->download('Laporan Pengeluaran ' . $business['nama'] . '.xlsx');
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Terlalu Besar');
+                    abort(503, 'Terjadi Kesalahan');
                 } 
             })->name('business.expense.excel');
 
@@ -393,7 +438,7 @@ Route::group(['middleware' => ['auth']], function(){
                                                                 ]);
                     return $pdf->download('Laporan Pengeluaran ' . $business['nama'] . '.pdf');
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Terlalu Besar');
+                    abort(503, 'Terjadi Kesalahan');
                 }
                 
             })->name('business.expense.pdf');

@@ -90,8 +90,6 @@
                             </div>
                         </div>
                     @endif
-                    
-                    
                 </div>
 
                 @if ($invoices->sum('jumlah') + $accountReservePayments->sum('jumlah_bayar') > 0)
@@ -139,6 +137,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary" id="invoice-print" data-bs-dismiss="modal" data-operator="{{ Auth::user()['name'] }}" data-business-name="{{ $business['nama'] }}" data-alamat="{{ $identity['nama_desa'] }}"><i class="bi bi-printer"></i></button>
                 </div>
             </div>
         </div>
@@ -147,6 +146,9 @@
 
 @section('script')
 <script type="text/javascript">
+
+    let invoice = [];
+
     const selectInvoice = (id, jumlah) => {
         const tableBodyDetail = document.getElementById('table-body-detail');
         const tableFooterDetail = document.getElementById('table-footer-detail');
@@ -154,10 +156,11 @@
         axios.get(`/api/invoice-detail/${id}`)
         .then(res => {
             let list = '';
-            let invoicesLists = res.data.data;
+            invoice = res.data.data;
             let total = 0;
+            console.log(res.data.data);
 
-            invoicesLists.map(invoicesList => {
+            invoice.products.map(invoicesList => {
                 total += invoicesList.pivot.harga * invoicesList.pivot.jumlah;
                 list += `<tr>
                             <td>${invoicesList.nama_produk}</td>
@@ -181,5 +184,113 @@
             console.log(err);
         })
     }
+
+    const waktu = () => {
+            date = new Date();
+            millisecond = date.getMilliseconds();
+            detik = date.getSeconds();
+            menit = date.getMinutes();
+            jam = date.getHours();
+            hari = date.getDay();
+            tanggal = date.getDate();
+            bulan = date.getMonth();
+            tahun = date.getFullYear();
+            return `${tanggal}/${bulan+1}/${tahun} ${jam}:${menit}:${detik}`
+        }
+
+    const invoicePrint = document.getElementById('invoice-print');
+
+    invoicePrint.addEventListener('click', function(){
+        const printInvoice = document.getElementById('print');
+        let list = '';
+        console.log(invoice);
+
+        list += `<div class="text-center fw-bold">
+                    ${invoicePrint.dataset.businessName}
+                </div>
+                <div class="text-center">
+                    ${invoicePrint.dataset.alamat}
+                </div>`;
+
+        list += `<table style="font-size: 11px">
+                    <tbody>
+                        <tr>
+                            <td>Nomor Nota</td>
+                            <td>: ${invoice.nomor}</td>
+                        </tr>
+                        <tr>
+                            <td>Kasir</td>
+                            <td>: ${invoice.operator}</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>: ${waktu()}</td>
+                        </tr>
+                    </tbody>
+                </table>`;
+
+        list += `<table style="width: 100%;font-size: 12px; font-family: 'Times New Roman', Times, serif;margin-bottom:10px">
+            <tr style="border-top: solid black">
+                <td></td>
+            </tr>`
+
+        let total = 0;
+        invoice.products.map(product => {
+            total += product.pivot.harga * product.pivot.jumlah;
+            list += `<tr>
+                        <td colspan="2">${product.nama_produk}</td>
+                    </tr>
+                    <tr>
+                        <td>${Intl.NumberFormat(['ban', 'id']).format(product.pivot.harga)} x ${product.pivot.jumlah}</td>
+                        <td class="text-end">${Intl.NumberFormat(['ban', 'id']).format(product.pivot.harga * product.pivot.jumlah)}</td>
+                    </tr>`
+        })
+
+        list += `<tr style="border-top: solid black">
+                    <td class="text-end">Total :</td>
+                    <td class="text-end">${Intl.NumberFormat(['ban', 'id']).format(total)}</td>
+                </tr>
+            </table>
+                <div class='row'>
+
+                        <button class="btn btn-sm btn-primary d-print-none" id="print-btn" >
+                            cetak
+                        </button>
+                    
+                        <button id="batal-print" class="btn btn-sm btn-secondary d-print-none">
+                            batal cetak
+                        </button>
+                    
+                    
+                        <button id="new-invoice" class="btn btn-sm btn-success d-print-none d-none">
+                            nota baru
+                        </button>
+                </div>`
+
+        printInvoice.innerHTML = list
+
+        printInvoice.classList.remove('d-none');
+        app.classList.add('d-none');
+
+        const printBtn = document.getElementById('print-btn');
+        const batalPrint = document.getElementById('batal-print');
+        const newInvoice = document.getElementById('new-invoice');
+        
+        batalPrint.addEventListener('click', function(){
+            console.log("batal cetak");
+            printInvoice.classList.add('d-none');
+            app.classList.remove('d-none');
+        })
+
+        newInvoice.addEventListener('click', function(){
+            window.location=`/${cariProduk.dataset.businessId}/cashier`;
+        })
+
+        printBtn.addEventListener('click', function(){
+
+            window.print();
+
+        })
+    });
 </script>
 @endsection

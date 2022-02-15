@@ -92,11 +92,11 @@ class CashierController extends Controller
 
     public function invoiceDetail(Invoice $invoice)
     {
-        
+        $products = $invoice->products;
         $response = [
             'message' => "Berhasil Mengirimkan Data",
             'status' => "Success",
-            'data' => $invoice->products
+            'data' => $invoice,
         ];
 
         try {

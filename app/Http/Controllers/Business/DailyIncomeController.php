@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Business;
 
 use App\Models\Invoice;
 use App\Models\Business;
+use App\Models\Identity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\BusinessBalance;
@@ -30,14 +31,17 @@ class DailyIncomeController extends Controller
                                         ->where('tanggal', Carbon::today()->toDateString())
                                         ->first();
 
-        return view('business.daily-income.index', compact('business', 'invoices','accountReservePayments', 'closing'));
+        $identity = Identity::first();
+
+        return view('business.daily-income.index', compact('business', 'invoices','accountReservePayments', 'closing', 'identity'));
     }
 
     public function cashierDetail(Business $business)
     {
         $invoices = Invoice::where('business_id', $business['id'])->whereDate('updated_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
+        $identity = Identity::first();
 
-        return view('business.daily-income.cashier-detail', compact('business', 'invoices'));
+        return view('business.daily-income.cashier-detail', compact('business', 'invoices','identity'));
     }
 
     public function accountReservePaymentDetail(Business $business)

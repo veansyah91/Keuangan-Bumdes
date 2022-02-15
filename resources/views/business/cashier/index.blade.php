@@ -658,14 +658,16 @@
                     nomorNota: nomorNota.value,
                     namaPelanggan: namaPelanggan.value,
                     products: detailProducts,
-                    total: total,
-                    sisa: sisaBayar,
+                    total: parseInt(total), 
+                    sisa: parseInt(sisaBayar),
                     operator: invoiceSave.dataset.operator
                 }
 
+                
+
                 printStatus
                 ? window.print()
-                : axios.post(`/api/${cariProduk.dataset.businessId}/cashier`, data)
+                : fetchPrintData(`/api/${cariProduk.dataset.businessId}/cashier`, data)
                     .then(res => {
                         printStatus = true;
                         window.print();
@@ -681,6 +683,17 @@
                 
             })
         });
+
+        const fetchPrintData = async (url = '',  data = {}) => {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
 
         window.addEventListener('load', function (){
             let currency = Intl.NumberFormat(['ban', 'id']).format(total);
