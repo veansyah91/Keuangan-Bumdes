@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Business;
 
 use Carbon\Carbon;
 use App\Models\Asset;
+use App\Models\Product;
 use App\Models\Business;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -73,7 +74,7 @@ class DashboardController extends Controller
             $total += $product->modal * $product->stock->jumlah;
         }
 
-        return view('business.dashboard.index', compact('business', 'businessBalance', 'sumAsset', 'stock'));
+        return view('business.dashboard.index', compact('business', 'businessBalance', 'sumAsset', 'total'));
     }
 
     public function cashflow(Business $business)

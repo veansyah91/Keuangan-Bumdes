@@ -56,6 +56,8 @@
                         </div>
                     </div>
 
+                    <hr>
+
                     @if ($business->kategori == 'Retail')
                         <div class="row justify-content-start fs-3 fw-bold mt-2">
                             <div class="col-md-4 col-12">
