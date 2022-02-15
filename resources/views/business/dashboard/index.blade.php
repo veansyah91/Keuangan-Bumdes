@@ -55,6 +55,19 @@
                             : Rp. {{ number_format($sumAsset,0,",",".") }}
                         </div>
                     </div>
+
+                    @if ($business->kategori == 'Retail')
+                        <div class="row justify-content-start fs-3 fw-bold mt-2">
+                            <div class="col-md-4 col-12">
+                                Nilai Stok
+                            </div>
+                            <div class="col-md-8 col-12">
+                                : Rp. {{ number_format($total,0,",",".") }}
+                            </div>
+                        </div>
+                    @endif
+
+                    
                 </div>
             </div>
         </div>

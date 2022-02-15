@@ -58,7 +58,22 @@ class DashboardController extends Controller
             return $query['harga_satuan'] * $query['jumlah_bagus'];
         });
 
-        return view('business.dashboard.index', compact('business', 'businessBalance', 'sumAsset'));
+        $products = Product::query()->whereHas('stock', function($query){
+                        $query->where('jumlah', '>', 0);
+                    })           
+                    ->with('stock')             
+                    ->where('business_id', $business['id'])
+                    ->orderBy('created_at')
+                    ->orderBy('kategori')
+                    ->get();
+
+        $total = 0;
+
+        foreach ($products as $key => $product) {
+            $total += $product->modal * $product->stock->jumlah;
+        }
+
+        return view('business.dashboard.index', compact('business', 'businessBalance', 'sumAsset', 'stock'));
     }
 
     public function cashflow(Business $business)
