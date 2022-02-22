@@ -87,24 +87,34 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3 row">
-                                    <label for="dari" class="col-sm-2 col-form-label">Dari</label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" id="dari" name="dari" value="{{ request('dari') }}">
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Tampilkan Berdasarkan 
+                                </label>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="mb-3 row">
+                                        <label for="dari" class="col-sm-2 col-form-label">Dari</label>
+                                        <div class="col-sm-10">
+                                            <input type="date" class="form-control" id="dari" name="dari" value="{{ request('dari') }}">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3 row">
-                                    <label for="ke" class="col-sm-2 col-form-label">Ke</label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" id="ke" name="ke" value="{{ request('ke') }}">
+                                <div class="col-6">
+                                    <div class="mb-3 row">
+                                        <label for="ke" class="col-sm-2 col-form-label">Ke</label>
+                                        <div class="col-sm-10">
+                                            <input type="date" class="form-control" id="ke" name="ke" value="{{ request('ke') }}">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

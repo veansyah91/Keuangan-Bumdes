@@ -55,11 +55,11 @@ class IdentityController extends Controller
         ]);
 
         if ($request->file('image')) {
-            $validatedData['image'] = $request->file('image')->store('logo-desa');
+            $validatedData['image'] = $request->file('image')->store('public/logo-desa');
         }
 
         if ($request->file('image_bumdes')) {
-            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('logo-usaha');
+            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('public/logo-usaha');
         }
 
         Identity::create([
@@ -136,12 +136,12 @@ class IdentityController extends Controller
 
         if ($request->file('image')) {
             Storage::delete($identity['image']);
-            $validatedData['image'] = $request->file('image')->store('logo-desa');
+            $validatedData['image'] = $request->file('image')->store('public/logo-desa');
         }
 
         if ($request->file('image_bumdes')) {
             Storage::delete($identity['logo_usaha']);
-            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('logo-usaha');
+            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('public/logo-usaha');
         }
 
         $identity->update([

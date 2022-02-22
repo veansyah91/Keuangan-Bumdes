@@ -28,10 +28,8 @@
     </style>
 </head>
 <body>
-    <center>
-        <h2>{{ $identity['nama_desa'] }}</h2>
-        <h4>Kecamatan {{ $identity['nama_kecamatan'] }}, {{ $identity['nama_kabupaten'] }}, {{ $identity['nama_provinsi'] }}</h4>
-    </center>
+    <x-headerreport />
+    
     <center>
         <h2>Laporan Uang Masuk</h2>
 

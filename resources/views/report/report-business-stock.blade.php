@@ -27,9 +27,8 @@
     </style>
 </head>
 <body>
+    <x-headerreport />
     <center>
-        <h2>{{ $identity['nama_desa'] }}</h2>
-        <h4>Kecamatan {{ $identity['nama_kecamatan'] }}, {{ $identity['nama_kabupaten'] }}, {{ $identity['nama_provinsi'] }}</h4>
         <h4>{{ $business['nama'] }}</h4>
     </center>
     <center>
