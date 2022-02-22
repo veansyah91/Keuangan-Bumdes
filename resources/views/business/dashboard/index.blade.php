@@ -29,6 +29,14 @@
                                             Aktivitas
                                         </a>
                                     </li>
+                                    @role('ADMIN')
+                                    <li>
+                                        <button class="dropdown-item btn btn-outline-danger edit-expense" data-bs-toggle="modal" data-bs-target="#updateBalanceModal">
+                                            <i class="bi bi-pencil-square text-success"></i>
+                                            Ubah Saldo
+                                        </button>
+                                    </li>
+                                    @endrole
                                 </ul>
                             </div>
                         </div>
@@ -74,6 +82,35 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <form action="{{ route('business.dashboard.update', [$business->id, $businessBalance['id']]) }}" method="post">
+        @csrf   
+        @method('patch')
+        <div class="modal fade" id="updateBalanceModal" tabindex="-1" aria-labelledby="updateBalanceModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateBalanceModalLabel">Ubah Saldo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <label for="input-balance" class="col-sm-2 col-form-label">Saldo</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" id="input-balance" name="input_balance" value="{{ $businessBalance ? $businessBalance['sisa'] : 0 }}" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Ubah</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 
     
 @endsection

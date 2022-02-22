@@ -243,10 +243,13 @@ Route::group(['middleware' => ['auth']], function(){
     // Route Business 
         // Dashboard Page 
             Route::get('/{business}/dashboard', [DashboardController::class, 'index'])->name('business.dashboard');
+            Route::patch('/{business}/dashboard/{businessBalance}', [DashboardController::class, 'update'])->name('business.dashboard.update');
+
             Route::get('/{business}/dashboard/business-balance-activity', [BusinessBalanceActivityController::class, 'index'])->name('business.business-balance-activity.index');
             Route::post('/{business}/dashboard/business-balance-activity', [BusinessBalanceActivityController::class, 'store'])->name('business.business-balance-activity.store');
             Route::patch('/{business}/dashboard/business-balance-activity/{businessBalanceActivity}', [BusinessBalanceActivityController::class, 'update'])->name('business.business-balance-activity.update');
             Route::delete('/{business}/dashboard/business-balance-activity/{businessBalanceActivity}', [BusinessBalanceActivityController::class, 'delete'])->name('business.business-balance-activity.delete');
+
         // 
 
         // Category Page 

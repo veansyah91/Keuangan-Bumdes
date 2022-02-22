@@ -133,4 +133,13 @@ class DashboardController extends Controller
             return response()->json($th, 500);
         }
     }
+
+    public function update(Business $business, BusinessBalance $businessBalance, Request $request)
+    {
+        $businessBalance->update([
+            'sisa' => $request->input_balance
+        ]);
+
+        return redirect('/' . $business['id'] . '/dashboard')->with('Success', 'Berhasil Mengubah Saldo');
+    }
 }
