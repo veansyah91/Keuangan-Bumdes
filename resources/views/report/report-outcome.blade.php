@@ -28,6 +28,7 @@
     </style>
 </head>
 <body>
+    <x-headerreport />
     <center>
         <h2>{{ $identity['nama_desa'] }}</h2>
         <h4>Kecamatan {{ $identity['nama_kecamatan'] }}, {{ $identity['nama_kabupaten'] }}, {{ $identity['nama_provinsi'] }}</h4>
@@ -62,7 +63,7 @@
                     </tr>
                 @else
                     <tr class="text-center">
-                        <td colspan="5">
+                        <td colspan="3">
                             <i>Data Kosong</i>
                         </td>
                     </tr>

@@ -123,7 +123,7 @@
         </li>     
 
         @php
-            $kategori_harian = ['Retail', 'Restoran'];
+            $kategori_harian = ['Retail', 'Restoran', 'Pulsa'];
             $harian = ['cashier', 'daily-incomes', 'daily-outcomes', 'account-receivable', 'pay-later'];
         @endphp
         

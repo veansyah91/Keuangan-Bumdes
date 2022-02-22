@@ -81,11 +81,12 @@ class DailyOutcomeController extends Controller
             $old = $businessBalance['sisa'] + $businessIncomeActivity['uang_keluar'];
 
             $businessBalance->update([
-                'sisa' => $old - $request->jumlah
+                'sisa' => $old - $request->jumlah,
             ]);
 
             $businessIncomeActivity->update([
-                "uang_keluar" => $request->jumlah
+                "uang_keluar" => $request->jumlah,
+                'tanggal' => $request->tanggal,
             ]);
         }
         

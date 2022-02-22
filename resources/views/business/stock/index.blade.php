@@ -70,9 +70,9 @@
                                                 <td>{{ $stock->product->brand }}</td>
                                                 <td>{{ $stock->product->kategori }}</td>
                                                 <td>{{ $stock->product->pemasok }}</td>
-                                                <td>{{ IncomingItemHelper::getData($stock->incomingitem_id)['nomor_nota'] }}</td>
-                                                <td>{{ IncomingItemHelper::getData($stock->incomingitem_id)['tanggal_nota'] }}</td>
-                                                <td>{{ IncomingItemHelper::getData($stock->incomingitem_id)['tanggal_masuk'] }}</td>
+                                                <td>{{ IncomingItemHelper::getData($stock->incomingitem_id) ? IncomingItemHelper::getData($stock->incomingitem_id)['nomor_nota'] : '' }}</td>
+                                                <td>{{ IncomingItemHelper::getData($stock->incomingitem_id) ? IncomingItemHelper::getData($stock->incomingitem_id)['tanggal_nota'] : ''}}</td>
+                                                <td>{{ IncomingItemHelper::getData($stock->incomingitem_id) ? IncomingItemHelper::getData($stock->incomingitem_id)['tanggal_masuk'] : ''}}</td>
                                                 
                                             </tr>
                                         @endforeach                                    

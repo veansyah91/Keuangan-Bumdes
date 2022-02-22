@@ -22,6 +22,14 @@ class CashierController extends Controller
     {
         $invoice = Invoice::where('business_id', $business['id'])->get()->last();
         $identity = Identity::first();
+
+        if ($business['kategori'] == 'Pulsa') {
+            return view('business.cashier.balance', [
+                'business' => $business,
+                // 'invoice' => $invoice ? $invoice['nomor'] + 1 : 1,
+                // 'identity' => $identity
+            ]);
+        }
         
         return view('business.cashier.index', [
             'business' => $business,

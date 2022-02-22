@@ -26,7 +26,7 @@
 <body>
     <div id="app" class="d-print-none">
         <div class="container">
-            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm" id="nav">
                 <div class="container-fluid">
                     <a class="navbar-brand fs-3 fw-bold" href="{{ url('/') }}">
                         BUMDes
@@ -112,6 +112,12 @@
             </div>
         </div>
         
+    </div>
+
+    <div class="fixed-bottom text-end p-3">
+        <a class="btn btn-secondary rounded-circle btn-lg" href="#nav">
+            <i class="bi bi-arrow-up-circle"></i>
+        </a>
     </div>
 
     <div id="print" class="d-print-block d-none mt-3 mb-2 font-monospace" style="width: 55mm;color:black">

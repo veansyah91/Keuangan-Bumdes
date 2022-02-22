@@ -58,7 +58,6 @@
                             <td class="text-right border">Rp. {{ number_format($asset->jumlah,0,",",".") }}</td>
                         </tr>
                     @endforeach
-
                     <tr>
                         <td colspan="5" class="text-center border" style="font-size: 20px"> 
                             <strong>Jumlah</strong>                            
@@ -69,7 +68,7 @@
                     </tr>
                 @else
                     <tr class="text-center">
-                        <td colspan="5">
+                        <td colspan="6">
                             <i>Data Kosong</i>
                         </td>
                     </tr>

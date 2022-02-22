@@ -14,6 +14,8 @@
                             Pendapatan
                         </div>
                         <div class="col-6 text-end">
+                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-file-spreadsheet-fill"></i>Excel</button>
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#pdfModal"><i class="bi bi-file-pdf-fill"></i>PDF</button>
                             <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-filter"></i>Filter</button>
                         </div>
                     </div>
@@ -47,7 +49,6 @@
                                                         </button>                                                                                                            
                                                     @endif
                                                 @endif
-                                                
                                             </div>
                                         </div>
                                         <div class="w-50">
@@ -124,6 +125,8 @@
                     <div class="modal-header">
                         <input type="hidden" id="date" name="tanggal" class="date">
                         <input type="hidden" id="amount" name="jumlah" class="amount">
+                        <input type="hidden" id="dari" name="dari" value="{{ $tanggalAkhir }}">
+                        <input type="hidden" id="ke" name="ke" value="{{ $tanggalSekarang }}">
                         <h3 class="modal-title text-center" id="saveModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
                     </div>
                     <div class="modal-footer">
@@ -135,26 +138,7 @@
         </div>
     </form>
 
-    {{-- Update Modal --}}
-    <form method="post" action="{{ route('business.business-income.update-business-balance', $business->id) }}">
-        @csrf
-        @method('patch')
-        <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <input type="hidden" id="date" name="tanggal">
-                        <input type="hidden" id="amount" name="jumlah">
-                        <h3 class="modal-title text-center" id="updateModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary" id="submit-update-button">Simpan</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+
 
 @endsection
 

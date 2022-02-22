@@ -18,10 +18,16 @@
                 </div>
                 <div class="mb-3 row">
                     <label for="ketua" class="col-sm-3 col-form-label">Ketua BUMDes</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-9 my-auto">
                         <input type="text" class="form-control @error('ketua') is-invalid @enderror" id="ketua" name="ketua" value="{{ old('ketua') }}">
                     </div>
-                </div>                
+                </div>     
+                <div class="mb-3 row">
+                    <label for="nama-bumdes" class="col-sm-3 col-form-label">Nama BUMDes</label>
+                    <div class="col-sm-9 my-auto">
+                        <input type="text" class="form-control @error('nama_bumdes') is-invalid @enderror" id="nama-bumdes" name="nama_bumdes" value="{{ old('nama_bumdes') }}">
+                    </div>
+                </div>            
                 <div class="mb-3 row">
                     <label for="desa" class="col-sm-3 col-form-label">Desa</label>
                     <div class="col-sm-9">
@@ -53,21 +59,50 @@
                     <div class="col-sm-9">
                         <input type="text" class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" value="{{ old('provinsi') }}">
                     </div>
-                </div>                
+
+                </div>   
                 <div class="mb-3 row">
                     <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat" value="{{ old('alamat') }}">
                     </div>
+                </div>     
+                <div class="mb-3 row">
+                    <label for="kode-pos" class="col-sm-3 col-form-label">Kode Pos</label>
+                    <div class="col-sm-9">
+                        <input type="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" id="kode-pos" name="kode_pos" value="{{ old('kode_pos') }}">
+                    </div>
+                </div>  
+                <div class="mb-3 row">
+                    <label for="hp" class="col-sm-3 col-form-label">Nomor HP Desa</label>
+                    <div class="col-sm-9 my-auto">
+                        <input type="text" class="form-control @error('hp') is-invalid @enderror" id="hp" name="hp" value="{{ old('hp') }}">
+                    </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="image" class="col-sm-3 col-form-label">Logo Desa</label>
+                    <label for="email" class="col-sm-3 col-form-label">Email</label>
                     <div class="col-sm-9">
-                        <input type="file" class="form-control" id="image" name="image" onchange="previewImage()">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}">
+                    </div>
+                </div>                
+                <div class="mb-3 row">
+                    <label for="image" class="col-sm-3 col-form-label">Logo Kabupaten</label>
+                    <div class="col-sm-9">
+                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" onchange="previewImage()">
                     </div>
                 </div>
                 <div class="mb-2 row">
-                    <img class="img-preview img-fluid">
+                    <img class="img-preview img-fluid w-50">
+                </div>
+                <div class="mb-3 row">
+                    <label for="image-bumdes" class="col-sm-3 col-form-label">Logo Bumdes</label>
+                    <div class="col-sm-9">
+                        <input type="file" class="form-control @error('image_bumdes') is-invalid @enderror" id="image-bumdes" name="image_bumdes" onchange="previewImageBumdes()">
+                    </div>
+                    
+                </div>
+                <div class="mb-2 row">
+                    <img class="img-bumdes-preview img-fluid w-50">
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
@@ -192,6 +227,16 @@
 
             imgPreview.src = srcImage;
         }       
+        function previewImageBumdes() {
+            const image = document.querySelector('#image-bumdes');
+            const imgPreview = document.querySelector('.img-bumdes-preview');
+
+            imgPreview.style.display = 'block';
+
+            const srcImage = URL.createObjectURL(image.files[0]);
+
+            imgPreview.src = srcImage;
+        }     
 
 
         window.addEventListener('load',async function (){

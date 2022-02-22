@@ -22,7 +22,13 @@
                     <div class="col-sm-9 my-auto">
                         <input type="text" class="form-control @error('ketua') is-invalid @enderror" id="ketua" name="ketua" value="{{ old('ketua', $identity['ketua']) }}">
                     </div>
-                </div>                
+                </div>          
+                <div class="mb-3 row">
+                    <label for="nama-bumdes" class="col-sm-3 col-form-label">Nama BUMDes</label>
+                    <div class="col-sm-9 my-auto">
+                        <input type="text" class="form-control @error('nama_bumdes') is-invalid @enderror" id="nama-bumdes" name="nama_bumdes" value="{{ old('nama_bumdes', $identity['nama_bumdes']) }}">
+                    </div>
+                </div>       
                 <div class="mb-3 row">
                     <label for="desa" class="col-sm-3 col-form-label">Desa</label>
                     <div class="col-sm-9">
@@ -62,13 +68,40 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="image" class="col-sm-3 col-form-label">Logo Desa</label>
+                    <label for="kode-pos" class="col-sm-3 col-form-label">Kode Pos</label>
                     <div class="col-sm-9">
-                        <input type="file" class="form-control" id="image" name="image" onchange="previewImage()">
+                        <input type="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" id="kode-pos" name="kode_pos" value="{{ old('kode_pos', $identity['kode_pos']) }}">
+                    </div>
+                </div>  
+                <div class="mb-3 row">
+                    <label for="hp" class="col-sm-3 col-form-label">Nomor HP Desa</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control @error('no_hp') is-invalid @enderror" id="hp" name="no_hp" value="{{ old('no_hp', $identity['no_hp']) }}">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="email" class="col-sm-3 col-form-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $identity['email']) }}">
+                    </div>
+                </div>              
+                <div class="mb-3 row">
+                    <label for="image" class="col-sm-3 col-form-label">Logo Kabupaten</label>
+                    <div class="col-sm-9">
+                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" onchange="previewImage()">
                     </div>
                 </div>
                 <div class="mb-2 row">
-                    <img class="img-preview img-fluid" @if ($identity['image']) src="{{ asset('storage/' . $identity['image']) }}" @endif >
+                    <img class="img-preview img-fluid w-50" @if ($identity['image']) src="{{ asset('storage/' . $identity['image']) }}" @endif >
+                </div>
+                <div class="mb-3 row">
+                    <label for="image" class="col-sm-3 col-form-label">Logo Bumdes</label>
+                    <div class="col-sm-9">
+                        <input type="file" class="form-control @error('image_bumdes') is-invalid @enderror" id="image-bumdes" name="image_bumdes" onchange="previewImageBumdes()">
+                    </div>
+                </div>
+                <div class="mb-2 row">
+                    <img class="img-bumdes-preview img-fluid w-50" @if ($identity['logo_usaha']) src="{{ asset('storage/' . $identity['logo_usaha']) }}" @endif >
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
@@ -193,6 +226,16 @@
 
             imgPreview.src = srcImage;
         }       
+        function previewImageBumdes() {
+            const image = document.querySelector('#image-bumdes');
+            const imgPreview = document.querySelector('.img-bumdes-preview');
+
+            imgPreview.style.display = 'block';
+
+            const srcImage = URL.createObjectURL(image.files[0]);
+
+            imgPreview.src = srcImage;
+        }   
 
 
         window.addEventListener('load',async function (){

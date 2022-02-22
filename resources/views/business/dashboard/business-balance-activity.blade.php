@@ -86,6 +86,10 @@
                                 @endif
                             </tbody>
                         </table>
+
+                        <div class="d-flex justify-content-end x-overflow-auto">
+                            {{ $businessBalanceActivities->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

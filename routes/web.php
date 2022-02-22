@@ -428,7 +428,7 @@ Route::group(['middleware' => ['auth']], function(){
                 $expenses = ($tanggal_awal && $tanggal_akhir) ? 
                             BusinessExpense::where('business_id', $business['id'])->whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->orderBy('tanggal_keluar', 'asc')->get()
                             : BusinessExpense::where('business_id', $business['id'])->orderBy('tanggal_keluar', 'asc')->get();
-        
+                            
                 try {
                     $pdf = PDF::loadview('report.report-business-expense', [
                                                                     'expenses' => $expenses,

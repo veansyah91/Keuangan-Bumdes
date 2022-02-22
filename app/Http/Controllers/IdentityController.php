@@ -41,16 +41,25 @@ class IdentityController extends Controller
         $validatedData = $request->validate([
             'kepala_desa' => 'required',
             'ketua' => 'required',
+            'nama_bumdes' => 'required',
             'desa' => 'required',
             'kecamatan' => 'required',
             'kabupaten' => 'required',
             'provinsi' => 'required',
             'alamat' => 'required',
+            'kode_pos' => 'required',
+            'hp' => 'required',
+            'email' => 'required|email',
             'image' => 'image|file|max:2048',
+            'image_bumdes' => 'image|file|max:2048',
         ]);
 
         if ($request->file('image')) {
             $validatedData['image'] = $request->file('image')->store('logo-desa');
+        }
+
+        if ($request->file('image_bumdes')) {
+            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('logo-usaha');
         }
 
         Identity::create([
@@ -62,6 +71,11 @@ class IdentityController extends Controller
             'kepala_desa' => strtoupper($validatedData['kepala_desa']),
             'ketua' => strtoupper($validatedData['ketua']),
             'image' => $request->file('image') ? $validatedData['image'] : '',
+            'logo_usaha' => $request->file('image_bumdes') ? $validatedData['image_bumdes'] : '',
+            'nama_bumdes' => strtoupper($validatedData['nama_bumdes']),
+            'email' => $validatedData['email'],
+            'no_hp' => $validatedData['hp'],
+            'kode_pos' => $validatedData['kode_pos'],
         ]);
 
         return redirect('/identity');
@@ -104,17 +118,30 @@ class IdentityController extends Controller
         $validatedData = $request->validate([
             'kepala_desa' => 'required',
             'ketua' => 'required',
+            'nama_bumdes' => 'required',
             'desa' => 'required',
             'kecamatan' => 'required',
             'kabupaten' => 'required',
             'provinsi' => 'required',
             'alamat' => 'required',
+            'kode_pos' => 'required',
+            'no_hp' => 'required',
+            'email' => 'required|email',
             'image' => 'image|file|max:2048',
+            'image_bumdes' => 'image|file|max:2048',
         ]);
+
+        $oldImage = $identity['image'];
+        $oldImageBumdes = $identity['image_bumdes'];
 
         if ($request->file('image')) {
             Storage::delete($identity['image']);
             $validatedData['image'] = $request->file('image')->store('logo-desa');
+        }
+
+        if ($request->file('image_bumdes')) {
+            Storage::delete($identity['logo_usaha']);
+            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('logo-usaha');
         }
 
         $identity->update([
@@ -125,7 +152,12 @@ class IdentityController extends Controller
             'alamat' => strtoupper($validatedData['alamat']),
             'kepala_desa' => strtoupper($validatedData['kepala_desa']),
             'ketua' => strtoupper($validatedData['ketua']),
-            'image' => $request->file('image') ? $validatedData['image'] : '',
+            'image' => $request->file('image') ? $validatedData['image'] : $oldImage,
+            'logo_usaha' => $request->file('image_bumdes') ? $validatedData['image_bumdes'] : $oldImageBumdes,
+            'nama_bumdes' => strtoupper($validatedData['nama_bumdes']),
+            'email' => $validatedData['email'],
+            'no_hp' => $validatedData['no_hp'],
+            'kode_pos' => $validatedData['kode_pos'],
         ]);
 
         return redirect('/identity');

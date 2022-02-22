@@ -62,7 +62,7 @@
                     </tr>
                 @else
                     <tr class="text-center">
-                        <td colspan="5">
+                        <td colspan="3">
                             <i>Data Kosong</i>
                         </td>
                     </tr>

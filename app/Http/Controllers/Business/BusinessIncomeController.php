@@ -35,7 +35,7 @@ class BusinessIncomeController extends Controller
             $tanggal[$i] = date('Y-m-d', strtotime('-' . $i . 'days', strtotime($tanggalSekarang)));
         }
 
-        return view('business.business-income.index', compact('business', 'tanggal'));
+        return view('business.business-income.index', compact('business', 'tanggal', 'tanggalSekarang', 'tanggalAkhir'));
     }
 
     public function updateBusinessBalance(Business $business, Request $request)
@@ -44,7 +44,7 @@ class BusinessIncomeController extends Controller
         $balance = BusinessBalance::where('business_id', $business['id'])->first();
 
         // cek apakah sudah diinput
-        $closing = ClosingIncomeActivity::where('tanggal', $request->tanggal)->first();
+        $closing = ClosingIncomeActivity::where('business_id', $business['id'])->where('tanggal', $request->tanggal)->first();
 
         if ($closing) {
             $old = $balance['sisa'] - $closing['jumlah'];
@@ -57,12 +57,27 @@ class BusinessIncomeController extends Controller
                 'jumlah' => $request->jumlah
             ]);
 
-            BusinessBalanceActivity::where('tanggal', $request->tanggal)->where('uang_masuk', '>', 0)->first()->update([
-                'uang_masuk' => $request->jumlah,
-            ]);
+            $activity = BusinessBalanceActivity::where('tanggal', $request->tanggal)
+                                                ->where('uang_masuk', '>', 0)
+                                                ->first();
 
-            
-        } else {
+            if ($activity) {
+                $activity->update([
+                    'uang_masuk' => $request->jumlah,
+                ]);
+            } else {
+                BusinessBalanceActivity::create([
+                    'business_balance_id' => $balance['id'],
+                    'tanggal' => $request->tanggal,
+                    'uang_masuk' => $request->jumlah,
+                    'uang_keluar' => 0,
+                    'business_expense_id' => null,
+                    'keterangan' => 'Uang Masuk Harian',
+                    'closing_income_activity_id' => $closing['id']
+                ]);
+            }
+        } 
+        else {
             $closing = ClosingIncomeActivity::create([
                 'tanggal' => $request->tanggal,
                 'business_id' => $business['id'],
@@ -74,33 +89,22 @@ class BusinessIncomeController extends Controller
                 $balance->update([
                     'sisa' => $old + $request->jumlah
                 ]);
-    
-                $businessBalanceActivity = BusinessBalanceActivity::create([
-                    'business_balance_id' => $balance['id'],
-                    'tanggal' => $request->tanggal,
-                    'uang_masuk' => $request->jumlah,
-                    'uang_keluar' => 0,
-                    'business_expense_id' => null,
-                    'keterangan' => 'Uang Masuk Harian',
-                    'closing_income_activity_id' => $closing['id']
-                ]);
                 
             } else {
                 $balance = BusinessBalance::create([
                     'business_id' => $business['id'],
                     'sisa' => $request->jumlah,
                 ]);
-    
-                $businessBalanceActivity = BusinessBalanceActivity::create([
-                    'business_balance_id' => $balance['id'],
-                    'tanggal' => $request->tanggal,
-                    'uang_masuk' => $request->jumlah,
-                    'uang_keluar' => 0,
-                    'business_expense_id' => null,
-                    'keterangan' => 'Uang Masuk Harian',
-                    'closing_income_activity_id' => $closing['id']
-                ]);
             }
+            $businessBalanceActivity = BusinessBalanceActivity::create([
+                'business_balance_id' => $balance['id'],
+                'tanggal' => $request->tanggal,
+                'uang_masuk' => $request->jumlah,
+                'uang_keluar' => 0,
+                'business_expense_id' => null,
+                'keterangan' => 'Uang Masuk Harian',
+                'closing_income_activity_id' => $closing['id']
+            ]);
         }
 
         return redirect('/' . $business['id'] . '/business-income?dari=' . $request->dari . '&ke=' . $request->ke)->with('Success', 'Berhasil Memperbaharui Kas');
