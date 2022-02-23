@@ -69,13 +69,13 @@
                 </div>
                 <div class="mb-3 row">
                     <label for="kode-pos" class="col-sm-3 col-form-label">Kode Pos</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-9 my-auto">
                         <input type="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" id="kode-pos" name="kode_pos" value="{{ old('kode_pos', $identity['kode_pos']) }}">
                     </div>
                 </div>  
                 <div class="mb-3 row">
                     <label for="hp" class="col-sm-3 col-form-label">Nomor HP Desa</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-9 my-auto">
                         <input type="text" class="form-control @error('no_hp') is-invalid @enderror" id="hp" name="no_hp" value="{{ old('no_hp', $identity['no_hp']) }}">
                     </div>
                 </div>
@@ -86,13 +86,13 @@
                     </div>
                 </div>              
                 <div class="mb-3 row">
-                    <label for="image" class="col-sm-3 col-form-label">Logo Kabupaten</label>
-                    <div class="col-sm-9">
+                    <label for="image" class="col-sm-3 col-form-label">Logo Daerah</label>
+                    <div class="col-sm-9 my-auto">
                         <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" onchange="previewImage()">
                     </div>
                 </div>
                 <div class="mb-2 row">
-                    <img class="img-preview img-fluid w-50" @if ($identity['image']) src="{{ asset('storage/' . $identity['image']) }}" @endif >
+                    <img class="img-preview img-fluid w-50" @if ($identity['image']) src="{{ asset( $identity['image']) }}" @endif >
                 </div>
                 <div class="mb-3 row">
                     <label for="image" class="col-sm-3 col-form-label">Logo Bumdes</label>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <div class="mb-2 row">
-                    <img class="img-bumdes-preview img-fluid w-50" @if ($identity['logo_usaha']) src="{{ asset('storage/' . $identity['logo_usaha']) }}" @endif >
+                    <img class="img-bumdes-preview img-fluid w-50" @if ($identity['logo_usaha']) src="{{ asset( $identity['logo_usaha']) }}" @endif >
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>

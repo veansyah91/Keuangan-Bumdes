@@ -39,7 +39,7 @@
                             @if ($identity['image'])
                                 <div class="col-md-6 col-12 text-center my-auto">
                                     <div>
-                                        <img src="{{ asset('storage/' . $identity['image']) }}" alt="logo_desa" class="img-fluid mt-2 w-md-25 w-50 p-3" alt="logo-kabupaten">
+                                        <img src="{{ asset($identity['image']) }}" alt="logo_desa" class="img-fluid mt-2 w-md-25 w-50 p-3" alt="logo-kabupaten">
                                         <div class="my-auto fw-bold fst-italic  d-sm-block d-md-none">
                                             Logo Kabupaten
                                         </div>
@@ -50,7 +50,7 @@
                             @if ($identity['logo_usaha'])
                                 <div class="col-md-6 col-12 text-center my-auto">
                                     <div class="my-auto">
-                                        <img src="{{ asset('storage/' . $identity['logo_usaha']) }}" alt="logo_usaha" class="img-fluid mt-2 w-md-25 w-50 p-3" alt="logo_usaha">
+                                        <img src="{{ asset($identity['logo_usaha']) }}" alt="logo_usaha" class="img-fluid mt-2 w-md-25 w-50 p-3" alt="logo_usaha">
                                         <div class="my-auto fw-bold fst-italic  d-sm-block d-md-none">
                                             Logo BUMDes
                                         </div>
