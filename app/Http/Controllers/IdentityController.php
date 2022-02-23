@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Identity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use File;
 
 class IdentityController extends Controller
 {
@@ -55,11 +56,11 @@ class IdentityController extends Controller
         ]);
 
         if ($request->file('image')) {
-            $validatedData['image'] = $request->file('image')->store('public/logo-desa');
+            $validatedData['image'] = $request->file('image')->move('images/logo-provinsi/', $request->file('image')->getClientOriginalName());
         }
 
         if ($request->file('image_bumdes')) {
-            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('public/logo-usaha');
+            $validatedData['image_bumdes'] = $request->file('image_bumdes')->move('images/logo-bumdes/', $request->file('image_bumdes')->getClientOriginalName());
         }
 
         Identity::create([
@@ -136,12 +137,17 @@ class IdentityController extends Controller
 
         if ($request->file('image')) {
             Storage::delete($identity['image']);
-            $validatedData['image'] = $request->file('image')->store('public/logo-desa');
+            File::delete($identity['image']);
+            // $validatedData['image'] = $request->file('image')->store('logo-desa');
+            $validatedData['image'] = $request->file('image')->move('images/logo-provinsi/', $request->file('image')->getClientOriginalName());
+
         }
 
         if ($request->file('image_bumdes')) {
-            Storage::delete($identity['logo_usaha']);
-            $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('public/logo-usaha');
+            // Storage::delete($identity['logo_usaha']);
+            File::delete($identity['logo_usaha']);
+            // $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('logo-usaha');
+            $validatedData['image_bumdes'] = $request->file('image_bumdes')->move('images/logo-bumdes/', $request->file('image_bumdes')->getClientOriginalName());
         }
 
         $identity->update([
