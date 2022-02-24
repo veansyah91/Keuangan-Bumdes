@@ -2,7 +2,7 @@
     <table style="width: 100%; border-bottom: 2px solid black">
         <tr style="">
             <td style="width: 20%; text-align:center">
-                <img src="{{ public_path('storage/' . $identity['image']) }}" alt="logo-kabupaten" style="width: 50%">
+                <img src="{{ public_path($identity['image']) }}" alt="logo-kabupaten" style="width: 50%">
             </td>
             <td style="width: 60%; text-align:center;">
                 <div style="font-weight: bold;font-size: 20px">
@@ -22,7 +22,7 @@
                 </div>
             </td>
             <td style="width: 20%; text-align:center">
-                <img src="{{ public_path('storage/' . $identity['logo_usaha']) }}" alt="logo-bumdes" style="width: 70%">
+                <img src="{{ public_path($identity['logo_usaha']) }}" alt="logo-bumdes" style="width: 70%">
             </td>
         </tr>
     </table>

@@ -16,6 +16,9 @@ class BusinessIncomeController extends Controller
     {
         $tanggalSekarang = $request->ke;
         $tanggalAkhir = $request->dari;
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $berdasarkan = $request->berdasarkan;
         
         if (!$request->ke)
         {
@@ -35,7 +38,25 @@ class BusinessIncomeController extends Controller
             $tanggal[$i] = date('Y-m-d', strtotime('-' . $i . 'days', strtotime($tanggalSekarang)));
         }
 
-        return view('business.business-income.index', compact('business', 'tanggal', 'tanggalSekarang', 'tanggalAkhir'));
+        if ($request->berdasarkan == 'month') {
+            $tmp = [];
+            $i = 0;
+            $tanggalSekarang = Date($request->tahun . '-' . $request->bulan . '-01');
+
+            do {
+                $tmp[$i] = date('Y-m-d', strtotime('+' . $i . 'days', strtotime($tanggalSekarang)));
+                $dt = Carbon::parse($tmp[$i]);
+                $i++;
+            } while ($dt->month <= $request->bulan);
+
+            $reverseTmp = array_reverse($tmp);
+            array_splice($reverseTmp, 0, 1);
+            $tanggal = $reverseTmp;
+        }
+
+        $tanggalAkhir = $tanggal[0];
+        
+        return view('business.business-income.index', compact('business', 'tanggal', 'tanggalSekarang', 'tanggalAkhir', 'bulan', 'tahun', 'berdasarkan'));
     }
 
     public function updateBusinessBalance(Business $business, Request $request)

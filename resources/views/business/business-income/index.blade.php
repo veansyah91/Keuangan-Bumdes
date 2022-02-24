@@ -15,8 +15,8 @@
                         </div>
                         <div class="col-6 text-end">
                             <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-file-spreadsheet-fill"></i>Excel</button>
-                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#pdfModal"><i class="bi bi-file-pdf-fill"></i>PDF</button>
-                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-filter"></i>Filter</button>
+                            <a href="{{ url('/' . $business->id . '/business-income/pdf?berdasarkan=' . $berdasarkan . '&dari=' . $tanggalAkhir . '&ke=' . $tanggalSekarang. '&bulan=' . $bulan . '&tahun=' . $tahun) }}" class="btn btn-outline-danger"><i class="bi bi-file-pdf-fill"></i>PDF</a>
+                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal" id="select-filter"><i class="bi bi-filter"></i>Filter</button>
                         </div>
                     </div>
                 </div>
@@ -87,29 +87,66 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    Tampilkan Berdasarkan 
-                                </label>
-                            </div>
-    
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="mb-3 row">
-                                        <label for="dari" class="col-sm-2 col-form-label">Dari</label>
-                                        <div class="col-sm-10">
-                                            <input type="date" class="form-control" id="dari" name="dari" value="{{ request('dari') }}">
-                                        </div>
+                        <div class="row border-bottom mb-3">
+                            <div class="col-12">
+                                <div class="mb-3 row">
+                                    <label for="berdasarkan" class="col-sm-3 col-form-label">Berdasarkan</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" aria-label="berdasarkan" id="berdasarkan" name="berdasarkan">
+                                            <option value="date">Tanggal</option>
+                                            <option value="month">Bulan</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="mb-3 row">
-                                        <label for="ke" class="col-sm-2 col-form-label">Ke</label>
-                                        <div class="col-sm-10">
-                                            <input type="date" class="form-control" id="ke" name="ke" value="{{ request('ke') }}">
-                                        </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="by-date">
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="dari" class="col-sm-2 col-form-label">Dari</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="dari" name="dari" value="{{ request('dari') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="ke" class="col-sm-2 col-form-label">Ke</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="ke" name="ke" value="{{ request('ke') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @php
+                            $year = intval(Date('Y'));
+                            $month = intval(Date('m'));
+                        @endphp
+
+                        <div class="row d-none" id="by-month">
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="bulan" class="col-sm-3 col-form-label">Bulan</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" aria-label="Default select example" id="bulan" name="bulan">
+                                            @for ($i = 1; $i < 13; $i++)
+                                                <option value={{ $i }}>{{ MonthHelper::index($i) }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label for="bulan" class="col-sm-3 col-form-label">Tahun</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" aria-label="Default select example" id="bulan" name="tahun">
+                                            @for ($i = $year; $i > $year - 10; $i--)
+                                                <option value={{ $i }}>{{ $i }}</option>
+                                            @endfor
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -135,8 +172,8 @@
                     <div class="modal-header">
                         <input type="hidden" id="date" name="tanggal" class="date">
                         <input type="hidden" id="amount" name="jumlah" class="amount">
-                        <input type="hidden" id="dari" name="dari" value="{{ $tanggalAkhir }}">
-                        <input type="hidden" id="ke" name="ke" value="{{ $tanggalSekarang }}">
+                        <input type="hidden" name="dari" value="{{ $tanggalAkhir }}">
+                        <input type="hidden" name="ke" value="{{ $tanggalSekarang }}">
                         <h3 class="modal-title text-center" id="saveModalLabel">Anda Yakin Simpan Kelas Kas?</h3>
                     </div>
                     <div class="modal-footer">
@@ -147,9 +184,6 @@
             </div>
         </div>
     </form>
-
-
-
 @endsection
 
 @section('script')
@@ -158,6 +192,33 @@
     const saveBalances = Array.from(document.getElementsByClassName('save-balance'));
     const date = document.getElementsByClassName('date');
     const amount = document.getElementsByClassName('amount');
+
+    const byDate = document.getElementById('by-date');
+    const byMonth = document.getElementById('by-month');
+    const berdasarkan = document.getElementById('berdasarkan');
+    const bulan = document.getElementById('bulan');
+    const tahun = document.getElementById('tahun');
+
+    function setDefault() {
+        
+        if (berdasarkan.value == 'date') {
+            byDate.classList.remove('d-none');
+            byMonth.classList.add('d-none');
+        }
+        else {
+            byDate.classList.add('d-none');
+            byMonth.classList.remove('d-none');
+
+            const d = new Date();
+            let thisMonth = d.getMonth() + 1;
+
+            bulan.value = thisMonth;
+        }
+    }
+
+    berdasarkan.addEventListener('change', function(){
+        setDefault();
+    })
 
     saveBalances.map(saveBalance => {
         saveBalance.addEventListener('click', function(){
@@ -172,6 +233,11 @@
             date[1].value = updateBalance.dataset.date;
             amount[1].value = updateBalance.dataset.amount;
         })
+    })
+
+    window.addEventListener('load', function() {
+        setDefault();
+        
     })
 
 </script>

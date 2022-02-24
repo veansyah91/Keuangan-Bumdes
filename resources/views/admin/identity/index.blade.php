@@ -39,9 +39,9 @@
                             @if ($identity['image'])
                                 <div class="col-md-6 col-12 text-center my-auto">
                                     <div>
-                                        <img src="{{ asset($identity['image']) }}" alt="logo_desa" class="img-fluid mt-2 w-md-25 w-50 p-3" alt="logo-kabupaten">
+                                        <img src="{{ asset($identity['image']) }}" alt="logo_daerah" class="img-fluid mt-2 w-md-25 w-50 p-3" alt="logo-kabupaten">
                                         <div class="my-auto fw-bold fst-italic  d-sm-block d-md-none">
-                                            Logo Kabupaten
+                                            Logo Daerah
                                         </div>
                                     </div>
                                 </div>

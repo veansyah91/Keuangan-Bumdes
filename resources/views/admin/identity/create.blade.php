@@ -69,7 +69,7 @@
                 </div>     
                 <div class="mb-3 row">
                     <label for="kode-pos" class="col-sm-3 col-form-label">Kode Pos</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-9 my-auto">
                         <input type="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" id="kode-pos" name="kode_pos" value="{{ old('kode_pos') }}">
                     </div>
                 </div>  
@@ -86,7 +86,7 @@
                     </div>
                 </div>                
                 <div class="mb-3 row">
-                    <label for="image" class="col-sm-3 col-form-label">Logo Kabupaten</label>
+                    <label for="image" class="col-sm-3 col-form-label">Logo Daerah</label>
                     <div class="col-sm-9">
                         <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" onchange="previewImage()">
                     </div>

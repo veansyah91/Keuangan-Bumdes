@@ -10,6 +10,10 @@
             text-align:center
         }
 
+        .text-left{
+            text-align:left
+        }
+
         .text-right{
             text-align:right
         }
@@ -47,7 +51,7 @@
                     @foreach ($expenses as $expense)
                         <tr class="text-center">
                             <td class="text-center border">{{ $expense->tanggal_keluar }}</td>
-                            <td class="text-center border">{{ $expense->keterangan }}</td>
+                            <td class="text-left border">{{ strtoupper($expense->keterangan) }}</td>
                             <td class="text-right border">Rp. {{ number_format($expense->jumlah,0,",",".") }}</td>
                         </tr>
                     @endforeach

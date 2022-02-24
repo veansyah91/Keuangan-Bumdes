@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div class="row justify-content-center d-none" id="card-detail">
+    <div class="row justify-content-center d-none mb-3 pb-5" id="card-detail">
         <div class="col-md-8 col-12">
             <div class="card">
                 <div class="card-header fs-4 fw-bold">

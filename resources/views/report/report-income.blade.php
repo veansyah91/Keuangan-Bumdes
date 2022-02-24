@@ -14,6 +14,10 @@
             text-align:right
         }
 
+        .text-left{
+            text-align:left
+        }
+
         table{
             width: 100%;
         }
@@ -46,7 +50,7 @@
                     @foreach ($incomes as $income)
                         <tr class="text-center">
                             <td class="text-center border">{{ $income->tanggal_masuk }}</td>
-                            <td class="text-center border">{{ $income->keterangan }}</td>
+                            <td class="text-left border">{{ strtoupper($income->keterangan) }}</td>
                             <td class="text-right border">Rp. {{ number_format($income->jumlah,0,",",".") }}</td>
                         </tr>
                     @endforeach

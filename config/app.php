@@ -174,6 +174,7 @@ return [
         App\Providers\IdentityHelperServiceProvider::class,
         App\Providers\IncomingItemServiceProvider::class,
         App\Providers\BusinessIncomeServiceProvider::class,
+        App\Providers\MonthServiceProvider::class,
 
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
@@ -242,6 +243,7 @@ return [
         'IdentityHelp' => App\Helpers\IdentityHelper::class,
         'IncomingItemHelper' => App\Helpers\IncomingItemHelper::class,
         'BusinessIncomeHelper' => App\Helpers\BusinessIncomeHelper::class,
+        'MonthHelper' => App\Helpers\MonthHelper::class,
     ],
 
 ];

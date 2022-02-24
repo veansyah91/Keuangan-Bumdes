@@ -14,6 +14,10 @@
             text-align:right
         }
 
+        .text-left{
+            text-align:left
+        }
+
         table{
             width: 100%;
         }
@@ -51,7 +55,7 @@
                         <tr class="text-center">
                             <td class="text-center border">{{ $asset->tanggal_masuk }}</td>
                             <td class="text-center border">{{ $asset->kode }}</td>
-                            <td class="text-center border">{{ $asset->nama_item }}</td>
+                            <td class="text-left border">{{ strtoupper($asset->nama_item) }}</td>
                             <td class="text-right border">Rp. {{ number_format($asset->harga,0,",",".") }}</td>
                             <td class="text-center border">{{ $asset->jumlah_bagus }}</td>
                             <td class="text-right border">Rp. {{ number_format($asset->jumlah,0,",",".") }}</td>

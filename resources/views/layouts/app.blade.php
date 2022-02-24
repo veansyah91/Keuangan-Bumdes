@@ -114,8 +114,8 @@
         
     </div>
 
-    <div class="fixed-bottom text-end p-3">
-        <a class="btn btn-secondary rounded-circle btn-lg" href="#nav">
+    <div class="fixed-bottom text-end p-2 m-2">
+        <a class="btn btn-secondary rounded-circle" href="#nav">
             <i class="bi bi-arrow-up-circle"></i>
         </a>
     </div>

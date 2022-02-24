@@ -7,7 +7,7 @@
 @section('content')
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card mb-5 pb-2 mb-md-0 pb-md-0">
                 <div class="card-header fs-4 fw-bold">{{ __('Kasir') }}</div>
 
                 <div class="card-body">
@@ -106,7 +106,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6 ">
                             <button class="btn btn-lg btn-success disabled" id="bayar-btn" data-bs-toggle="modal" data-bs-target="#bayarModal">Bayar</button>
                         </div>
                     </div>
@@ -232,6 +232,8 @@
 
         const invoicePrint = document.getElementById('invoice-print');
         const invoiceSave = document.getElementById('invoice-save');
+
+        const fixedBottom = Array.from(document.getElementsByClassName('fixed-bottom'));
 
         formSearchInput.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -558,6 +560,10 @@
             const printInvoice = document.getElementById('print');
             let list = '';
 
+            fixedBottom.map(fb => {
+                fb.classList.add('d-none');
+            })
+
             list += `<div class="text-center fw-bold">
                         ${invoicePrint.dataset.businessName}
                     </div>
@@ -646,6 +652,10 @@
                 console.log("batal cetak");
                 printInvoice.classList.add('d-none');
                 app.classList.remove('d-none');
+
+                fixedBottom.map(fb => {
+                fb.classList.remove('d-none');
+            })
             })
 
             newInvoice.addEventListener('click', function(){

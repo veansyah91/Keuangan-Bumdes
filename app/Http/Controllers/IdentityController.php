@@ -132,21 +132,17 @@ class IdentityController extends Controller
             'image_bumdes' => 'image|file|max:2048',
         ]);
 
-        $oldImage = $identity['image'];
-        $oldImageBumdes = $identity['image_bumdes'];
+        $validatedData['image'] = $identity['image'];
+        $validatedData['image_bumdes'] = $identity['logo_usaha'];
 
         if ($request->file('image')) {
-            Storage::delete($identity['image']);
             File::delete($identity['image']);
-            // $validatedData['image'] = $request->file('image')->store('logo-desa');
             $validatedData['image'] = $request->file('image')->move('images/logo-provinsi/', $request->file('image')->getClientOriginalName());
 
         }
 
         if ($request->file('image_bumdes')) {
-            // Storage::delete($identity['logo_usaha']);
             File::delete($identity['logo_usaha']);
-            // $validatedData['image_bumdes'] = $request->file('image_bumdes')->store('logo-usaha');
             $validatedData['image_bumdes'] = $request->file('image_bumdes')->move('images/logo-bumdes/', $request->file('image_bumdes')->getClientOriginalName());
         }
 
@@ -158,8 +154,8 @@ class IdentityController extends Controller
             'alamat' => strtoupper($validatedData['alamat']),
             'kepala_desa' => strtoupper($validatedData['kepala_desa']),
             'ketua' => strtoupper($validatedData['ketua']),
-            'image' => $request->file('image') ? $validatedData['image'] : $oldImage,
-            'logo_usaha' => $request->file('image_bumdes') ? $validatedData['image_bumdes'] : $oldImageBumdes,
+            'image' => $validatedData['image'],
+            'logo_usaha' => $validatedData['image_bumdes'],
             'nama_bumdes' => strtoupper($validatedData['nama_bumdes']),
             'email' => $validatedData['email'],
             'no_hp' => $validatedData['no_hp'],

@@ -14,6 +14,10 @@
             text-align:right
         }
 
+        .text-left{
+            text-align:left
+        }
+
         table{
             width: 100%;
         }
@@ -45,7 +49,7 @@
                     @foreach ($outcomes as $outcome)
                         <tr class="text-center">
                             <td class="text-center border">{{ $outcome->tanggal_keluar }}</td>
-                            <td class="text-center border">{{ $outcome->keterangan }}</td>
+                            <td class="text-left border">{{ strtoupper($outcome->keterangan) }}</td>
                             <td class="text-right border">Rp. {{ number_format($outcome->jumlah,0,",",".") }}</td>
                         </tr>
                     @endforeach

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan product Unit Usaha</title>
+    <title>Laporan Produk Unit Usaha</title>
     <style>
         .text-center{
             text-align:center
@@ -12,6 +12,10 @@
 
         .text-right{
             text-align:right
+        }
+
+        .text-left{
+            text-align:left
         }
 
         table{
@@ -55,10 +59,10 @@
                         <tr class="text-center">
                             <td class="text-center border">{{ $product->created_at->toDateString() }}</td>
                             <td class="text-center border">{{ $product->kode }}</td>
-                            <td class="text-center border">{{ $product->kategori }}</td>
-                            <td class="text-center border">{{ $product->brand }}</td>
-                            <td class="text-center border">{{ $product->pemasok }}</td>
-                            <td class="text-center border">{{ $product->nama_produk }}</td>
+                            <td class="text-center border">{{ strtoupper($product->kategori) }}</td>
+                            <td class="text-center border">{{ strtoupper($product->brand) }}</td>
+                            <td class="text-center border">{{ strtoupper($product->pemasok) }}</td>
+                            <td class="text-center border">{{ strtoupper($product->nama_produk) }}</td>
                             <td class="text-center border">{{ $product->stock->jumlah }}</td>
                             <td class="text-right border">Rp. {{ number_format($product->modal,0,",",".") }}</td>
                             <td class="text-right border">Rp. {{ number_format($product->jual,0,",",".") }}</td>

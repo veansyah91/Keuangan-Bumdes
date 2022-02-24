@@ -2,22 +2,24 @@
 
 use App\Models\Asset;
 use App\Models\Income;
+use App\Models\Invoice;
 use App\Models\Outcome;
 use App\Models\Product;
 use App\Models\Regency;
-use App\Models\Village;
 
+use App\Models\Village;
 use App\Models\Business;
 use App\Models\District;
 use App\Models\Identity;
 use App\Models\Province;
 use App\Exports\AssetExport;
 use App\Exports\StockExport;
+use App\Helpers\MonthHelper;
 use Illuminate\Http\Request;
 use App\Exports\IncomeExport;
+
 use App\Exports\OutcomeExport;
 use App\Imports\RegencyImport;
-
 use App\Imports\VillageImport;
 use App\Imports\DistrictImport;
 use App\Imports\ProvinceImport;
@@ -375,7 +377,7 @@ Route::group(['middleware' => ['auth']], function(){
                                                                 ]);
                     return $pdf->download('Laporan Asset ' . $business['nama'] . '.pdf');
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Terlalu Besar');
+                    abort(503, 'Terjadi Kesalahan');
                 }
                 
             })->name('business.asset.pdf');
@@ -399,6 +401,35 @@ Route::group(['middleware' => ['auth']], function(){
         // Income Page
             Route::get('/{business}/business-income', [BusinessIncomeController::class, 'index'])->name('business.business-income.index');
             Route::patch('/{business}/business-income', [BusinessIncomeController::class, 'updateBusinessBalance'])->name('business.business-income.update-business-balance');
+
+            Route::get('/{business}/business-income/pdf', function(Business $business, Request $request){
+                $identity = Identity::first();
+
+                $invoices = Invoice::where('business_id', $business['id'])
+                                    ->whereDate('created_at', '<=', $request->dari)
+                                    ->whereDate('created_at', '>=', $request->ke)
+                                    ->with('products')
+                                    ->get();
+
+                $param = '';
+                if ($request->berdasarkan == 'date') {
+                    $param = 'Per Tanggal ' . $request->ke . '-' . $request->dari;
+                } else {
+                    $param = 'Per Bulan ' . MonthHelper::index($request->bulan) . ' ' . $request->tahun;
+                }
+                
+                try {
+                    $pdf = PDF::loadview('report.report-business-income', [
+                                                                    'invoices' => $invoices,
+                                                                    'business' => $business,
+                                                                    'identity' => $identity,
+                                                                    'param' => $param,
+                                                                ]);
+                    return $pdf->download('Laporan Penjualan ' . $business['nama'] . '.pdf');
+                } catch (\Throwable $th) {
+                    abort(503, 'Terjadi Kesalahan');
+                }
+            })->name('business.income.pdf');
 
         //
 
