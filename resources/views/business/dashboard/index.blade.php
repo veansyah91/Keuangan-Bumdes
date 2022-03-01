@@ -84,7 +84,7 @@
     </div>
 
     <!-- Modal -->
-    <form action="{{ route('business.dashboard.update', [$business->id, $businessBalance['id']]) }}" method="post">
+    <form action="{{ route('business.dashboard.update-business-balance', [$business->id]) }}" method="post">
         @csrf   
         @method('patch')
         <div class="modal fade" id="updateBalanceModal" tabindex="-1" aria-labelledby="updateBalanceModalLabel" aria-hidden="true">
@@ -109,9 +109,7 @@
                 </div>
             </div>
         </div>
-    </form>
-
-
+    </form>   
     
 @endsection
 

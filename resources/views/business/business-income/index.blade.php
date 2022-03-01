@@ -14,10 +14,25 @@
                             Pendapatan
                         </div>
                         <div class="col-6 text-end">
-                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bi bi-file-spreadsheet-fill"></i>Excel</button>
-                            <a href="{{ url('/' . $business->id . '/business-income/pdf?berdasarkan=' . $berdasarkan . '&dari=' . $tanggalAkhir . '&ke=' . $tanggalSekarang. '&bulan=' . $bulan . '&tahun=' . $tahun) }}" class="btn btn-outline-danger"><i class="bi bi-file-pdf-fill"></i>PDF</a>
+                            <button 
+                                class="btn btn-outline-success"
+                                id="export-excel-btn"
+                                >
+                                <i class="bi bi-file-spreadsheet-fill"></i>
+                                Excel
+                            </button>
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#pdfModal"><i class="bi bi-file-pdf-fill"></i>PDF</button>
                             <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#filterModal" id="select-filter"><i class="bi bi-filter"></i>Filter</button>
                         </div>
+
+                        {{-- to excel  --}}
+                        <form action="{{ route('business.income.excel', $business->id) }}" method="get" id="export-excel-form">
+                            <input type="hidden" name="berdasarkan" value="{{ $berdasarkan }}">
+                            <input type="hidden" name="ke" value="{{ $tanggalSekarang }}">
+                            <input type="hidden" name="dari" value="{{ $tanggalAkhir }}">
+                            <input type="hidden" name="bulan" value="{{ $bulan }}">
+                            <input type="hidden" name="tahun" value="{{ $tahun }}">
+                        </form>
                     </div>
                 </div>
 
@@ -184,6 +199,69 @@
             </div>
         </div>
     </form>
+
+    {{-- PDF Modal --}}
+    <form method="get" action="{{ url('/' . $business->id . '/business-income/pdf?berdasarkan=' . $berdasarkan . '&dari=' . $tanggalAkhir . '&ke=' . $tanggalSekarang. '&bulan=' . $bulan . '&tahun=' . $tahun) }}">
+        <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title text-center" id="pdfModalLabel">Simpan Ke PDF</h3>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="berdasarkan" value="{{ $berdasarkan }}">
+                        <input type="hidden" name="dari" value="{{ $tanggalAkhir }}">
+                        <input type="hidden" name="ke" value="{{ $tanggalSekarang }}">
+                        <input type="hidden" name="bulan" value="{{ $bulan }}">
+                        <input type="hidden" name="tahun" value="{{ $tahun }}">
+                        <div class="fs-5 fw-bold">
+                            Pembuat
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="jabatan-pembuat" class="form-label">Jabatan</label>
+                                    <input type="text" class="form-control" id="jabatan-pembuat" name="jabatan_pembuat" aria-describedby="jabatanPembuatHelp" value="Kepala Unit">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="nama-pembuat" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" id="nama-pembuat" name="nama_pembuat" aria-describedby="namaPembuatHelp">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="fs-5 fw-bold">
+                            Penerima
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="jabatan-penerima" class="form-label">Jabatan</label>
+                                    <input type="text" class="form-control" id="jabatan-penerima" name="jabatan_penerima" aria-describedby="jabatanPenerimaHelp" value="Bendahara BUMDes">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="nama-penerima" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" id="nama-penerima" name="nama_penerima" aria-describedby="namaPenerimaHelp">
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" id="submit-save-button">Export PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 @endsection
 
 @section('script')
@@ -233,6 +311,13 @@
             date[1].value = updateBalance.dataset.date;
             amount[1].value = updateBalance.dataset.amount;
         })
+    })
+
+    const exportExcelBtn = document.getElementById('export-excel-btn');
+    const exportExcelForm = document.getElementById('export-excel-form');
+
+    exportExcelBtn.addEventListener('click', function(){
+        exportExcelForm.submit();
     })
 
     window.addEventListener('load', function() {

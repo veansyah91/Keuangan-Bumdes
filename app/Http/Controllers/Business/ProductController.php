@@ -6,13 +6,20 @@ use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
     public function index(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $pemasok = $request['pemasok'] ? $request['pemasok'] : '';
         $kategori = $request['kategori'] ? $request['kategori'] : '';
         $brand = $request['brand'] ? $request['brand'] : '';
@@ -37,6 +44,11 @@ class ProductController extends Controller
 
     public function create(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $pemasok = $request['pemasok'] ? $request['pemasok'] : '';
         $kategori = $request['kategori'] ? $request['kategori'] : '';
         $brand = $request['brand'] ? $request['brand'] : '';
@@ -54,6 +66,11 @@ class ProductController extends Controller
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $create = Product::create([
             'pemasok' => strtoupper($request->pemasok),
             'brand' => strtoupper($request->brand),
@@ -73,6 +90,11 @@ class ProductController extends Controller
 
     public function update(Business $business, Product $product, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $product->update([
             'pemasok' => strtoupper($request->pemasok),
             'brand' => strtoupper($request->brand),
@@ -91,6 +113,11 @@ class ProductController extends Controller
 
     public function delete(Business $business, Product $product, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $product->delete();
 
         if ($request->page == 'create') {
@@ -101,6 +128,7 @@ class ProductController extends Controller
 
     public function detail(Business $business, Product $product)
     {
+        
         $response = [
             'message' => "Data Telah Tervalidasi",
             'status' => 'Success',

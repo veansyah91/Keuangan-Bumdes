@@ -7,10 +7,13 @@ use App\Models\Asset;
 use App\Models\Product;
 use App\Models\Business;
 use Illuminate\Support\Arr;
+use App\Models\BusinessUser;
 use Illuminate\Http\Request;
 use App\Models\BusinessBalance;
 use App\Models\BusinessExpense;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\ClosingIncomeActivity;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,6 +21,12 @@ class DashboardController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        }
+
         $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
 
         $now = Date('Y-m');
@@ -79,6 +88,7 @@ class DashboardController extends Controller
 
     public function cashflow(Business $business)
     {
+
         $now = Date('Y-m');
 
         $months = [];
@@ -134,11 +144,25 @@ class DashboardController extends Controller
         }
     }
 
-    public function update(Business $business, BusinessBalance $businessBalance, Request $request)
+    public function updateBusinessBalance(Business $business, Request $request)
     {
-        $businessBalance->update([
-            'sisa' => $request->input_balance
-        ]);
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        }
+        $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
+
+        if ($businessBalance) {
+            $businessBalance->update([
+                'sisa' => $request->input_balance
+            ]);
+        } else {
+            BusinessBalance::create([
+                'sisa' => $request->input_balance,
+                'business_id' => $business['id']
+            ]);
+        }
 
         return redirect('/' . $business['id'] . '/dashboard')->with('Success', 'Berhasil Mengubah Saldo');
     }

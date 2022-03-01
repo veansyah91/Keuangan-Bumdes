@@ -5,20 +5,32 @@ namespace App\Http\Controllers\Business;
 use App\Models\Business;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Helpers\BusinessUserHelper;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $categories = Category::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
         return view('business.category.index', compact('business', 'categories'));
     }
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $validatedData = $request->validate([
             'nama' => 'required'
         ]);
@@ -33,6 +45,11 @@ class CategoryController extends Controller
 
     public function delete(Business $business, Category $category)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $category->delete();
 
         return redirect('/' . $business['id'] . '/category')->with('Success', 'Berhasil Menghapus Kategori');;

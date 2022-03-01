@@ -5,13 +5,20 @@ namespace App\Http\Controllers\Business;
 use App\Models\Asset;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AssetController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $assets = Asset::orderBy('created_at', 'desc')
                         ->orderBy('jumlah_bagus')
                         ->where('business_id', $business['id'])
@@ -22,14 +29,16 @@ class AssetController extends Controller
         $sumAsset = $getAsset->sum(function ($query){
             return $query['harga_satuan'] * $query['jumlah_bagus'];
         });
-
-
         return view('business.asset.index', compact('business', 'assets', 'sumAsset'));
     }
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $create = Asset::create([
             'name_item' => $request->nama,
             'harga_satuan' => $request->harga,
@@ -45,6 +54,11 @@ class AssetController extends Controller
 
     public function update(Business $business, Asset $asset, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $asset->update([
             'name_item' => $request->nama,
             'harga_satuan' => $request->harga,
@@ -58,6 +72,11 @@ class AssetController extends Controller
 
     public function delete(Business $business, Asset $asset)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $asset->delete();
         return redirect('/' . $business['id'] . '/asset')->with('Success', 'Berhasil Menghapus Aset');
     }

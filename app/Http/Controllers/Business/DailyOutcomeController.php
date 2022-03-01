@@ -6,6 +6,7 @@ use App\Models\Business;
 use Illuminate\Http\Request;
 use App\Models\BusinessBalance;
 use App\Models\BusinessExpense;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BusinessBalanceActivity;
@@ -16,6 +17,11 @@ class DailyOutcomeController extends Controller
 {
     public function index(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $tanggal_awal = $request['tanggal_awal'];
         $tanggal_akhir = $request['tanggal_akhir'];
 
@@ -28,6 +34,11 @@ class DailyOutcomeController extends Controller
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $user = Auth::user();
         $expense = BusinessExpense::create([
             'keterangan' => $request->keterangan,
@@ -68,6 +79,11 @@ class DailyOutcomeController extends Controller
 
     public function update(Business $business, BusinessExpense $expense, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $expense->update([
             'keterangan' => $request->keterangan,
             'jumlah' => $request->jumlah,
@@ -95,6 +111,11 @@ class DailyOutcomeController extends Controller
 
     public function delete(Business $business, BusinessExpense $expense)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $businessIncomeActivity = BusinessBalanceActivity::where('business_expense_id', $expense['id'])->first();
 
         if ($businessIncomeActivity) {

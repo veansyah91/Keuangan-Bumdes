@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Business;
 use App\Models\Invoice;
 use App\Models\Business;
 use App\Models\Identity;
+use App\Models\BusinessUser;
 use Illuminate\Http\Request;
 use App\Models\AccountReceivable;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountReceivablePayment;
@@ -16,6 +18,11 @@ class AccountReceivableController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        }
         $accountReceivables = AccountReceivable::where('business_id', $business['id'])->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->paginate(10);
         $sumAccountReceivable = AccountReceivable::all()->sum('sisa');
         $identity = Identity::first();
@@ -44,6 +51,11 @@ class AccountReceivableController extends Controller
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        }
         $user = Auth::user();
         AccountReceivablePayment::create([
             'account_receivable_id' => $request->accountReceivable,
@@ -63,6 +75,11 @@ class AccountReceivableController extends Controller
 
     public function payLater(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        }
         $accountReceivables = AccountReceivable::where('business_id', $business['id'])->where('sisa', '>', 0)->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->get();
         $identity = Identity::first();
         return view('business.account-receivable.pay-later', compact('business', 'accountReceivables', 'identity'));
@@ -91,6 +108,7 @@ class AccountReceivableController extends Controller
 
     public function payLaterDetail($id)
     {   
+        
         $accountReceivable = AccountReceivable::find($id);
 
         $invoice = Invoice::find($accountReceivable['invoice_id']);

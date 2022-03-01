@@ -8,15 +8,23 @@ use App\Models\Identity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\BusinessBalance;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\ClosingIncomeActivity;
 use App\Models\BusinessBalanceActivity;
 use App\Models\AccountReceivablePayment;
 
 class DailyIncomeController extends Controller
 {
+     
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        }
         $invoices = Invoice::where('business_id', $business['id'])->whereDate('updated_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
 
         $accountReservePayments = AccountReceivablePayment::whereHas('accountReceivable', function($query) use ($business){
@@ -38,6 +46,11 @@ class DailyIncomeController extends Controller
 
     public function cashierDetail(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $invoices = Invoice::where('business_id', $business['id'])->whereDate('updated_at', Carbon::today()->toDateString())->orderBy('id', 'desc')->get();
         $identity = Identity::first();
 
@@ -46,6 +59,11 @@ class DailyIncomeController extends Controller
 
     public function accountReservePaymentDetail(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $accountReservePayments = AccountReceivablePayment::whereHas('accountReceivable', function($query) use ($business){
                                                             $query->where('business_id', $business['id']);
                                                         })
@@ -59,6 +77,11 @@ class DailyIncomeController extends Controller
 
     public function closingIncome(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $date = Date('Y-m-d');
 
         // cek apakah sudah di closing

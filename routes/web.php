@@ -24,7 +24,10 @@ use App\Imports\VillageImport;
 use App\Imports\DistrictImport;
 use App\Imports\ProvinceImport;
 use App\Models\BusinessExpense;
+use App\Helpers\BusinessUserHelper;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BusinessIncomeExport;
 use Illuminate\Support\Facades\Route;
 use App\Exports\BusinessExpenseExport;
 use App\Http\Controllers\HomeController;
@@ -245,7 +248,7 @@ Route::group(['middleware' => ['auth']], function(){
     // Route Business 
         // Dashboard Page 
             Route::get('/{business}/dashboard', [DashboardController::class, 'index'])->name('business.dashboard');
-            Route::patch('/{business}/dashboard/{businessBalance}', [DashboardController::class, 'update'])->name('business.dashboard.update');
+            Route::patch('/{business}/dashboard/update-business-balance', [DashboardController::class, 'updateBusinessBalance'])->name('business.dashboard.update-business-balance');
 
             Route::get('/{business}/dashboard/business-balance-activity', [BusinessBalanceActivityController::class, 'index'])->name('business.business-balance-activity.index');
             Route::post('/{business}/dashboard/business-balance-activity', [BusinessBalanceActivityController::class, 'store'])->name('business.business-balance-activity.store');
@@ -305,7 +308,11 @@ Route::group(['middleware' => ['auth']], function(){
 
             // Excel
             Route::get('/{business}/stock/excel', function(Business $business){
-
+                $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+                if (!$businessUser) {
+                    return abort(403);
+                } 
                 try {                        
                     return Excel::download(new StockExport($business['id']), 'Laporan Stok Barang ' . $business['nama'] . '.xlsx');
                 } catch (\Throwable $th) {
@@ -355,16 +362,28 @@ Route::group(['middleware' => ['auth']], function(){
 
             // Excel
             Route::get('/{business}/asset/excel', function(Business $business){
+                $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+                if (!$businessUser) {
+                    return abort(403);
+                } 
+
                 try {                        
                     return (new AssetExport($business['id']))->download('Laporan Aset ' . $business['nama'] . '.xlsx');
                 } catch (\Throwable $th) {
-                    abort(403, 'Data Terlalu Besar');
+                    abort(503, 'Terjadi Kesalahan');
                 } 
             })->name('business.asset.excel');
 
             // PDF
             Route::get('/{business}/asset/pdf', function(Business $business){        
                 $identity = Identity::first();
+
+                $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+                if (!$businessUser) {
+                    return abort(403);
+                } 
         
                 $assets = Asset::where('business_id', $business['id'])->select('name_item','harga_satuan','jumlah_bagus', 'tanggal_masuk', 'kode', DB::raw('(jumlah_bagus * harga_satuan) as jumlah'))->get();
         
@@ -397,39 +416,92 @@ Route::group(['middleware' => ['auth']], function(){
 
             //Restoran
             // Route::get('/{business}/daily-incomes/cashier-restaurant', [DailyIncomeController::class, 'cashierRestaurant'])->name('business.daily-income.cashier-restaurant');
+        // 
 
         // Income Page
             Route::get('/{business}/business-income', [BusinessIncomeController::class, 'index'])->name('business.business-income.index');
             Route::patch('/{business}/business-income', [BusinessIncomeController::class, 'updateBusinessBalance'])->name('business.business-income.update-business-balance');
 
-            Route::get('/{business}/business-income/pdf', function(Business $business, Request $request){
-                $identity = Identity::first();
+            // PDF
+                Route::get('/{business}/business-income/pdf', function(Business $business, Request $request){
+                    $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+                    if (!$businessUser) {
+                        return abort(403);
+                    } 
+                    $identity = Identity::first();
 
-                $invoices = Invoice::where('business_id', $business['id'])
-                                    ->whereDate('created_at', '<=', $request->dari)
-                                    ->whereDate('created_at', '>=', $request->ke)
-                                    ->with('products')
-                                    ->get();
+                    $invoices = Invoice::where('business_id', $business['id'])
+                                        ->whereDate('created_at', '<=', $request->dari)
+                                        ->whereDate('created_at', '>=', $request->ke)
+                                        ->with('products')
+                                        ->get();
 
-                $param = '';
-                if ($request->berdasarkan == 'date') {
-                    $param = 'Per Tanggal ' . $request->ke . '-' . $request->dari;
-                } else {
-                    $param = 'Per Bulan ' . MonthHelper::index($request->bulan) . ' ' . $request->tahun;
-                }
-                
-                try {
-                    $pdf = PDF::loadview('report.report-business-income', [
-                                                                    'invoices' => $invoices,
-                                                                    'business' => $business,
-                                                                    'identity' => $identity,
-                                                                    'param' => $param,
-                                                                ]);
-                    return $pdf->download('Laporan Penjualan ' . $business['nama'] . '.pdf');
-                } catch (\Throwable $th) {
-                    abort(503, 'Terjadi Kesalahan');
-                }
-            })->name('business.income.pdf');
+                    $jabatanPembuat = $request->jabatan_pembuat;
+                    $namaPembuat = $request->nama_pembuat;
+                    $jabatanPenerima = $request->jabatan_penerima;
+                    $namaPenerima = $request->nama_penerima;
+
+                    $param = '';
+                    if ($request->berdasarkan == 'month') {
+                        $param = 'Per Bulan ' . MonthHelper::index($request->bulan) . ' ' . $request->tahun;
+                    } else {
+                        $param = 'Per Tanggal ' . $request->ke . ' s.d ' . $request->dari;
+                    }
+
+                    $businessUser = $business;
+                    
+                    try {
+                        $pdf = PDF::loadview('report.report-business-income', [
+                                                                        'invoices' => $invoices,
+                                                                        'business' => $business,
+                                                                        'identity' => $identity,
+                                                                        'jabatanPembuat' => $jabatanPembuat,
+                                                                        'namaPembuat' => $namaPembuat,
+                                                                        'jabatanPenerima' => $jabatanPenerima,
+                                                                        'namaPenerima' => $namaPenerima,
+                                                                        'param' => $param,
+                                                                    ]);
+                        return $pdf->download('Laporan Penjualan ' . $business['nama'] . '.pdf');
+                    } catch (\Throwable $th) {
+                        abort(503, 'Terjadi Kesalahan');
+                    }
+                })->name('business.income.pdf');
+            // 
+
+            // Excel 
+                Route::get('/{business}/business-income/excel', function(Business $business, Request $request){
+                    $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+                    if (!$businessUser) {
+                        return abort(403);
+                    } 
+
+                    $identity = Identity::first();
+
+                    $invoices = Invoice::where('business_id', $business['id'])
+                                        ->whereDate('created_at', '<=', $request->dari)
+                                        ->whereDate('created_at', '>=', $request->ke)
+                                        ->with('products')
+                                        ->get();
+
+                    $param = '';
+
+                    if ($request->berdasarkan == 'date') {
+                        $param = 'Per Tanggal ' . $request->ke . '-' . $request->dari;
+                    } else {
+                        $param = 'Per Bulan ' . MonthHelper::index($request->bulan) . ' ' . $request->tahun;
+                    }
+
+                    return Excel::download(new BusinessIncomeExport($business['id'], $request->dari, $request->ke), 'Laporan Penjualan '. $param . ' ' . $business['nama'] . '.xlsx');
+                    
+                    try {                        
+                        return Excel::download(new BusinessIncomeExport($business['id']), 'Laporan Penjualan '. $param . ' ' . $business['nama'] . '.xlsx');
+                    } catch (\Throwable $th) {
+                        abort(503, 'Terjadi Kesalahan');
+                    } 
+                })->name('business.income.excel');
+            // 
 
         //
 

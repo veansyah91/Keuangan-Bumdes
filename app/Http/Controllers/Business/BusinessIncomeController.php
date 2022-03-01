@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use App\Models\Business;
 use Illuminate\Http\Request;
 use App\Models\BusinessBalance;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\ClosingIncomeActivity;
 use App\Models\BusinessBalanceActivity;
 
@@ -14,6 +16,11 @@ class BusinessIncomeController extends Controller
 {
     public function index(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $tanggalSekarang = $request->ke;
         $tanggalAkhir = $request->dari;
         $bulan = $request->bulan;
@@ -61,6 +68,11 @@ class BusinessIncomeController extends Controller
 
     public function updateBusinessBalance(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         // check saldo 
         $balance = BusinessBalance::where('business_id', $business['id'])->first();
 

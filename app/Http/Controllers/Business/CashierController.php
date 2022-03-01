@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceProduct;
 use App\Models\AccountReceivable;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,11 @@ class CashierController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $invoice = Invoice::where('business_id', $business['id'])->get()->last();
         $identity = Identity::first();
 
@@ -40,6 +46,11 @@ class CashierController extends Controller
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         // cari costomer berdasarkan nama
         $customer = Customer::where('business_id', $business['id'])->where('nama', $request->namaPelanggan)->first();
 
@@ -100,6 +111,11 @@ class CashierController extends Controller
 
     public function invoiceDetail(Invoice $invoice)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $products = $invoice->products;
         $response = [
             'message' => "Berhasil Mengirimkan Data",
@@ -116,6 +132,11 @@ class CashierController extends Controller
 
     public function indexRestaurant(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $identity = Identity::first();
         $invoice = Invoice::where('business_id', $business['id'])->get()->last();
 
@@ -192,6 +213,7 @@ class CashierController extends Controller
 
     public function invoiceUpdate(Invoice $invoice, Request $request)
     {
+        
         $old = $invoice['jumlah'];
 
         $invoice->update([

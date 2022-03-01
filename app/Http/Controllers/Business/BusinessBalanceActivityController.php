@@ -7,6 +7,7 @@ use App\Models\Outcome;
 use App\Models\Business;
 use Illuminate\Http\Request;
 use App\Models\BusinessBalance;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BusinessBalanceActivity;
@@ -16,6 +17,11 @@ class BusinessBalanceActivityController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $businessBalanceActivities = BusinessBalanceActivity::whereHas('businessBalance', function($query) use ($business){
             $query->where('business_id', $business['id']);
         })
@@ -26,6 +32,11 @@ class BusinessBalanceActivityController extends Controller
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $user = Auth::user();
         $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
 
@@ -113,6 +124,11 @@ class BusinessBalanceActivityController extends Controller
 
     public function update(Business $business, BusinessBalanceActivity $businessBalanceActivity, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         // update saldo bisnis
         if ($request->uang_masuk > 0) {
             $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
@@ -150,7 +166,6 @@ class BusinessBalanceActivityController extends Controller
                 'jumlah' => $request->uang_keluar,
                 'tanggal_masuk' => $request->tanggal
             ]);
-
             
         }
 
@@ -166,6 +181,11 @@ class BusinessBalanceActivityController extends Controller
 
     public function delete(Business $business, BusinessBalanceActivity $businessBalanceActivity)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
         
         $old = $businessBalance['sisa'];

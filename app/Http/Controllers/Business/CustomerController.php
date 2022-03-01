@@ -5,20 +5,31 @@ namespace App\Http\Controllers\Business;
 use App\Models\Business;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $customers = Customer::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
         return view('business.customer.index', compact('business', 'customers'));
     }
 
     public function store(Business $business, Request $request)
     {
-
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         // validasi disini 
         $validated = $request->validate([
             'nama' => 'required',
@@ -38,6 +49,11 @@ class CustomerController extends Controller
 
     public function update(Business $business, Customer $customer, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $validated = $request->validate([
             'nama' => 'required',
             'alamat' => 'required',
@@ -55,6 +71,11 @@ class CustomerController extends Controller
 
     public function delete(Business $business, Customer $customer)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $customer->delete();
 
         return redirect('/' . $business['id'] . '/customer')->with('Success', 'Berhasil Menghapus Pelanggan');
@@ -98,6 +119,7 @@ class CustomerController extends Controller
 
     public function search(Business $business, Request $request)
     {
+        
         $customer = Customer::where('business_id', $business['id'])
                             ->where('nama', 'like', '%' . $request->search . '%')
                             ->skip(0)->take(5)

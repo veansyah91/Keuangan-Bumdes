@@ -141,12 +141,12 @@
             <td style="width: 50%" class="text-center">{{ ucwords($identity['nama_desa']) }}, {{ Date('d-m-Y') }}</td>
         </tr>
         <tr>
-            <th style="width: 50%"></th>
-            <th style="width: 50%" class="text-center">Direktur BUMDes</th>
+            <th style="width: 50%" class="text-center">{{ strtoupper($jabatanPenerima) }}</th>
+            <th style="width: 50%">{{ strtoupper($jabatanPembuat) }}</th>
         </tr>
         <tr>
-            <td style="width: 50%"></td>
-            <td style="width: 50%; height: 100px" class="text-center" style="vertical-align: text-bottom">{{ $identity->ketua }}</td>
+            <td style="width: 50%; height: 100px" class="text-center" style="vertical-align: text-bottom">{{ strtoupper($namaPenerima) }}</td>
+            <td style="width: 50%" class="text-center">{{ strtoupper($namaPembuat) }}</td>
         </tr>
     </table>
 </body>

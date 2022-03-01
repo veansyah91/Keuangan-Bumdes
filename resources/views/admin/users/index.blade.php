@@ -138,11 +138,10 @@
                             @role('ADMIN')
                                 <div class="mb-3">
                                     <label for="role" class="form-label fw-bold">Role</label>
-                                    <select class="form-select role" aria-label="roleSelect" name="role">
+                                    <select class="form-select role select-role" aria-label="roleSelect" name="role">
                                         @foreach ($roles as $role)
-                                            <option value="{{ $role->name }}"  onclick="selectRole('{{ $role->name }}')">{{ $role->name }}</option>
+                                            <option value="{{ $role->name }}">{{ $role->name }}</option>
                                         @endforeach
-                                        
                                     </select>
                                 </div>
 
@@ -216,9 +215,9 @@
                         @role('ADMIN')
                             <div class="mb-3">
                                 <label for="role" class="form-label fw-bold">Role</label>
-                                <select class="form-select role" aria-label="roleSelect" name="role">
+                                <select class="form-select role select-role" aria-label="roleSelect" name="role">
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}"  onclick="selectRole('{{ $role->name }}')">{{ $role->name }}</option>
+                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
                                     @endforeach
                                     
                                 </select>
@@ -277,6 +276,7 @@
         const role = Array.from(document.getElementsByClassName('role'));
 
         const businessSection = document.getElementsByClassName('business-section');
+        const selectRoles = Array.from(document.getElementsByClassName('select-role'));
 
         const deleteConfirmation = (id) => {
             const deleteForm = document.getElementById('deleteForm');
@@ -319,19 +319,18 @@
             }
         }
 
-        const selectRole = (roleName) => {
-
-            usaha.map((u,index) => {
-                if (roleName == "ADMIN") {
+        selectRoles.map((selectRole, index) => {
+            selectRole.addEventListener('change', function(){
+                if (selectRole.value == "ADMIN") {
                     businessSection[index].classList.remove('d-block');
                     businessSection[index].classList.add('d-none');
-                    u.value = 0;
+                    usaha[0].value = 0;
                 } else {
                     businessSection[index].classList.add('d-block');
                     businessSection[index].classList.remove('d-none');
                 }
             })
-        }
+        })
 
         window.addEventListener('load', function (){
             

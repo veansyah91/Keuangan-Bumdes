@@ -5,19 +5,31 @@ namespace App\Http\Controllers\Business;
 use App\Models\Brand;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class BrandController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $brands = Brand::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
         return view('business.brand.index', compact('business', 'brands'));
     }
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $validatedData = $request->validate([
             'nama' => 'required'
         ]);
@@ -32,6 +44,11 @@ class BrandController extends Controller
 
     public function delete(Business $business, Brand $brand)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $brand->delete();
 
         return redirect('/' . $business['id'] . '/brand')->with('Success', 'Berhasil Menghapus Brand');

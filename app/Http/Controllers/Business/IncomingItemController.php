@@ -7,13 +7,20 @@ use App\Models\Product;
 use App\Models\Business;
 use App\Models\Incomingitem;
 use Illuminate\Http\Request;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IncomingItemController extends Controller
 {
     public function index(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $incomingItems = Incomingitem::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         
         return view('business.incoming-item.index', compact('business','request','incomingItems'));
@@ -21,6 +28,11 @@ class IncomingItemController extends Controller
 
     public function create(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $pemasok = $request['pemasok'] ?? $request['pemasok'];
         $kategori = $request['kategori'] ?? $request['kategori'];
         $brand = $request['brand'] ?? $request['brand'];
@@ -34,6 +46,11 @@ class IncomingItemController extends Controller
 
     public function store(Business $business, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         // tambah data Incoming Item
         // cek apakah nota sudah pernah dibuat            
 
@@ -84,6 +101,12 @@ class IncomingItemController extends Controller
 
     public function update(Business $business, Stock $stock, Request $request)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
+
         $incomingItem = Incomingitem::find($stock['incomingitem_id']);
         $product = Product::find($stock['product_id']);
 
@@ -148,6 +171,11 @@ class IncomingItemController extends Controller
 
     public function deleteStock(Business $business, Stock $stock)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser) {
+            return abort(403);
+        } 
         $product = Product::find($stock['product_id']);
 
         $incomingItem = IncomingItem::find($stock['incomingitem_id']);
