@@ -17,9 +17,9 @@ class CategoryController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $categories = Category::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
         return view('business.category.index', compact('business', 'categories'));
     }
@@ -28,9 +28,9 @@ class CategoryController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $validatedData = $request->validate([
             'nama' => 'required'
         ]);
@@ -47,9 +47,9 @@ class CategoryController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $category->delete();
 
         return redirect('/' . $business['id'] . '/category')->with('Success', 'Berhasil Menghapus Kategori');;

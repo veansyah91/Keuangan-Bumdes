@@ -23,9 +23,10 @@ class CashierController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
+
         $invoice = Invoice::where('business_id', $business['id'])->get()->last();
         $identity = Identity::first();
 
@@ -46,11 +47,6 @@ class CashierController extends Controller
 
     public function store(Business $business, Request $request)
     {
-        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
-        
-        if (!$businessUser) {
-            return abort(403);
-        } 
         // cari costomer berdasarkan nama
         $customer = Customer::where('business_id', $business['id'])->where('nama', $request->namaPelanggan)->first();
 
@@ -111,11 +107,6 @@ class CashierController extends Controller
 
     public function invoiceDetail(Invoice $invoice)
     {
-        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
-        
-        if (!$businessUser) {
-            return abort(403);
-        } 
         $products = $invoice->products;
         $response = [
             'message' => "Berhasil Mengirimkan Data",
@@ -134,9 +125,9 @@ class CashierController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $identity = Identity::first();
         $invoice = Invoice::where('business_id', $business['id'])->get()->last();
 

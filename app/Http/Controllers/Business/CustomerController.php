@@ -16,9 +16,9 @@ class CustomerController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $customers = Customer::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
         return view('business.customer.index', compact('business', 'customers'));
     }
@@ -27,9 +27,9 @@ class CustomerController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         // validasi disini 
         $validated = $request->validate([
             'nama' => 'required',
@@ -51,9 +51,9 @@ class CustomerController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $validated = $request->validate([
             'nama' => 'required',
             'alamat' => 'required',
@@ -73,7 +73,7 @@ class CustomerController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $customer->delete();

@@ -23,7 +23,7 @@ class DashboardController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
 
@@ -148,9 +148,10 @@ class DashboardController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
+        
         $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
 
         if ($businessBalance) {

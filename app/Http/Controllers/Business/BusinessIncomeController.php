@@ -18,9 +18,9 @@ class BusinessIncomeController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $tanggalSekarang = $request->ke;
         $tanggalAkhir = $request->dari;
         $bulan = $request->bulan;
@@ -70,9 +70,9 @@ class BusinessIncomeController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         // check saldo 
         $balance = BusinessBalance::where('business_id', $business['id'])->first();
 

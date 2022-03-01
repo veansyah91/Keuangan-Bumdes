@@ -19,9 +19,9 @@ class BusinessBalanceActivityController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $businessBalanceActivities = BusinessBalanceActivity::whereHas('businessBalance', function($query) use ($business){
             $query->where('business_id', $business['id']);
         })
@@ -34,9 +34,9 @@ class BusinessBalanceActivityController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $user = Auth::user();
         $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
 
@@ -126,9 +126,9 @@ class BusinessBalanceActivityController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         // update saldo bisnis
         if ($request->uang_masuk > 0) {
             $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
@@ -183,9 +183,9 @@ class BusinessBalanceActivityController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
         
         $old = $businessBalance['sisa'];

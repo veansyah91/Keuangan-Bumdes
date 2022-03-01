@@ -18,7 +18,7 @@ class IncomingItemController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $incomingItems = Incomingitem::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
@@ -30,7 +30,7 @@ class IncomingItemController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $pemasok = $request['pemasok'] ?? $request['pemasok'];
@@ -48,7 +48,7 @@ class IncomingItemController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         // tambah data Incoming Item
@@ -103,7 +103,7 @@ class IncomingItemController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
 
@@ -173,7 +173,7 @@ class IncomingItemController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $product = Product::find($stock['product_id']);

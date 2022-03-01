@@ -16,9 +16,10 @@ class AssetController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
+
         $assets = Asset::orderBy('created_at', 'desc')
                         ->orderBy('jumlah_bagus')
                         ->where('business_id', $business['id'])
@@ -36,9 +37,9 @@ class AssetController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $create = Asset::create([
             'name_item' => $request->nama,
             'harga_satuan' => $request->harga,
@@ -56,9 +57,9 @@ class AssetController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $asset->update([
             'name_item' => $request->nama,
             'harga_satuan' => $request->harga,
@@ -74,9 +75,9 @@ class AssetController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $asset->delete();
         return redirect('/' . $business['id'] . '/asset')->with('Success', 'Berhasil Menghapus Aset');
     }

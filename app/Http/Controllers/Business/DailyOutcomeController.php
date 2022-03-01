@@ -19,7 +19,7 @@ class DailyOutcomeController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $tanggal_awal = $request['tanggal_awal'];
@@ -36,7 +36,7 @@ class DailyOutcomeController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $user = Auth::user();
@@ -81,7 +81,7 @@ class DailyOutcomeController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $expense->update([
@@ -113,7 +113,7 @@ class DailyOutcomeController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $businessIncomeActivity = BusinessBalanceActivity::where('business_expense_id', $expense['id'])->first();

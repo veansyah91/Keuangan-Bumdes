@@ -17,7 +17,7 @@ class SupplierController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $suppliers = Supplier::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
@@ -28,7 +28,7 @@ class SupplierController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $validated = $request->validate([
@@ -51,7 +51,7 @@ class SupplierController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $validated = $request->validate([
@@ -73,7 +73,7 @@ class SupplierController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         } 
         $supplier->delete();

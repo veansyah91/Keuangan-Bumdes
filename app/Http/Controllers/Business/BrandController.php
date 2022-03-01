@@ -16,9 +16,9 @@ class BrandController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $brands = Brand::where('business_id', $business['id'])->orderBy('created_at', 'desc')->paginate(10);
         return view('business.brand.index', compact('business', 'brands'));
     }
@@ -27,9 +27,9 @@ class BrandController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $validatedData = $request->validate([
             'nama' => 'required'
         ]);
@@ -46,9 +46,9 @@ class BrandController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
-        } 
+        }
         $brand->delete();
 
         return redirect('/' . $business['id'] . '/brand')->with('Success', 'Berhasil Menghapus Brand');

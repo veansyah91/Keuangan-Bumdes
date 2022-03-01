@@ -20,7 +20,7 @@ class AccountReceivableController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
         $accountReceivables = AccountReceivable::where('business_id', $business['id'])->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->paginate(10);
@@ -53,9 +53,10 @@ class AccountReceivableController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
+
         $user = Auth::user();
         AccountReceivablePayment::create([
             'account_receivable_id' => $request->accountReceivable,
@@ -77,7 +78,7 @@ class AccountReceivableController extends Controller
     {
         $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-        if (!$businessUser) {
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
         $accountReceivables = AccountReceivable::where('business_id', $business['id'])->where('sisa', '>', 0)->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->get();
