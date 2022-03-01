@@ -310,7 +310,7 @@ Route::group(['middleware' => ['auth']], function(){
             Route::get('/{business}/stock/excel', function(Business $business){
                 $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-                if (!$businessUser) {
+                if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
                     return abort(403);
                 } 
                 try {                        
@@ -364,7 +364,7 @@ Route::group(['middleware' => ['auth']], function(){
             Route::get('/{business}/asset/excel', function(Business $business){
                 $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-                if (!$businessUser) {
+                if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
                     return abort(403);
                 } 
 
@@ -381,7 +381,7 @@ Route::group(['middleware' => ['auth']], function(){
 
                 $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-                if (!$businessUser) {
+                if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
                     return abort(403);
                 } 
         
@@ -426,7 +426,7 @@ Route::group(['middleware' => ['auth']], function(){
                 Route::get('/{business}/business-income/pdf', function(Business $business, Request $request){
                     $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-                    if (!$businessUser) {
+                    if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
                         return abort(403);
                     } 
                     $identity = Identity::first();
@@ -473,7 +473,7 @@ Route::group(['middleware' => ['auth']], function(){
                 Route::get('/{business}/business-income/excel', function(Business $business, Request $request){
                     $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
         
-                    if (!$businessUser) {
+                    if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
                         return abort(403);
                     } 
 
