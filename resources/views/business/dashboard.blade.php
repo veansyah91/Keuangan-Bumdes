@@ -19,7 +19,7 @@
                     
                     <div class="row justify-content-start fs-3 fw-bold">
                         <div class="col-md-4 col-12">
-                            Saldo
+                            Cash
                         </div>
                         <div class="col-md-8 col-12">
                             : Rp. {{ $businessBalance ? number_format($businessBalance['sisa'],0,",",".") : 0 }}

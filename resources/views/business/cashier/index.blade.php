@@ -470,9 +470,7 @@
                                     <div>${currency}</div>
                                 </div>
                                     
-                            </li>`
-
-                
+                            </li>`;
             });
 
             let totalCurrency = Intl.NumberFormat(['ban', 'id']).format(total);
@@ -631,9 +629,6 @@
                                 nota baru
                             </button>
                         
-                        
-                            
-                        
                     </div>
                     `
 
@@ -649,13 +644,12 @@
             let printStatus = false;
             
             batalPrint.addEventListener('click', function(){
-                console.log("batal cetak");
-                printInvoice.classList.add('d-none');
-                app.classList.remove('d-none');
+                    printInvoice.classList.add('d-none');
+                    app.classList.remove('d-none');
 
-                fixedBottom.map(fb => {
-                fb.classList.remove('d-none');
-            })
+                    fixedBottom.map(fb => {
+                        fb.classList.remove('d-none');
+                    })
             })
 
             newInvoice.addEventListener('click', function(){
@@ -663,7 +657,6 @@
             })
 
             printBtn.addEventListener('click', function(){
-                
                 let data = {
                     nomorNota: nomorNota.value,
                     namaPelanggan: namaPelanggan.value,
@@ -672,8 +665,6 @@
                     sisa: parseInt(sisaBayar),
                     operator: invoiceSave.dataset.operator
                 }
-
-                
 
                 printStatus
                 ? window.print()
@@ -690,7 +681,6 @@
                         console.log(err);
                     })
 
-                
             })
         });
 

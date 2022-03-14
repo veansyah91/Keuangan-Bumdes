@@ -157,7 +157,7 @@ class ProductController extends Controller
                             ->get();
         }
 
-        if ($business['kategori'] == 'Restoran') {
+        if ($business['kategori'] == 'Restoran' || $business['kategori'] == 'Lainnya') {
             $product = Product::where('business_id', $business['id'])
                             ->where(function($query) use ($request) {
                                 $query->where('kode', 'like', '%' . $request->search . '%')

@@ -19,7 +19,6 @@
                                 </div>
                                 <div class="col-auto">
                                     <div class="input-group mb-3">
-                                        
                                         <input type="text" class="form-control" id="nama-pelanggan" placeholder="Pelanggan" aria-label="Pelanggan" aria-describedby="cari-pelanggan">
                                         <button class="btn btn-outline-secondary" type="button" data-business-id="{{ $business->id }}" id="cari-pelanggan" data-bs-toggle="modal" data-bs-target="#cariKonsumenModal">Cari</button>
                                         <input type="text" hidden id="id-pelanggan">
@@ -35,11 +34,32 @@
                         <div class="col-12 col-md-6">
                             <div class="card">
                                 <div class="card-body">
-                                        
+                                    <form action="#" id="cashier-form">
+                                        <div class="mb-3 row">
+                                            <label for="server" class="col-sm-4 col-form-label">Server</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-select" aria-label="Select Server" id="server">
+                                                    @if ($servers->isNotEmpty())
+                                                        @foreach ($servers as $server)
+                                                            <option 
+                                                                value="{{ $server->nama }}"
+                                                                @if ($loop->first)
+                                                                    selected
+                                                                @endif
+                                                                >
+                                                                    {{ $server->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    @else
+                                                        <option value="">Belum Ada Data Server</option>                                                        
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div class="mb-3 row">
                                             <label for="nama-produk" class="col-sm-4 col-form-label">Produk</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" id="nama-produk" data-id-product="" placeholder="e.x. Pulsa Nelpon 10.000">
+                                                <input type="text" class="form-control" id="nama-produk" placeholder="e.x. Pulsa Nelpon 10.000">
                                             </div>
                                         </div>
                                         <div class="mb-3 row">
@@ -60,44 +80,57 @@
                                                 <input type="number" class="form-control" id="jual">
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-primary" id="add-product">Tambah</button>
+                                        <button type="submit" class="btn btn-primary disabled" id="add-product-btn">Tambah</button>
+                                    </form>
                                 </div>
                                 
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6 mt-4 mt-md-0">
                             <div class="fw-bold mb-1">
                                 Detail
                             </div>
                             <div class="card">
-                                <div class="card-body table-responsive">
-                                    <table class="table">
-                                        <tbody class="list-group" id="detail-product">
-                                            
+                                <div class="card-body table-responsive" style="overflow-x: scroll">
+                                    <table class="table" style="width: 200%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Server</th>
+                                                <th>Pelanggan</th>
+                                                <th>Produk</th>
+                                                <th>No HP/Token</th>
+                                                <th>Modal</th>
+                                                <th>Jual</th>
+                                                <th>Laba</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transaction-detail">
+                                            <tr>
+                                                <td>1.</td>
+                                                <td>TDC</td>
+                                                <td>Umum</td>
+                                                <td>Pulsa Nelpon 50k</td>
+                                                <td>0812 4532 2123</td>
+                                                <td class="text-end">Rp. 50.500</td>
+                                                <td class="text-end">Rp. 52.000</td>
+                                                <td class="text-end">Rp. 1.500</td>
+                                            </tr>
                                         </tbody>
+                                        <tfoot id="transaction-detail-footer">
+                                            <tr>
+                                                <th colspan="5" class="text-end">Total</th>
+                                                <th class="text-end">Rp. 0</th>
+                                                <th class="text-end">Rp. 0</th>
+                                                <th class="text-end">Rp. 0</th>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>                                
                             </div>
                         </div>
                     </div>
-
-                    <hr>
-
-                    <div class="row justify-content-between">
-                        <div class="col-12 col-lg-6">
-                            <table class="fs-3 table">
-                                <tr>
-                                    <td>Total Belanja : </td>
-                                    <td id="amount"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <button class="btn btn-lg btn-success disabled" id="bayar-btn" data-bs-toggle="modal" data-bs-target="#bayarModal">Bayar</button>
-                        </div>
-                    </div>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -124,6 +157,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('script')
@@ -183,5 +217,136 @@
             namaPelanggan.value = customerName;
             idPelanggan.value = customerId;
         }
+
+        const nomor = document.getElementById('nomor');
+        const server = document.getElementById('server');
+        const modal = document.getElementById('modal');
+        const jual = document.getElementById('jual');
+        const namaProduk = document.getElementById('nama-produk');
+        const addProductBtn = document.getElementById('add-product-btn')
+
+        nomor.addEventListener('keyup', function(){
+            if (nomor.value && modal.value && jual.value && namaProduk.value && server.value && namaPelanggan.value) {
+                addProductBtn.classList.remove('disabled');
+            } else {
+                addProductBtn.classList.add('disabled');
+            }
+        });
+
+        namaPelanggan.addEventListener('keyup', function(){
+            if (nomor.value && modal.value && jual.value && namaProduk.value && server.value && namaPelanggan.value) {
+                addProductBtn.classList.remove('disabled');
+            } else {
+                addProductBtn.classList.add('disabled');
+            }
+        });
+
+        modal.addEventListener('keyup', function(){
+            if (nomor.value && modal.value && jual.value && namaProduk.value && server.value && namaPelanggan.value) {
+                addProductBtn.classList.remove('disabled');
+            } else {
+                addProductBtn.classList.add('disabled');
+            }
+        });
+
+        jual.addEventListener('keyup', function(){
+            if (nomor.value && modal.value && jual.value && namaProduk.value && server.value && namaPelanggan.value) {
+                addProductBtn.classList.remove('disabled');
+            } else {
+                addProductBtn.classList.add('disabled');
+            }
+        });
+
+        namaProduk.addEventListener('keyup', function(){
+            if (nomor.value && modal.value && jual.value && namaProduk.value && server.value && namaPelanggan.value) {
+                addProductBtn.classList.remove('disabled');
+            } else {
+                addProductBtn.classList.add('disabled');
+            }
+        });
+
+        server.addEventListener('change', function(){
+            if (nomor.value && modal.value && jual.value && namaProduk.value && server.value && namaPelanggan.value) {
+                addProductBtn.classList.remove('disabled');
+            } else {
+                addProductBtn.classList.add('disabled');
+            }
+        });
+
+        const cleanForm = () => {
+            nomor.value = '';
+            modal.value = '';
+            jual.value = '';
+            namaProduk.value = '';
+            namaPelanggan.value = '';
+        }
+
+        let transactions = [];
+        
+        const cashierForm = document.getElementById('cashier-form');
+
+        cashierForm.addEventListener('submit', function(e){
+            e.preventDefault();
+
+            data = {
+                nomor : nomor.value,
+                modal : parseInt(modal.value),
+                jual : parseInt(jual.value),
+                namaProduk : namaProduk.value,
+                namaPelanggan : namaPelanggan.value,
+                server : server.value,
+            };
+
+            transactions = [...transactions, data];
+
+            updateTable();
+
+            cleanForm();
+        });
+
+        const updateTable = () => {
+            let list = '';
+            const transactionDetail = document.getElementById('transaction-detail');
+            const transactionDetailFooter = document.getElementById('transaction-detail-footer');
+
+            let totalLaba = 0;
+            let totalModal = 0;
+            let totalJual = 0;
+            transactions.map((transaction, index) => {
+                let laba = transaction.jual - transaction.modal;
+
+                totalJual += transaction.jual;
+                totalModal += transaction.modal;
+                totalLaba += laba;
+
+                list += `<tr>
+                            <td>${index + 1}.</td>
+                            <td>${transaction.server}</td>
+                            <td>${transaction.namaPelanggan}</td>
+                            <td>${transaction.namaProduk}</td>
+                            <td>${transaction.nomor}</td>
+                            <td class="text-end">Rp. ${Intl.NumberFormat(['ban', 'id']).format(transaction.modal)}</td>
+                            <td class="text-end">Rp. ${Intl.NumberFormat(['ban', 'id']).format(transaction.jual)}</td>
+                            <td class="text-end">Rp. ${Intl.NumberFormat(['ban', 'id']).format(laba)}</td>
+                        </tr>`;
+            })
+            transactionDetail.innerHTML = list;
+            transactionDetailFooter.innerHTML = `<tr>
+                                                    <th colspan="5" class="text-end">Total</th>
+                                                    <th class="text-end">Rp. ${Intl.NumberFormat(['ban', 'id']).format(totalModal)}</th>
+                                                    <th class="text-end">Rp. ${Intl.NumberFormat(['ban', 'id']).format(totalJual)}</th>
+                                                    <th class="text-end">Rp. ${Intl.NumberFormat(['ban', 'id']).format(totalLaba)}</th>
+                                                </tr>`
+        }
+
+        window.addEventListener('load', function(){
+            axios.get('/api/')
+                    .then()
+                    .catch(err => {
+                        console.log(err);
+                    })
+        })
+
+
     </script>
 @endsection

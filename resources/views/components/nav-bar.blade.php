@@ -1,7 +1,7 @@
 <div>
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         @php
-            $kategori_master = ['Retail', 'Restoran', 'Pulsa', 'Kredit'];
+            $kategori_master = ['Retail', 'Restoran', 'Pulsa', 'Kredit', 'Lainnya'];
         @endphp
 
         @php
@@ -23,7 +23,7 @@
                     
                     {{-- Menu Kategori --}}
                     @php
-                        $kategori_kategori = ['Retail', 'Restoran'];
+                        $kategori_kategori = ['Retail', 'Restoran', 'Lainnya'];
                     @endphp       
                     @if (in_array($kategori, $kategori_kategori))
                         <div>
@@ -54,7 +54,7 @@
 
                     {{-- Menu Pelanggan Biasa --}}
                     @php
-                        $kategori_pelanggan = ['Retail', 'Restoran', 'Pulsa']
+                        $kategori_pelanggan = ['Retail', 'Restoran', 'Pulsa', 'Lainnya']
                     @endphp
                     @if (in_array($kategori, $kategori_pelanggan ))
                         <div>
@@ -78,7 +78,7 @@
 
                     {{-- Menu Produk --}}
                     @php
-                        $kategori_produk = ['Restoran']
+                        $kategori_produk = ['Restoran', 'Lainnya']
                     @endphp
                     @if (in_array($kategori, $kategori_produk ))
                         <div>
@@ -123,7 +123,7 @@
         </li>     
 
         @php
-            $kategori_harian = ['Retail', 'Restoran', 'Pulsa'];
+            $kategori_harian = ['Retail', 'Restoran', 'Pulsa', 'Lainnya'];
             $harian = ['cashier', 'daily-incomes', 'daily-outcomes', 'account-receivable', 'pay-later'];
         @endphp
         
@@ -187,7 +187,7 @@
         @endif
 
         @php
-            $kategori_keuangan = ['Retail', 'Restoran'];
+            $kategori_keuangan = ['Retail', 'Restoran', 'Lainnya'];
             $keuangan = ['income', 'expense', 'business-income'];
         @endphp
 

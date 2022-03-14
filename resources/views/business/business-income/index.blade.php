@@ -201,7 +201,7 @@
     </form>
 
     {{-- PDF Modal --}}
-    <form method="get" action="{{ url('/' . $business->id . '/business-income/pdf?berdasarkan=' . $berdasarkan . '&dari=' . $tanggalAkhir . '&ke=' . $tanggalSekarang. '&bulan=' . $bulan . '&tahun=' . $tahun) }}">
+    <form method="get" action="{{ url('/' . $business->id . '/business-income/pdf?berdasarkan=' . $berdasarkan . '&dari=' . request()->dari . '&ke=' . $tanggalSekarang. '&bulan=' . $bulan . '&tahun=' . $tahun) }}">
         <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -209,11 +209,11 @@
                         <h3 class="modal-title text-center" id="pdfModalLabel">Simpan Ke PDF</h3>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="berdasarkan" value="{{ $berdasarkan }}">
-                        <input type="hidden" name="dari" value="{{ $tanggalAkhir }}">
-                        <input type="hidden" name="ke" value="{{ $tanggalSekarang }}">
-                        <input type="hidden" name="bulan" value="{{ $bulan }}">
-                        <input type="hidden" name="tahun" value="{{ $tahun }}">
+                        <input type="hidden" name="berdasarkan" value="{{ request()->berdasarkan }}">
+                        <input type="hidden" name="dari" value="{{ request()->dari }}">
+                        <input type="hidden" name="ke" value="{{ request()->ke }}">
+                        <input type="hidden" name="bulan" value="{{ request()->bulan }}">
+                        <input type="hidden" name="tahun" value="{{ request()->tahun }}">
                         <div class="fs-5 fw-bold">
                             Pembuat
                         </div>

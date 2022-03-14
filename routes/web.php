@@ -429,11 +429,12 @@ Route::group(['middleware' => ['auth']], function(){
                     if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
                         return abort(403);
                     } 
+
                     $identity = Identity::first();
 
                     $invoices = Invoice::where('business_id', $business['id'])
-                                        ->whereDate('created_at', '<=', $request->dari)
-                                        ->whereDate('created_at', '>=', $request->ke)
+                                        ->whereDate('created_at', '>=', $request->dari)
+                                        ->whereDate('created_at', '<=', $request->ke)
                                         ->with('products')
                                         ->get();
 
@@ -493,10 +494,8 @@ Route::group(['middleware' => ['auth']], function(){
                         $param = 'Per Bulan ' . MonthHelper::index($request->bulan) . ' ' . $request->tahun;
                     }
 
-                    return Excel::download(new BusinessIncomeExport($business['id'], $request->dari, $request->ke), 'Laporan Penjualan '. $param . ' ' . $business['nama'] . '.xlsx');
-                    
                     try {                        
-                        return Excel::download(new BusinessIncomeExport($business['id']), 'Laporan Penjualan '. $param . ' ' . $business['nama'] . '.xlsx');
+                        return Excel::download(new BusinessIncomeExport($business['id'], $request->dari, $request->ke), 'Laporan Penjualan '. $param . ' ' . $business['nama'] . '.xlsx');
                     } catch (\Throwable $th) {
                         abort(503, 'Terjadi Kesalahan');
                     } 

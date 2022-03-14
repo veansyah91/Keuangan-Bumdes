@@ -143,6 +143,8 @@ Route::post('/asset', [AssetController::class, 'apiValidate']);
 
 Route::post('/{business}/cashier', [CashierController::class, 'store']);
 
+Route::get('/{business}/balance-transaction', [BusinessBalanceElectricActivityController::class, 'indexApi']);
+
 Route::get('/invoice-detail/{invoice}', [CashierController::class, 'invoiceDetail']);
 Route::delete('/invoice-detail/{invoiceId}/{productId}', [CashierController::class, 'deleteInvoiceDetail']);
 Route::post('/cashier/add-order', [CashierController::class, 'addOrder']);

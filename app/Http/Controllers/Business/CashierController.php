@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Identity;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\InvoiceProduct;
 use App\Models\AccountReceivable;
@@ -31,8 +32,10 @@ class CashierController extends Controller
         $identity = Identity::first();
 
         if ($business['kategori'] == 'Pulsa') {
+            $servers = Supplier::where('business_id', $business['id'])->get();
             return view('business.cashier.balance', [
                 'business' => $business,
+                'servers' => $servers,
                 // 'invoice' => $invoice ? $invoice['nomor'] + 1 : 1,
                 // 'identity' => $identity
             ]);

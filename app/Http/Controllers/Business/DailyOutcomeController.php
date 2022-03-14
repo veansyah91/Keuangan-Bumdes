@@ -26,7 +26,7 @@ class DailyOutcomeController extends Controller
         $tanggal_akhir = $request['tanggal_akhir'];
 
         $expenses = ($tanggal_awal && $tanggal_akhir) 
-                    ? BusinessExpense::whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->where('business_id', $business['id'])->orderBy('tanggal_keluar', 'desc')->paginate(10)
+                    ? BusinessExpense::whereBetween('tanggal_keluar', [$tanggal_awal, $tanggal_akhir])->where('business_id', $business['id'])->orderBy('tanggal_keluar', 'desc')->paginate(10)->withQueryString()
                     : BusinessExpense::where('business_id', $business['id'])->orderBy('tanggal_keluar', 'desc')->paginate(10);
 
         return view('business.daily-outcome.index', compact('business', 'expenses'));

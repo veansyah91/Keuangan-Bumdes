@@ -93,7 +93,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="nama" class="form-label">Nama Asset</label>
-                                <input type="text" class="form-control nama" id="nama" name="nama" aria-describedby="namaHelp" >
+                                <input type="text" class="form-control nama-asset" id="nama" name="nama" aria-describedby="namaHelp" >
                             </div>
                             <div class="mb-3">
                                 <label for="harga" class="form-label">Harga Satuan</label>
@@ -105,11 +105,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="jumlah_rusak" class="form-label">Jumlah Rusak</label>
-                                <input type="number" class="form-control jumlah-rusak" id="jumlah-rusak" name="jumlah_rusak" aria-describedby="jumlah_rusakHelp" min="0" value="0">
+                                <input type="number" class="form-control jumlah-rusak" id="jumlah-rusak" name="jumlah_rusak" aria-describedby="jumlah_rusakHelp">
                             </div>
                             <div class="mb-3">
                                 <label for="tanggal_masuk" class="form-label">Tanggal Masuk</label>
-                                <input type="date" class="form-control tanggal-masuk" id="tanggal-masuk" name="tanggal_masuk" aria-describedby="tanggal_masukHelp" min="0" value="0">
+                                <input type="date" class="form-control tanggal-masuk" id="tanggal-masuk" name="tanggal_masuk" aria-describedby="tanggal_masukHelp">
                             </div>
                         </div>
                         
@@ -142,7 +142,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="nama" class="form-label">Nama Asset</label>
-                                <input type="text" class="form-control nama" id="nama" name="nama" aria-describedby="namaHelp" required>
+                                <input type="text" class="form-control nama-asset" id="nama" name="nama" aria-describedby="namaHelp" required>
                             </div>
                             <div class="mb-3">
                                 <label for="harga" class="form-label">Harga Satuan</label>
@@ -154,11 +154,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="jumlah_rusak" class="form-label">Jumlah Rusak</label>
-                                <input type="number" class="form-control jumlah-rusak" id="jumlah-rusak" name="jumlah_rusak" aria-describedby="jumlah_rusakHelp" min="0" value="0">
+                                <input type="number" class="form-control jumlah-rusak" id="jumlah-rusak" name="jumlah_rusak" aria-describedby="jumlah_rusakHelp">
                             </div>
                             <div class="mb-3">
                                 <label for="tanggal_masuk" class="form-label">Tanggal Masuk</label>
-                                <input type="date" class="form-control tanggal-masuk" id="tanggal-masuk" name="tanggal_masuk" aria-describedby="tanggal_masukHelp" min="0" value="0">
+                                <input type="date" class="form-control tanggal-masuk" id="tanggal-masuk" name="tanggal_masuk" aria-describedby="tanggal_masukHelp">
                             </div>
                         </div>
                         
@@ -199,7 +199,7 @@
         const formInput = Array.from(document.getElementsByClassName('form-input'));
 
         const kode = Array.from(document.getElementsByClassName('kode'));
-        const nama = Array.from(document.getElementsByClassName('nama'));
+        const nama = Array.from(document.getElementsByClassName('nama-asset'));
         const harga = Array.from(document.getElementsByClassName('harga'));
         const jumlahRusak = Array.from(document.getElementsByClassName('jumlah-rusak'));
         const jumlahBagus = Array.from(document.getElementsByClassName('jumlah-bagus'));
@@ -224,7 +224,7 @@
                 })
                 .catch((err) => {
                     if (err.response) {
-                        if (err.response.data.errors.name_item) {
+                        if (err.response.data.errors.nama_item) {
                             nama[index].classList.add('is-invalid')
                         } else {
                             nama[index].classList.remove('is-invalid')

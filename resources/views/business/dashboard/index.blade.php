@@ -14,7 +14,7 @@
                     
                     <div class="row justify-content-start fs-3 fw-bold">
                         <div class="col-md-4 col-12">
-                            Saldo
+                            Kas
                         </div>
                         <div class="col-md-8 col-12">
                             : Rp. {{ $businessBalance ? number_format($businessBalance['sisa'],0,",",".") : 0 }}
@@ -43,6 +43,33 @@
                     </div>
 
                     <hr>
+
+                    @if ($business->kategori == 'Pulsa')
+                        <div class="row justify-content-start fs-3 fw-bold mt-2">
+                            <div class="col-md-4 col-12">
+                                Saldo
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-md-8 table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>Server</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">TDC</td>
+                                            <td class="text-end">Rp. 3.000.000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr> 
+                    @endif
 
                     <div class="row justify-content-start fs-3 fw-bold mt-2">
                         <h4 class="fs-3 fw-bold">
