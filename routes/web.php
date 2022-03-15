@@ -432,11 +432,19 @@ Route::group(['middleware' => ['auth']], function(){
 
                     $identity = Identity::first();
 
-                    $invoices = Invoice::where('business_id', $business['id'])
+                    if (($request->berdasarkan == 'month')) {
+                        $invoices = Invoice::where('business_id', $business['id'])
+                                        ->whereMonth('created_at', $request->bulan)
+                                        ->whereYear('created_at', $request->tahun)
+                                        ->with('products')
+                                        ->get();
+                    } else {
+                        $invoices = Invoice::where('business_id', $business['id'])
                                         ->whereDate('created_at', '>=', $request->dari)
                                         ->whereDate('created_at', '<=', $request->ke)
                                         ->with('products')
                                         ->get();
+                    }
 
                     $jabatanPembuat = $request->jabatan_pembuat;
                     $namaPembuat = $request->nama_pembuat;
