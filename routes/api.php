@@ -9,20 +9,34 @@ use App\Models\District;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\RevenueController;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Controllers\CashMutationController;
+use App\Http\Controllers\BalanceReportController;
 use App\Http\Controllers\Business\AssetController;
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
+use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
 use App\Http\Controllers\Business\ProductController;
+use App\Http\Controllers\LostProfitReportController;
 use App\Http\Controllers\Business\CategoryController;
 use App\Http\Controllers\Business\CustomerController;
 use App\Http\Controllers\Business\SupplierController;
 use App\Http\Controllers\Business\DashboardController;
+use App\Http\Controllers\SubCategoryAccountController;
+use App\Http\Controllers\TrialBalanceReportController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\Business\AccountReceivableController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
+use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +51,49 @@ use App\Http\Controllers\Business\BusinessBalanceActivityController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::group(['middleware' => ['auth:sanctum', 'role:ADMIN']], function(){
+
+    Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
+    Route::get('/home/asset',[AdminController::class, 'asset']);
+    Route::get('/home/liability',[AdminController::class, 'liability']);
+    Route::get('/home/equity',[AdminController::class, 'equity']);
+
+    Route::get('/contact', [ContactController::class, 'getApiData']);
+    Route::resource('/contact', RevenueController::class)->only(['store','destroy','show', 'update']);
+    
+
+    Route::get('/account', [AccountController::class, 'getApiData']);
+    Route::get('/account/{id}', [AccountController::class, 'show']);
+    Route::put('/account/{id}', [AccountController::class, 'update']);
+    Route::post('/account', [AccountController::class, 'store']);
+    Route::resource('/sub-category-account', SubCategoryAccountController::class)->only(['index', 'store', 'destroy']);
+    Route::get('/journal', [JournalController::class, 'getApiData']);
+    Route::get('/no-ref-journal-recomendation', [JournalController::class, 'noRefJournalRecomendation']);
+    Route::resource('/journal', JournalController::class)->only(['store','destroy','show', 'update']);
+
+    Route::get('/no-ref-revenue-recomendation', [RevenueController::class, 'noRefRevenueRecomendation']);
+    Route::get('/revenue', [RevenueController::class, 'getApiData']);
+    Route::resource('/revenue', RevenueController::class)->only(['store','destroy','show', 'update']);
+
+    Route::get('/no-ref-expense-recomendation', [ExpenseController::class, 'noRefExpenseRecomendation']);
+    Route::get('/expense', [ExpenseController::class, 'getApiData']);
+    Route::resource('/expense', ExpenseController::class)->only(['store','destroy','show', 'update']);
+
+    Route::get('/no-ref-cash-mutation-recomendation', [CashMutationController::class, 'noRefCashMutationRecomendation']);
+    Route::get('/cash-mutation', [CashMutationController::class, 'getApiData']);
+    Route::resource('/cash-mutation', CashMutationController::class)->only(['store','destroy','show', 'update']);
+
+    Route::get('/report/cashflow', [CashflowReportController::class, 'getApiData']);
+    Route::get('/report/balance', [BalanceReportController::class, 'getApiData']);
+    Route::get('/report/balance-year', [BalanceReportController::class, 'getApiDataYear']);
+    Route::get('/report/lost-profit', [LostProfitReportController::class, 'getApiData']);
+    Route::get('/report/lost-profit-year', [LostProfitReportController::class, 'getApiDataYear']);
+    Route::get('/report/trial-balance', [TrialBalanceReportController::class, 'getApiData']);
+
+    Route::get('/ledger',[LedgerController::class, 'getApiData']);
+    
 });
 
 Route::get('/villages', function(){
@@ -154,8 +211,8 @@ Route::get('/{business}/account-receivable/{accountReceivable}', [AccountReceiva
 Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLaterList']);
 Route::get('/pay-later/detail/{id}', [AccountReceivableController::class, 'payLaterDetail']);
 
-Route::get('/expense/{expense}', [DailyOutcomeController::class, 'detail']);
-Route::post('/{business}/expense', [DailyOutcomeController::class, 'apiValidate']);
+// Route::get('/expense/{expense}', [DailyOutcomeController::class, 'detail']);
+// Route::post('/{business}/expense', [DailyOutcomeController::class, 'apiValidate']);
 
 // dashboard
 Route::get('/{business}/dashboard/cashflow', [DashboardController::class, 'cashflow']);

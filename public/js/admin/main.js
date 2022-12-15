@@ -21,6 +21,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('sidebar').classList.remove('active');
     }
 });
+
 window.addEventListener('resize', (event) => {
     var w = window.innerWidth;
     if(w < 1200) {
@@ -38,7 +39,6 @@ document.querySelector('.sidebar-hide').addEventListener('click', () => {
 
 })
 
-
 // Perfect Scrollbar Init
 if(typeof PerfectScrollbar == 'function') {
     const container = document.querySelector(".sidebar-wrapper");
@@ -48,4 +48,24 @@ if(typeof PerfectScrollbar == 'function') {
 }
 
 // Scroll into active sidebar
-document.querySelector('.sidebar-item.active').scrollIntoView(false)
+document.querySelector('.sidebar-item.active')?.scrollIntoView(false)
+
+function logoutSubmit(){
+    event.preventDefault(); 
+    localStorage.removeItem('token');
+    localStorage.removeItem('position');
+    localStorage.removeItem('userPrintPage');
+    localStorage.removeItem('locationPrint');
+    document.getElementById('logout-form').submit();
+}
+
+window.onclick = function(event) {
+    if (!event.target.matches('.search-input-dropdown')) {
+      var dropdowns = document.getElementsByClassName("search-select");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+          openDropdown.classList.add('d-none');
+      }
+    }
+  }

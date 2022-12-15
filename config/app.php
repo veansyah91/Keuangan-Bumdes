@@ -176,6 +176,7 @@ return [
         App\Providers\BusinessIncomeServiceProvider::class,
         App\Providers\MonthServiceProvider::class,
         App\Providers\BusinessUserServiceProvider::class,
+        App\Providers\LedgerServiceProvider::class,
 
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
@@ -246,6 +247,7 @@ return [
         'BusinessIncomeHelper' => App\Helpers\BusinessIncomeHelper::class,
         'MonthHelper' => App\Helpers\MonthHelper::class,
         'BusinessUserHelper' => App\Helpers\BusinessUserHelper::class,
+        'LedgerHelper' => App\Helpers\LedgerHelper::class,
     ],
 
 ];

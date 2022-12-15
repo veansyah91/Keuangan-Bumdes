@@ -25,55 +25,106 @@ use App\Imports\DistrictImport;
 use App\Imports\ProvinceImport;
 use App\Models\BusinessExpense;
 use App\Helpers\BusinessUserHelper;
-use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BusinessIncomeExport;
 use Illuminate\Support\Facades\Route;
 use App\Exports\BusinessExpenseExport;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OutcomeController;
+use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\IdentityController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\CashMutationController;
+use App\Http\Controllers\BalanceReportController;
 use App\Http\Controllers\Business\AssetController;
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
+use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
 use App\Http\Controllers\Business\ProductController;
+use App\Http\Controllers\LostProfitReportController;
 use App\Http\Controllers\Business\CategoryController;
 use App\Http\Controllers\Business\CustomerController;
 use App\Http\Controllers\Business\SupplierController;
 use App\Http\Controllers\Business\DashboardController;
+use App\Http\Controllers\TrialBalanceReportController;
 use App\Http\Controllers\Business\DailyIncomeController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\Business\BusinessIncomeController;
 use App\Http\Controllers\Business\AccountReceivableController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
+use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes(['register' => false]);
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'store'])->name('login');
 
 Route::group(['middleware' => ['auth']], function(){
-
+    Route::post('/logout', LogoutController::class)->name('logout');
+    
     Route::group(['middleware' => ['admin']], function(){
-        Route::get('/admin', function(){
-            $outcome = Outcome::all()->sum('jumlah');
-            $income = Income::all()->sum('jumlah');
-    
-            return view('admin.dashboard', [
-                'saldo' => $income - $outcome
-            ]);
-        })->name('admin.dashboard');
-    
-    
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+        
         Route::resource('/identity', IdentityController::class)->middleware('admin');
-    
+
+        Route::resource('/contact', ContactController::class)->only(['index','create','edit'])->middleware('admin');
+
+        Route::resource('/account', AccountController::class)->only(['index'])->middleware('admin');
+
+        Route::resource('/journal', JournalController::class)->only(['index', 'create', 'edit'])->middleware('admin');
+        Route::get('/journal/print-detail/{id}', [JournalController::class, 'printDetail']);
+        Route::get('/journal/print', [JournalController::class, 'print']);
+
+        Route::resource('/ledger', LedgerController::class)->only(['index'])->middleware('admin');
+        Route::get('/ledger/print', [LedgerController::class, 'print']);
+
+        Route::resource('/revenue', RevenueController::class)->only(['index','create','edit'])->middleware('admin');
+        Route::get('/revenue/print-detail/{id}', [RevenueController::class, 'printDetail']);
+        Route::get('/revenue/print', [RevenueController::class, 'print']);
+
+        Route::resource('/expense', ExpenseController::class)->only(['index','create','edit'])->middleware('admin');
+        Route::get('/expense/print-detail/{id}', [ExpenseController::class, 'printDetail']);
+        Route::get('/expense/print', [ExpenseController::class, 'print']);
+
+        
+        Route::resource('/cash-mutation', CashMutationController::class)->only(['index','create','edit'])->middleware('admin');
+        Route::get('/cash-mutation/print-detail/{id}', [CashMutationController::class, 'printDetail']);
+        Route::get('/cash-mutation/print', [CashMutationController::class, 'print']);
+
+        Route::get('/report/cashflow', [CashflowReportController::class, 'index'])->name('report.cashflow.index');
+        Route::get('/report/cashflow-year', [CashflowReportController::class, 'year'])->name('report.cashflow.year');
+        Route::get('/report/print-cashflow', [CashflowReportController::class, 'print'])->name('report.cashflow.print');
+        Route::get('/report/print-cashflow-year', [CashflowReportController::class, 'printYear'])->name('report.cashflow.print.year');
+
+        Route::get('/report/balance', [BalanceReportController::class, 'index'])->name('report.balance.index');
+        Route::get('/report/print-balance', [BalanceReportController::class, 'print'])->name('report.balance.print');
+        Route::get('/report/balance-year', [BalanceReportController::class, 'year'])->name('report.balance.year');
+        Route::get('/report/print-balance-year', [BalanceReportController::class, 'printYear'])->name('report.balance.print.year');
+
+        Route::get('/report/lost-profit', [LostProfitReportController::class, 'index'])->name('report.lost-profit.index');
+        Route::get('/report/print-lost-profit', [LostProfitReportController::class, 'print'])->name('report.lost-profit.print');
+        Route::get('/report/lost-profit-year', [LostProfitReportController::class, 'year'])->name('report.lost-profit-year.index');
+        Route::get('/report/lost-profit-year-print', [LostProfitReportController::class, 'printYear'])->name('report.lost-profit-year.print');
+
+        Route::get('/report/trial-balance', [TrialBalanceReportController::class, 'index'])->name('report.trial-balance.index');
+        Route::get('/report/trial-balance-print', [TrialBalanceReportController::class, 'print'])->name('report.trial-balance.print');
+
         Route::resource('/income', IncomeController::class);
     
         Route::resource('/outcome', OutcomeController::class);
@@ -168,6 +219,7 @@ Route::group(['middleware' => ['auth']], function(){
                     'desa' => Village::first()
                 ]);
             })->name('import-asset');
+            
             Route::post('/import-asset/village', function(Request $request){
                 $validatedData = $request->validate([
                     'desaFile' => 'required'

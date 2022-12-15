@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>ADMIN-BUMDES</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href="{{ asset('css/admin/bootstrap.css') }}" rel="stylesheet">
 
@@ -21,6 +22,10 @@
     <link href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('css/admin/custom.css') }}" rel="stylesheet">
+    
+
 </head>
 
 <body>
@@ -55,34 +60,101 @@
                         </li>
 
                         @role('ADMIN')
-                        <li class="sidebar-item has-sub{{ Request::is('income') || Request::is('outcome')? ' active' :'' }}">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-cash-stack"></i>
-                                <span>Keuangan</span>
-                            </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item{{ Request::is('income')? ' active' :'' }}">
-                                    <a href="{{ route('income.index') }}">Uang Masuk</a>
-                                </li>
-                                <li class="submenu-item{{ Request::is('outcome')? ' active' :'' }}">
-                                    <a href="{{ route('outcome.index') }}">Uang Keluar</a>
-                                </li>
-                                
-                            </ul>
-                        </li>
-
                         <li class="sidebar-item{{ Request::is('business') ? ' active' :'' }}">
                             <a href="{{ route('business.index') }}" class='sidebar-link'>
                                 <i class="bi bi-list"></i>
                                 <span>Unit Usaha</span>
                             </a>
                         </li>
+
+                        <li class="sidebar-title border-top pt-3">Master</li>
+                        <li class="sidebar-item{{ Request::is('contact')? ' active' :'' }}">
+                            <a href="{{ route('contact.index') }}" class='sidebar-link'>
+                                <i class="bi bi-person-lines-fill"></i>
+                                <span>Kontak</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-title border-top pt-3">Keuangan</li>
+
+                        <li class="sidebar-item has-sub{{ Request::is('account') || Request::is('ledger') || Request::is('journal/*') || Request::is('journal') ? ' active' :'' }}">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-journals"></i>
+                                <span>Buku Besar</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item{{ Request::is('account')? ' active' :'' }}">
+                                    <a href="{{ route('account.index') }}">Akun</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('journal/*') || Request::is('journal')? ' active' :'' }}">
+                                    <a href="{{ route('journal.index') }}">Jurnal</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('ledger')? ' active' :'' }}">
+                                    <a href="{{ route('ledger.index') }}">Buku Besar</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item has-sub{{ Request::is('revenue') || Request::is('revenue/*') || Request::is('expense') || Request::is('expense/*')? ' active' :'' }}">
+                            <a href="#" class='sidebar-link'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-coin" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"/>
+                                    <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z"/>
+                                    <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z"/>
+                                    <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"/>
+                                </svg>
+                                <span>Kas Dan Bank</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item{{ Request::is('revenue') || Request::is('revenue/*')? ' active' :'' }}">
+                                    <a href="{{ route('revenue.index') }}">Pendapatan</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('expense') || Request::is('expense/*')? ' active' :'' }}">
+                                    <a href="{{ route('expense.index') }}">Pengeluaran</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('cash-mutation') || Request::is('cash-mutation/*')? ' active' :'' }}">
+                                    <a href="{{ route('cash-mutation.index') }}">Mutasi Kas</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item has-sub{{ Request::is('report/*') ? ' active' :'' }}">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-clipboard-data"></i>
+                                <span>Laporan</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item{{ Request::is('report/cashflow')? ' active' :'' }}">
+                                    <a href="{{ route('report.cashflow.index') }}">Arus Kas</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('report/cashflow-year')? ' active' :'' }}">
+                                    <a href="{{ route('report.cashflow.year') }}">Arus Kas Tahunan</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="submenu-item{{ Request::is('report/balance')? ' active' :'' }}">
+                                    <a href="{{ route('report.balance.index') }}">Neraca</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('report/balance-year')? ' active' :'' }}">
+                                    <a href="{{ route('report.balance.year') }}">Neraca Tahunan</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="submenu-item{{ Request::is('report/lost-profit')? ' active' :'' }}">
+                                    <a href="{{ route('report.lost-profit.index') }}">Laba Rugi</a>
+                                </li>
+                                <li class="submenu-item{{ Request::is('report/lost-profit-year')? ' active' :'' }}">
+                                    <a href="{{ route('report.lost-profit-year.index') }}">Laba Rugi Tahunan</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="submenu-item{{ Request::is('report/trial-balance')? ' active' :'' }}">
+                                    <a href="{{ route('report.trial-balance.index') }}">Neraca Saldo</a>
+                                </li>
+                            </ul>
+                        </li>
                         @endrole
+
+                        <li class="sidebar-title border-top pt-3">Atur Pengguna</li>
 
                         <li class="sidebar-item{{ Request::is('users') ? ' active' :'' }}">
                             <a href="{{ route('users.index') }}" class='sidebar-link'>
                                 <i class="bi bi-people"></i>
-                                <span>Users</span>
+                                <span>Pengguna</span>
                             </a>
                         </li>
 
@@ -111,7 +183,7 @@
                                     <span>Ubah Sandi</span>
                                 </a>
                             </li>
-                            <a href="#" class='sidebar-link' onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a href="#" class='sidebar-link' onclick="logoutSubmit()">
                                 <i class="bi bi-box-arrow-left"></i>
                                 <span>Log Out</span>
                             </a>
@@ -132,6 +204,8 @@
             </header>
 
             @yield('admin')
+
+            <div id="tost-message">Some text some message..</div>
         </div>
     </div>
 
@@ -140,9 +214,27 @@
     <script src="{{ asset('js/admin/bootstrap.min.js') }}" defer></script>
 
     <script src="{{ asset('js/admin/main.js') }}" defer></script> 
-      
+    <script src="{{ asset('js/public.js') }}" defer></script> 
+    
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+
+    <script>
+        @if(session()->has('login'))
+        
+            const searchOnURI = window.location.search;
+            const params = new URLSearchParams(searchOnURI);
+            
+            const token = params.get('token');
+            localStorage.setItem('token', token);
+
+            params.delete('token');
+
+        @endif
+    </script>
 
     @yield('script')
 

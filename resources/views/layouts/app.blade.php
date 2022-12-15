@@ -141,6 +141,7 @@
             let toastBody = document.getElementById('toast-body');
             toastBody.innerHTML = `{!!Session::get('Success')!!}`
             toast.show();
+
         </script>
     @endif
 
