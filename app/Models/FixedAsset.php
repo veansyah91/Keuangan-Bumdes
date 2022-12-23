@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contact extends Model
+class FixedAsset extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['no_ref', 'name', 'email', 'type', 'phone', 'address'];
+    protected $fillable = ['date', 'no_ref', 'name', 'value','salvage', 'is_active', 'useful_life', 'author'];
 
     public function scopeFilter($query, array $filters)
     {
@@ -17,8 +17,11 @@ class Contact extends Model
         $query->when($filters['search'] ?? false, function($query, $search){
                 return $query->where('no_ref', 'like', '%' . $search . '%')
                 ->orWhere('name', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
-                ->orWhere('type', 'like', '%' . $search . '%');
+                ->orWhere('date', 'like', '%' . $search . '%')
+                ->orWhere('no_ref', 'like', '%' . $search . '%')
+                ->orWhere('value', 'like', '%' . $search . '%')
+                ->orWhere('salvage', 'like', '%' . $search . '%')
+                ->orWhere('useful_life', 'like', '%' . $search . '%');
         });
     }
 }

@@ -56,6 +56,9 @@ async function showReport(){
 
             totalCreditMutation += trialBalance.credit_mutation;
             totalDebitMutation += trialBalance.debit_mutation;
+            
+            debitStart = (trialBalance.debit_start - trialBalance.credit_start) > 0 ? trialBalance.debit_start - trialBalance.credit_start : 0;
+            creditStart = (trialBalance.debit_start - trialBalance.credit_start) < 0 ? trialBalance.debit_start - trialBalance.credit_start : 0;
             list += 
                 (trialBalance.credit_end - trialBalance.debit_end == 0 
                 && trialBalance.credit_start - trialBalance.debit_start == 0
@@ -65,14 +68,14 @@ async function showReport(){
                     <td>${trialBalance.code}</td>
                     <td>${trialBalance.name}</td>
                     <td class="text-end">
-                        ${(trialBalance.debit_start - trialBalance.credit_start) > 0 ? formatRupiah((trialBalance.debit_start - trialBalance.credit_start).toString()) : 0}
+                        ${formatRupiah(debitStart.toString())}
                         
                     </td>
                     <td class="text-end">
-                        ${(trialBalance.debit_start - trialBalance.credit_start) < 0 ? formatRupiah((trialBalance.debit_start - trialBalance.credit_start).toString()) : 0}
+                        ${formatRupiah(creditStart.toString())}
                     </td>
-                    <td class="text-end">${formatRupiah(trialBalance.debit_mutation.toString())}</td>
-                    <td class="text-end">${formatRupiah(trialBalance.credit_mutation.toString())}</td>
+                    <td class="text-end">${formatRupiah((trialBalance.debit_end - debitStart).toString())}</td>
+                    <td class="text-end">${formatRupiah((trialBalance.credit_end - creditStart).toString())}</td>
                     <td class="text-end">${formatRupiah(trialBalance.debit_end.toString())}</td>
                     <td class="text-end">${formatRupiah(trialBalance.credit_end.toString())}</td>
                 </tr>` ;

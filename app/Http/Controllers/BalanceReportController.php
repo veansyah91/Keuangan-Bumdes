@@ -107,8 +107,7 @@ class BalanceReportController extends Controller
                                                         });
                                             })
                                             ->get();
-
-                                                          
+                                                     
                                         
         $reportYear = [];
         $i = 0;

@@ -35,11 +35,12 @@ class TrialBalanceReportController extends Controller
             if ($account->code < '4100000') {
                 $is_ledger = 1;
 
-                $ledgerMutation = Ledger::where('account_id', $account->id)->whereYear('date', request('year'))
-                                ->get();
+                
                 $ledgerEnd = Ledger::where('account_id', $account->id)->whereYear('date','<=',request('year'))
                                                 ->get();
                 $ledgerStart = Ledger::where('account_id', $account->id)->whereYear('date','<=',request('year') - 1)
+                                ->get();
+                $ledgerMutation = Ledger::where('account_id', $account->id)->whereYear('date', request('year'))
                                 ->get();
 
                 $total_lost_profit_before = Ledger::where('account_code', '>', '4000000')->whereYear('date', '<', request('year'))
@@ -63,7 +64,6 @@ class TrialBalanceReportController extends Controller
                         $ledgers[$l]['credit_end'] = $total_lost_profit_before->sum('credit') - $total_lost_profit_before->sum('debit') - $ledgers[$l]['credit_end'];
                     }
                 }
-                
                 
                 $l++;
             } else{

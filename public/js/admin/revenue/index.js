@@ -113,12 +113,12 @@ async function showRevenue(){
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#createModal" onclick="editRevenue(${res.id})" >
+                                <a class="dropdown-item" href="/revenue/${res.id}/edit" >
                                     <div class="row align-items-center justify-conter-start text-success">
                                         <div class="col-2"><i class="bi bi-pencil-square"></i></div>
                                         <div class="col-3">Ubah</div>
                                     </div>
-                                </button>
+                                </a>
                             </li>
                             <li>
                                 <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" onclick="deleteRevenue(${res.id})" >

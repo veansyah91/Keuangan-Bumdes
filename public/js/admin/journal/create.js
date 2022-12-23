@@ -327,8 +327,6 @@ async function submitJournal(){
     } catch (error) {
         console.log(error);
     }
-
-    
 }
 
 window.addEventListener('load', function(){

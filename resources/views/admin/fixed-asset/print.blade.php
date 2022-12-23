@@ -24,18 +24,12 @@
     <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/admin/custom.css') }}" rel="stylesheet">
-
-    <style>
-        td, th {
-            font-size: 12pt
-        }
-    </style>
 </head>
 <body>
     <div class="p-4">
         <div class="row justify-content-center mb-3">
             <div class="col-12 text-center">
-                <h1 class="text-gray">Laporan Pengeluaran</h1>
+                <h4 class="text-gray">Laporan Pengeluaran</h4>
             </div>
         </div>
 

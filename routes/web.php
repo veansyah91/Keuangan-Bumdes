@@ -45,6 +45,7 @@ use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\FixedAssetController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CashMutationController;
 use App\Http\Controllers\BalanceReportController;
@@ -84,6 +85,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::resource('/identity', IdentityController::class)->middleware('admin');
 
         Route::resource('/contact', ContactController::class)->only(['index','create','edit'])->middleware('admin');
+        Route::resource('/fixed-asset', FixedAssetController::class)->only(['index','create','edit'])->middleware('admin');
 
         Route::resource('/account', AccountController::class)->only(['index'])->middleware('admin');
 
@@ -102,7 +104,6 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/expense/print-detail/{id}', [ExpenseController::class, 'printDetail']);
         Route::get('/expense/print', [ExpenseController::class, 'print']);
 
-        
         Route::resource('/cash-mutation', CashMutationController::class)->only(['index','create','edit'])->middleware('admin');
         Route::get('/cash-mutation/print-detail/{id}', [CashMutationController::class, 'printDetail']);
         Route::get('/cash-mutation/print', [CashMutationController::class, 'print']);

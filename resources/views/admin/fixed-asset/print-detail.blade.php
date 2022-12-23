@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Print Voucer Mutasi Kas </title>
+    <title>Print Voucer Pengeluaran </title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -23,18 +23,12 @@
     <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/admin/custom.css') }}" rel="stylesheet">
-
-    <style>
-        td, th {
-            font-size: 12pt
-        }
-    </style>
 </head>
 <body>
     <div class="m-4 p-4">
         <div class="row justify-content-center mb-3">
             <div class="col-12 text-center">
-                <h4 class="text-gray">Laporan Rincian Mutasi Kas</h4>
+                <h4 class="text-gray">Laporan Rincian Pengeluaran</h4>
             </div>
         </div>
 
@@ -44,34 +38,34 @@
                     Tanggal
                 </div>
                 <div class="col-9">
-                    : {{ $cashMutation->date_format }}
+                    : {{ $expense->date_format }}
                 </div>
             </div>
     
             <div class="row p-1">
                 <div class="col-3">
-                    Kode Mutasi Kas
+                    Kode Pengeluaran
                 </div>
                 <div class="col-9">
-                    : {{ $cashMutation->no_ref }}
+                    : {{ $expense->no_ref }}
                 </div>
             </div>
     
             <div class="row p-1">
                 <div class="col-3">
-                    Deskripsi Mutasi Kas
+                    Deskripsi Pengeluaran
                 </div>
                 <div class="col-9">
-                    : {{ $cashMutation->description }}
+                    : {{ $expense->description }}
                 </div>
             </div>
     
             <div class="row p-1">
                 <div class="col-3">
-                    Detail Mutasi Kas
+                    Detail Pengeluaran
                 </div>
                 <div class="col-9">
-                    : {{ $cashMutation->detail }}
+                    : {{ $expense->detail }}
                 </div>
             </div>
     
@@ -97,8 +91,8 @@
                 <tfoot>
                     <tr>
                         <th style="width: 50%" colspan="2">Total</th>
-                        <th class="text-end" style="width: 25%">Rp.{{ number_format($cashMutation->value, 0, '', '.')}}</th>
-                        <th class="text-end" style="width: 25%">Rp.{{ number_format($cashMutation->value, 0, '', '.')}}</th>
+                        <th class="text-end" style="width: 25%">Rp.{{ number_format($expense->value, 0, '', '.')}}</th>
+                        <th class="text-end" style="width: 25%">Rp.{{ number_format($expense->value, 0, '', '.')}}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -109,7 +103,7 @@
 
     <div class="row justify-content-end mx-5" style="margin-top: 6rem">
         <div class="col-4 text-center" style="border-top: 1px solid black;">
-            {{ $cashMutation->author }}
+            {{ $expense->author }}
         </div>
     </div>
     

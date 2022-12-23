@@ -16,6 +16,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\FixedAssetController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\CashMutationController;
 use App\Http\Controllers\BalanceReportController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\SubCategoryAccountController;
 use App\Http\Controllers\TrialBalanceReportController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
+use App\Http\Controllers\FixedAssetDepreciationController;
 use App\Http\Controllers\Business\AccountReceivableController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
@@ -60,9 +62,16 @@ Route::group(['middleware' => ['auth:sanctum', 'role:ADMIN']], function(){
     Route::get('/home/liability',[AdminController::class, 'liability']);
     Route::get('/home/equity',[AdminController::class, 'equity']);
 
+    Route::get('/no-ref-contact-recomendation', [ContactController::class, 'noRefContactRecomendation']);
     Route::get('/contact', [ContactController::class, 'getApiData']);
-    Route::resource('/contact', RevenueController::class)->only(['store','destroy','show', 'update']);
+    Route::get('/contacts', [ContactController::class, 'getData']);
+    Route::resource('/contact', ContactController::class)->only(['store','destroy','show', 'update']);
     
+    Route::get('/no-ref-fixed-asset-recomendation', [FixedAssetController::class, 'noRefFixedAssetRecomendation']);
+    Route::get('/fixed-assets', [FixedAssetController::class, 'getData']);
+    Route::resource('/fixed-asset', FixedAssetController::class)->only(['store','destroy','show', 'update','edit']);
+
+    Route::get('/fixed-asset-depreciation', FixedAssetDepreciationController::class);
 
     Route::get('/account', [AccountController::class, 'getApiData']);
     Route::get('/account/{id}', [AccountController::class, 'show']);

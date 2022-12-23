@@ -1,6 +1,6 @@
 const token = `Bearer ${localStorage.getItem('token')}`;
 
-const getContact = async (url) => {
+const getFixedAsset = async (url) => {
     let response = await axios.get(url, {
         headers:{
             Authorization : token
@@ -10,7 +10,7 @@ const getContact = async (url) => {
     return response.data.data;
 }
 
-const getAccounts = async (search, is_cash) => {
+const getAccounts = async (search, is_cash = '') => {
     let url = `/api/account?search=${search}&is_cash=${is_cash}`
 
     let result = await axios.get(url, {
@@ -22,8 +22,8 @@ const getAccounts = async (search, is_cash) => {
     return result.data.data;
 }
 
-const getNewNoRef = async (type) => {
-    let url = `/api/no-ref-contact-recomendation?type=${type}`
+const getNewNoRef = async () => {
+    let url = `/api/no-ref-fixed-asset-recomendation`
     let result = await axios.get(url, {
         headers:{
             Authorization : token
@@ -33,8 +33,8 @@ const getNewNoRef = async (type) => {
     return result.data.data;
 }
 
-const postContact = async (data) => {
-    let url = `/api/contact`;
+const postFixedAsset = async (data) => {
+    let url = `/api/fixed-asset`;
     
     let result = await axios.post(url, data, {
         headers:{
@@ -45,8 +45,8 @@ const postContact = async (data) => {
     return result.data.data;
 }
 
-const putContact = async (data, id) => {
-    let url = `/api/contact/${id}`;
+const putFixedAsset = async (data, id) => {
+    let url = `/api/fixed-asset/${id}`;
 
     let result = await axios.put(url, data, {
         headers:{
@@ -57,10 +57,22 @@ const putContact = async (data, id) => {
     return result.data.data;
 }
 
-const destroyContact = async (id) => {
-    let url = `/api/contact/${id}`;
+const destroyFixedAsset = async (id) => {
+    let url = `/api/fixed-asset/${id}`;
     
     let result = await axios.delete(url, {
+        headers:{
+            Authorization : token
+        }
+    }) 
+
+    return result.data.data;
+}
+
+const fixedAssetDepreciation = async () => {
+    let url = `/api/fixed-asset-depreciation`;
+    
+    let result = await axios.get(url, {
         headers:{
             Authorization : token
         }

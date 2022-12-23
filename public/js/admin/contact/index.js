@@ -1,10 +1,5 @@
 const searchInput = document.querySelector('#search-input');
 
-const selectFilter = document.querySelector('#select-filter');
-const dateRange = document.querySelector('#date-range');
-const startFilter = document.querySelector('#start-filter');
-const endFilter = document.querySelector('#end-filter');
-
 const countData = document.querySelector('#count-data');
 const prevBtn = document.querySelector('#prev-page');
 const nextBtn = document.querySelector('#next-page');
@@ -21,53 +16,169 @@ const contentDetail = document.querySelector('#content-detail');
 const totalDebitDetail = document.querySelector('#total-debit-detail');
 const totalCreditDetail = document.querySelector('#total-credit-detail');
 
+let formData = {
+    no_ref : '',
+    name: '',
+    email: '',
+    type: '',
+    phone: '',
+    address: ''
+}
+
+//component modal input
+const createModalLabel = document.querySelector('#createModalLabel');
+const nameInput = document.querySelector('#name-input');
+const typeInput = document.querySelector('#type-input');
+const noRefInput = document.querySelector('#no-ref-input');
+const emailInput = document.querySelector('#email-input');
+const phoneInput = document.querySelector('#phone-input');
+const addressInput = document.querySelector('#address-input');
+
+
+
+const btnSubmit = document.querySelector('#btn-submit');
+const btnSubmitLabel = document.querySelector('#btn-submit-label');
+
+
 let search = '';
 let page = 1;
+let isUpdate = false;
 let deleteId = null;
-let filterBy = '';
-let date_from, date_to, thisWeek, thisMonth, thisYear;
+let updateId = null;
 
 async function searchForm(event){
     event.preventDefault();
 
     search = searchInput.value;
 
-    await showCashMutation();
+    await showContact();
 }
 
 function setDefault(){
     search = '';
     page = 1;
     deleteId = null;
+    updateId = null;
+    isUpdate = false;
 
-    filterBy = 'this month';
-    date_from = '';
-    date_to = '';
-    thisWeek = '';
-    thisMonth = 1;
-    thisYear = '';
+    formData = {
+        no_ref : '',
+        name: '',
+        email: '',
+        type: '',
+        phone: '',
+        address: ''
+    }
+    
+    validateInputData();
+}
+
+function validateInputData(){
+    let is_validated = false;
+
+    if (formData.no_ref && formData.name  && formData.type)    {
+        is_validated = true
+    }
+
+    if (is_validated) {
+        btnSubmit.classList.remove('d-none');
+    } else {
+        btnSubmit.classList.add('d-none');
+    }
 }
 
 function setDefaultComponentValue(){
-    dateRange.classList.add('d-none');
+    nameInput.value = formData.name;
+    typeInput.value = formData.type;
+    noRefInput.value = formData.no_ref;
+    emailInput.value = formData.email;
+    phoneInput.value = formData.phone;
+    addressInput.value = formData.address;
+
+    btnSubmit.classList.add('d-none');
+
+    btnSubmitLabel.innerHTML = `Simpan`;
+    btnSubmit.removeAttribute('disabled');
+}
+
+async function typeInputChange(value){
+    formData.type = value.value;
+
+    let res = await getNewNoRef(formData.type);
+    formData.no_ref = res;
+    noRefInput.value = res;
+    validateInputData();
+}
+
+function nameInputChange(value){
+    formData.name = value.value;
+    validateInputData();
+}
+
+function noRefInputChange(value){
+    formData.no_ref = value.value;
+    validateInputData();
+}
+
+function emailInputChange(value){
+    formData.email = value.value;
+    validateInputData();
+}
+
+function addressInputChange(value){
+    formData.address = value.value;
+    validateInputData();
+}
+
+function phoneInputChange(value){
+    formData.phone = value.value;
+    validateInputData();
+}
+
+const submitContact = async (event) => {
+    event.preventDefault();
+
+    btnSubmit.setAttribute('disabled','disabled');
+    btnSubmitLabel.innerHTML = `<div class="spinner-border-sm spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>`;
+    if (isUpdate) {
+        let result = await putContact(formData, updateId);
+    
+        let message = `Kontak ${result.name} Berhasil Diubah`;
+        myToast(message, 'success');
+        await showContact();
+        setDefaultComponentValue();
+        validateInputData();
+    } else {
+        let result = await postContact(formData);
+    
+        let message = `Kontak ${result.name} Berhasil Ditambahkan`;
+            
+        myToast(message, 'success');
+
+        setDefault();
+        setDefaultComponentValue();
+        await showContact();
+    }                
 }
 
 async function prevButton(){
     page--;
-    await showCashMutation();
+    await showContact();
 }
 
 async function nextButton(){
     page++;
-    await showCashMutation();
+    await showContact();
 }
 
-async function showCashMutation(){
+async function showContact(){
     try {
-        let url = `/api/cash-mutation?search=${search}&page=${page}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}`;
+        let url = `/api/contacts?search=${search}&page=${page}`;
 
-        let response = await getCashMutation(url);
-
+        let response = await getContact(url);
+        
         countData.innerHTML = `${response.data.length ? (page * response.per_page)-(response.per_page-1) : 0}-${response.data.length + (page * response.per_page)-response.per_page} dari ${response.total}`;
 
         if (page == 1) {
@@ -105,7 +216,7 @@ async function showCashMutation(){
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${index}">
                             <li>
-                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#showDetailModal" onclick="showSingleCashMutation(${res.id})" >
+                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#showDetailModal" onclick="showSingleContact(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-info">
                                         <div class="col-2"><i class="bi bi-search"></i></div>
                                         <div class="col-3">Detail</div>
@@ -113,7 +224,7 @@ async function showCashMutation(){
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#createModal" onclick="editCashMutation(${res.id})" >
+                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#createModal" onclick="editData(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-success">
                                         <div class="col-2"><i class="bi bi-pencil-square"></i></div>
                                         <div class="col-3">Ubah</div>
@@ -121,7 +232,7 @@ async function showCashMutation(){
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" onclick="deleteCashMutation(${res.id})" >
+                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" onclick="deleteContact(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-danger">
                                         <div class="col-2"><i class="bi bi-trash"></i></div>
                                         <div class="col-3">Hapus</div>
@@ -133,14 +244,14 @@ async function showCashMutation(){
                 </div>
                 <div style="width:50%">
                     <div class="font-bold">
-                        ${res.description}
+                        ${res.name}
                     </div>
                     <div class="">
                         <small>Kode: ${res.no_ref}  </small>
                     </div>
                 </div>
                 <div style="width:40%" class="my-auto text-end">
-                    Rp. ${formatRupiah(res.value.toString())}
+                   
                 </div>
                 
             </div>
@@ -153,7 +264,7 @@ async function showCashMutation(){
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${i}">
                             <li>
-                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#showDetailModal" onclick="showSingleCashMutation(${res.id})" >
+                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#showDetailModal" onclick="showSingleContact(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-info">
                                         <div class="col-2"><i class="bi bi-search"></i></div>
                                         <div class="col-3">Detail</div>
@@ -161,15 +272,15 @@ async function showCashMutation(){
                                 </button>
                             </li>
                             ${res.source ? '' : `<li>
-                            <a class="dropdown-item" href="/cash-mutation/${res.id}/edit">
+                                <button class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#createModal" onclick="editData(${res.id})">
                                     <div class="row align-items-center justify-conter-start text-success">
                                         <div class="col-2"><i class="bi bi-pencil-square"></i></div>
                                         <div class="col-3">Ubah</div>
                                     </div>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" onclick="deleteCashMutation(${res.id})" >
+                                <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" onclick="deleteContact(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-danger">
                                         <div class="col-2"><i class="bi bi-trash"></i></div>
                                         <div class="col-3">Hapus</div>
@@ -179,10 +290,11 @@ async function showCashMutation(){
                         </ul>
                     </div>
                 </div>
-                <div style="width:10%" class="px-2 my-auto">${dateReadable(res.date)}</div>
+                
+                <div style="width:20%" class="px-2 my-auto">${res.name}</div>
                 <div style="width:10%" class="px-2 my-auto">${res.no_ref}</div>
-                <div style="width:20%" class="px-2 my-auto">${res.description}</div>
-                <div style="width:20%" class="px-2 text-end my-auto">${formatRupiah(res.value.toString())}</div>
+                <div style="width:10%" class="px-2 my-auto">${res.type}</div>
+                <div style="width:20%" class="px-2 my-auto">${res.phone ? res.phone : '-'}</div>
                 
             </div>`
             });
@@ -192,139 +304,81 @@ async function showCashMutation(){
 
         
     } catch (error) {
-        console.log(error);
+         console.log(error);
     }
     
 }
 
-function deleteCashMutation(id){
+const addData = () => {
+    isUpdate = false;
+
+    createModalLabel.innerHTML = "Tambah Data";
+}
+
+const editData = async (id) => {
+    createModalLabel.innerHTML = "Ubah Data";
+    let url = `/api/contact/${id}`;
+    let res = await getContact(url);
+    isUpdate = true;
+    updateId = id;
+    
+    nameInput.value = res.name;
+    typeInput.value = res.type;
+    noRefInput.value = res.no_ref;
+    emailInput.value = res.email;
+    phoneInput.value = res.phone;
+    addressInput.value = res.address;
+
+    formData = {
+        no_ref : res.no_ref,
+        name: res.name,
+        email: res.email,
+        type: res.type,
+        phone: res.phone,
+        address: res.address
+    }
+    validateInputData();
+
+}
+
+function deleteContact(id){
     deleteId = id;
 }
 
-async function submitDeleteCashMutation(){  
+async function submitDeleteContact(){  
     try {
-        let response = await destroyCashMutation(deleteId);
+        let response = await destroyContact(deleteId);
 
-        let message = `${response.description} Berhasil Dihapus`;
+        let message = `Kontak ${response.name} Berhasil Dihapus`;
         
         myToast(message, 'success');
 
         setDefault();
-        await showCashMutation();
+        await showContact();
 
     } catch (error) {
         console.log(error);
     }
 }
 
-async function showSingleCashMutation(id){
+async function showSingleContact(id){
     try {
-        let url = `/api/cash-mutation/${id}`;
-        let res = await getCashMutation(url);
+        let url = `/api/contact/${id}`;
+        let res = await getContact(url);
 
-        dateDetail.innerHTML = `: ${dateReadable(res.date)}`;
-        noRefDetail.innerHTML = `: ${res.no_ref}`;
-        descriptionDetail.innerHTML = `: ${res.description}`;
-        detailDetail.innerHTML = `: ${res.detail ? res.detail : '-'}`;
-        authorDetailLabel.innerHTML = `${res.is_updated ? 'Diubah Oleh' : 'Diinput Oleh'}`;
-
-        authorDetail.innerHTML = `: ${res.author} (${res.created_at_for_human})`;
-
-        document.querySelector('#btn-submit-print-single').dataset.id = id;
-
-    
-        let list = '';
-        res.ledgers.map(ledger => {
-            list += `
-            <div class="row mt-2 text-gray">
-                <div class="col-3 text-start p-2 border border-white">
-                    ${ledger.account_code}
-                </div>
-                <div class="col-3 text-start p-2 border border-white">
-                    ${ledger.account_name}
-                </div>
-                <div class="col-3 text-end p-2 border border-white">
-                    Rp.${formatRupiah(ledger.debit.toString())}
-                </div>
-                <div class="col-3 text-end p-2 border border-white">
-                    Rp.${formatRupiah(ledger.credit.toString())}
-                </div>
-            </div>
-            `
-        })
-
-        contentDetail.innerHTML = list;
-
-        totalCreditDetail.innerHTML=`Rp.${formatRupiah(res.value.toString())}`;
-        totalDebitDetail.innerHTML=`Rp.${formatRupiah(res.value.toString())}`;
+        document.querySelector('#name-detail').innerHTML = res.name;
+        document.querySelector('#type-detail').innerHTML = res.type;
+        document.querySelector('#email-detail').innerHTML = res.email?? '-';
+        document.querySelector('#phone-detail').innerHTML = res.phone?? '-';
+        document.querySelector('#address-detail').innerHTML = res.address ?? '-';
 
     } catch (error) {
         console.log(error);
     }
-}
-
-function goToPrintCashMutationPerId(value){
-    window.open(`/cash-mutation/print-detail/${value.dataset.id}`)
-}
-
-function goToPrintCashMutations(){
-    window.open(`/cash-mutation/print?search=${search}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}`)
-}
-
-function filterButton(){
-    selectFilter.value = filterBy;
-}
-
-function changeFilter(value){
-    filterBy = value.value;
-
-    filterBy == 'custom' ? dateRange.classList.remove('d-none') : dateRange.classList.add('d-none');
-
-    if (filterBy == 'custom') {
-        dateRange.classList.remove('d-none');
-        startFilter.value = dateNow();
-        endFilter.value = dateNow();
-    } else {
-        dateRange.classList.add('d-none');
-    }
-}
-
-function setQuery(){
-    date_from = '';
-    date_to = '';
-    thisWeek = '';
-    thisMonth = '';
-    thisYear = '';
-
-    switch (filterBy) {
-        case 'today':
-            date_from = dateNow();
-            date_to = dateNow();
-            break;
-        case 'this week':
-            thisWeek = true;
-            break;
-        case 'this month':
-            thisMonth = true;
-            break;
-        case 'this year':
-            thisYear = true;
-            break;
-        default:
-            date_from = startFilter.value;
-            date_to = endFilter.value;
-            break;
-    }
-}
-
-async function submitFilter(){
-    setQuery();
-    await showCashMutation();
-
 }
 
 window.addEventListener('load', async function(){
     setDefault();
     setDefaultComponentValue();
-    await showCashMutation();
+    await showContact();
 })
