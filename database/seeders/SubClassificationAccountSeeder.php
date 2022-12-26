@@ -15,7 +15,7 @@ class SubClassificationAccountSeeder extends Seeder
      */
     public function run()
     {
-        collect([
+        $data = [
             ['name' => 'Kas dan Setara Kas', 'code' => '1100000'],
             ['name' => 'Bank', 'code' => '1200000'],
             ['name' => 'Piutang Usaha', 'code' => '1300000'],
@@ -51,6 +51,10 @@ class SubClassificationAccountSeeder extends Seeder
             ['name' => 'Beban Penyusutan', 'code' => '5700000'],
             ['name' => 'Beban Operasional', 'code' => '5800000'],
             ['name' => 'Beban Atas Pendapatan', 'code' => '5900000'],
-        ])->map(fn ($item) => SubClassificationAccount::create($item));
+        ];
+
+        foreach ($data as $d) {
+            SubClassificationAccount::create($d);
+        }
     }
 }

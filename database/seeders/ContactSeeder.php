@@ -14,7 +14,7 @@ class ContactSeeder extends Seeder
      */
     public function run()
     {
-        collect([
+        $contacts = [
             [
                 'no_ref' => 'CUST-001',
                 'name' => 'General Customer',
@@ -25,6 +25,10 @@ class ContactSeeder extends Seeder
                 'name' => 'General Supplier',
                 'type' => 'Supplier'
             ],
-        ])->map(fn ($item) => Contact::create($item));
+        ];
+
+        foreach ($contacts as $contact) {
+            Contact::create($contact);
+        }
     }
 }
