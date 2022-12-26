@@ -1,7 +1,12 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
-@section('admin')
-    <div class="page-heading d-flex justify-content-between my-auto">
+@section('navmenu')
+    <x-navbar :kategori="$business->kategori" :id="$business->id"/>
+@endsection
+
+
+@section('content')
+    <div class="page-heading d-flex justify-content-between my-auto" data-business="{{ $business->id }}" id="content">
         <h3>Akun</h3>
         <div>
             <form class="d-flex input-group mb-3" onsubmit="searchForm(event)">
@@ -40,7 +45,7 @@
                         <div style="width:20%" class="px-2">Status</div>
                     </div>
             
-                    <div style="height: 450px;" class="overflow-auto custom-scroll" id="list-data">
+                    <div style="height: 350px;" class="overflow-auto custom-scroll" id="list-data">
                         
                     </div>
                 </div>
@@ -145,8 +150,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createModal" data-bs-dismiss="modal">Tutup</button>
-                    
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createModal" data-bs-dismiss="modal">Kembali</button>
                 </div>
            </div>
         </div>
@@ -154,7 +158,7 @@
 @endsection
 
 @section('script')
-    <script src="/js/admin/account/index.js">
+    <script src="/js/business/account/index.js">
        
     </script>
 @endsection

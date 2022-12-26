@@ -357,7 +357,7 @@ async function submitDeleteContact(){
         await showContact();
 
     } catch (error) {
-        console.log(error);
+        myToast(error.response.data.errors.message, 'danger');
     }
 }
 

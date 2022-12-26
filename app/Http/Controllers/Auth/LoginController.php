@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\BusinessUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -23,19 +24,25 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
+        // dd($request->password);
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
             $token = Auth::user()->createToken('web-token')->plainTextToken;
             
-
             if (Auth::user()->hasRole('DEV') || Auth::user()->hasRole('ADMIN')) {
                 return redirect()->route('admin.dashboard', [
                     'token' => $token
                 ])->with('login', 'Berhasil Login');
             }
- 
-            
+
+            $businessUser = BusinessUser::where('user_id', Auth::user()->id)->first();
+
+            return redirect()->route('business.dashboard', [
+                'token' => $token,
+                'business' => $businessUser['business_id']
+            ])->with('login', 'Berhasil Login');
         }
  
         return back()->withErrors([

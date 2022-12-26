@@ -483,7 +483,6 @@ const submitDepreciate = async (event) => {
         myToast(message, 'success');
 
     } catch (error) {
-        console.log(error);
         myToast(error, 'danger');
     }
 
@@ -498,7 +497,6 @@ async function showSingleFixedAsset(id){
         let url = `/api/fixed-asset/${id}`;
         let res = await getFixedAsset(url);
 
-        console.log(res);
         document.querySelector('#name-detail').innerHTML = res.name;
         document.querySelector('#no-ref-detail').innerHTML = res.no_ref;
         document.querySelector('#date-detail').innerHTML = dateReadable(res.date);

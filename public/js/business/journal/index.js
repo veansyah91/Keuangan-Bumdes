@@ -111,7 +111,7 @@ async function showJournal(){
                                 </button>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="/journal/${res.id}/edit" >
+                                <a class="dropdown-item" href="/${res.business_id}/journal/${res.id}/edit" >
                                     <div class="row align-items-center justify-conter-start text-success">
                                         <div class="col-2"><i class="bi bi-pencil-square"></i></div>
                                         <div class="col-3">Ubah</div>
@@ -149,7 +149,7 @@ async function showJournal(){
                         <button class="btn btn-sm" type="button" id="dropdownMenuButton${index}" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${index}">
                             <li>
                                 <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#showDetailModal" onclick="showSingleJournal(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-info">
@@ -159,7 +159,7 @@ async function showJournal(){
                                 </button>
                             </li>
                             ${res.source ? '' : `<li>
-                            <a class="dropdown-item" href="/journal/${res.id}/edit">
+                            <a class="dropdown-item" href="/${res.business_id}/journal/${res.id}/edit">
                                     <div class="row align-items-center justify-conter-start text-success">
                                         <div class="col-2"><i class="bi bi-pencil-square"></i></div>
                                         <div class="col-3">Ubah</div>
@@ -230,7 +230,6 @@ async function showSingleJournal(id){
 
         document.querySelector('#btn-submit-print-single').dataset.id = id;
 
-    
         let list = '';
         res.ledgers.map(ledger => {
             list += `
@@ -256,6 +255,8 @@ async function showSingleJournal(id){
         totalCreditDetail.innerHTML=`Rp.${formatRupiah(res.value.toString())}`;
         totalDebitDetail.innerHTML=`Rp.${formatRupiah(res.value.toString())}`;
 
+        document.querySelector('#btn-submit-print-single').setAttribute('href',`/${res.business_id}/journal/print-detail/${res.id}`);
+
     } catch (error) {
         console.log(error);
     }
@@ -266,7 +267,7 @@ function goToPrintJournalPerId(value){
 }
 
 function goToPrintJournals(){
-    window.open(`/journal/print?search=${search}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}`)
+    window.open(`/${business}/journal/print?search=${search}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}`)
 }
 
 function filterButton(){

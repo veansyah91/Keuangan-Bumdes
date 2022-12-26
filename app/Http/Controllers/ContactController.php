@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Expense;
+use App\Models\Revenue;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ContactController extends Controller
 {
@@ -97,6 +100,17 @@ class ContactController extends Controller
 
     public function destroy(Contact $contact)
     {
+        // cek apakah telah digunakan di pendapatan dan pengeluaran
+        $contact_revenue = Revenue::where('contact', $contact['name'])->first();
+        $contact_expense = Expense::where('contact', $contact['name'])->first();
+
+        if ($contact_revenue || $contact_expense) {
+            $message = "Tidak Bisa Dihapus, Kontak " . $contact['name'] . " Telah Digunakan Pada Transaksi";
+            throw ValidationException::withMessages([
+                'message' => [$message]
+            ]);
+        }
+
         $contact->delete();
         return response()->json([
             'status' => 'success',
@@ -108,7 +122,7 @@ class ContactController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' =>Contact::filter(request(['search']))->orderBy('id', 'desc')->paginate(50),
+            'data' =>Contact::filter(request(['search']))->where('type','!=', 'Business')->orderBy('id', 'desc')->paginate(50),
         ]); 
     }
 

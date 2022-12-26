@@ -52,6 +52,7 @@ use App\Http\Controllers\BalanceReportController;
 use App\Http\Controllers\Business\AssetController;
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
+use App\Http\Controllers\Business\BusinessLedgerController;
 use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
 use App\Http\Controllers\Business\ProductController;
@@ -65,6 +66,8 @@ use App\Http\Controllers\Business\DailyIncomeController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\Business\BusinessIncomeController;
+use App\Http\Controllers\Business\BusinessAccountController;
+use App\Http\Controllers\Business\BusinessJournalController;
 use App\Http\Controllers\Business\AccountReceivableController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
@@ -309,6 +312,24 @@ Route::group(['middleware' => ['auth']], function(){
             Route::delete('/{business}/dashboard/business-balance-activity/{businessBalanceActivity}', [BusinessBalanceActivityController::class, 'delete'])->name('business.business-balance-activity.delete');
 
         // 
+
+        //Account Page
+            Route::get('/{business}/account', [BusinessAccountController::class, 'index'])->name('business.account.index');
+        //
+
+        //Journal Page
+            Route::get('/{business}/journal', [BusinessJournalController::class, 'index'])->name('business.journal.index');
+            Route::get('/{business}/journal/create', [BusinessJournalController::class, 'create'])->name('business.journal.create');
+            Route::get('/{business}/journal/{businessjournal}/edit', [BusinessJournalController::class, 'edit'])->name('business.journal.edit');
+            Route::get('/{business}/journal/print-detail/{businessjournal}', [BusinessJournalController::class, 'printDetail']);
+            Route::get('/{business}/journal/print', [BusinessJournalController::class, 'print']);
+        //
+
+         //Ledger Page
+         Route::get('/{business}/ledger', [BusinessLedgerController::class, 'index'])->name('business.ledger.index');
+        
+         Route::get('/{business}/ledger/print', [BusinessLedgerController::class, 'print']);
+     //
 
         // Category Page 
             Route::get('/{business}/category', [CategoryController::class, 'index'])->name('business.category.index');

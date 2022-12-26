@@ -379,7 +379,6 @@ class AccountSeeder extends Seeder
             $subClassification = SubClassificationAccount::where('name', $account['sub_category'])->first();
             $account['sub_classification_account_id'] = $subClassification->id;
             
-
             if ($subClassification) {
                 Account::create($account);
             }

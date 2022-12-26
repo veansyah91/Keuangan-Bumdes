@@ -65,12 +65,12 @@ class FixedAssetDepreciationController extends Controller
                         Journal::updateOrCreate(
                             [
                                 'date' => $last_date,
+                                'detail' => 'Penyusutan Harta Tetap - ' .  $fixedAsset['name'],
                             ],
                             [
                                 'no_ref' => $fix_ref_no,
                                 'desc' => 'Penyusutan Harta Tetap',
                                 'value' => $depreciatePerMonth,
-                                'detail' => 'Penyusutan Harta Tetap - ' .  $fixedAsset['name'],
                                 'author' => $request->user()->name,
                                 'source' => 'Penyusutan Harta Tetap',
                             ]);

@@ -21,6 +21,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('css/business/custom.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -114,7 +116,7 @@
         
     </div>
 
-    <div class="fixed-bottom text-end p-2 m-2">
+    <div class="fixed-bottom text-end p-2 m-2 d-md-none d-block">
         <a class="btn btn-secondary rounded-circle" href="#nav">
             <i class="bi bi-arrow-up-circle"></i>
         </a>
@@ -123,10 +125,14 @@
     <div id="print" class="d-print-block d-none mt-3 mb-2 font-monospace" style="width: 55mm;color:black">
         
     </div>    
+    <div id="tost-message">Some text some message..</div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <script src="{{ asset('js/business/main.js') }}" defer></script> 
+    <script src="{{ asset('js/public.js') }}" defer></script> 
 
     {{-- <script src="{{ asset('js/dist/just-validate.production.min') }}"></script> --}}
 
@@ -141,6 +147,19 @@
             let toastBody = document.getElementById('toast-body');
             toastBody.innerHTML = `{!!Session::get('Success')!!}`
             toast.show();
+
+        </script>
+    @endif
+    @if(session()->has('login'))
+        <script>
+        
+            const searchOnURI = window.location.search;
+            const params = new URLSearchParams(searchOnURI);
+            
+            const token = params.get('token');
+            localStorage.setItem('token', token);
+
+            params.delete('token');
 
         </script>
     @endif

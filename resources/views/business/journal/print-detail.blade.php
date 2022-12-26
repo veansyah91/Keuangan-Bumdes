@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Print Voucer Pengeluaran </title>
+    <title>Print businessjournal </title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -20,15 +20,26 @@
 
     <link href="{{ asset('vendors/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('css/admin/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/custom.css') }}" rel="stylesheet"> --}}
+    <style>
+        td, th {
+            font-size: 12pt
+        }
+    </style>
 </head>
 <body>
     <div class="m-4 p-4">
         <div class="row justify-content-center mb-3">
+            <div class="col-12 text-start">
+                <h4 class="text-gray font-bold">Unit Usaha : {{ $business->nama }}</h4>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-3">
             <div class="col-12 text-center">
-                <h4 class="text-gray">Laporan Rincian Pengeluaran</h4>
+                <h4 class="text-gray font-bold">Laporan Rincian Jurnal</h4>
             </div>
         </div>
 
@@ -38,34 +49,34 @@
                     Tanggal
                 </div>
                 <div class="col-9">
-                    : {{ $expense->date_format }}
+                    : {{ $businessjournal->date_format }}
                 </div>
             </div>
     
             <div class="row p-1">
                 <div class="col-3">
-                    Kode Pengeluaran
+                    Kode Jurnal
                 </div>
                 <div class="col-9">
-                    : {{ $expense->no_ref }}
+                    : {{ $businessjournal->no_ref }}
                 </div>
             </div>
     
             <div class="row p-1">
                 <div class="col-3">
-                    Deskripsi Pengeluaran
+                    Deskripsi Jurnal
                 </div>
                 <div class="col-9">
-                    : {{ $expense->description }}
+                    : {{ $businessjournal->desc }}
                 </div>
             </div>
     
             <div class="row p-1">
                 <div class="col-3">
-                    Detail Pengeluaran
+                    Detail Jurnal
                 </div>
                 <div class="col-9">
-                    : {{ $expense->detail }}
+                    : {{ $businessjournal->detail }}
                 </div>
             </div>
     
@@ -91,8 +102,8 @@
                 <tfoot>
                     <tr>
                         <th style="width: 50%" colspan="2">Total</th>
-                        <th class="text-end" style="width: 25%">Rp.{{ number_format($expense->value, 0, '', '.')}}</th>
-                        <th class="text-end" style="width: 25%">Rp.{{ number_format($expense->value, 0, '', '.')}}</th>
+                        <th class="text-end" style="width: 25%">Rp.{{ number_format($businessjournal->value, 0, '', '.')}}</th>
+                        <th class="text-end" style="width: 25%">Rp.{{ number_format($businessjournal->value, 0, '', '.')}}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -103,7 +114,7 @@
 
     <div class="row justify-content-end mx-5" style="margin-top: 6rem">
         <div class="col-4 text-center" style="border-top: 1px solid black;">
-            {{ $expense->author }}
+            {{ $businessjournal->author }}
         </div>
     </div>
     

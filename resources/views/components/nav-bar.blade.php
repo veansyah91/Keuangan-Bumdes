@@ -12,6 +12,7 @@
         <li class="nav-item ">
             <a href="{{ route('business.dashboard', $business_id) }}" class="nav-link @if($pageMaster[1] == 'dashboard') active @endif">Dashboard</a> 
         </li>  
+
         @if (in_array($kategori, $kategori_master))
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-nav dropdown-toggle @if(in_array($pageMaster[1], $master)) active @endif" href="#" id="navbarDropdown" role="button"
@@ -90,6 +91,31 @@
                 </div>
             </li>
         @endif
+
+        {{-- Buku Besar --}}
+        @php
+            $ledger = ['account', 'journal', 'ledger'];
+        @endphp
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-nav dropdown-toggle @if(in_array($pageMaster[1], $ledger)) active @endif" href="#" id="navbarDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Buku Besar
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">     
+                <div>
+                    <a class="dropdown-item @if($pageMaster[1] == 'account') active @endif" href="{{ route('business.account.index', $business_id) }}">
+                        Akun
+                    </a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'journal') active @endif" href="{{ route('business.journal.index', $business_id) }}">
+                        Jurnal
+                    </a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'ledger') active @endif" href="{{ route('business.ledger.index', $business_id) }}">
+                        Buku Besar
+                    </a>
+                </div> 
+            </div>
+        </li>
 
         {{-- Menu Produk --}}
         @php
@@ -195,7 +221,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-nav dropdown-toggle @if(in_array($pageMaster[1], $keuangan)) active @endif" href="#" id="navbarDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    Keuangan
+                    Kas Dan Bank
                 </a>
                 <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
                     {{-- @if ($kategori == 'Retail') --}}
@@ -226,5 +252,29 @@
             </li>
         @endif
 
+        {{-- Buku Besar --}}
+        @php
+            $ledger = ['account', 'journal', 'ledger'];
+        @endphp
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-nav dropdown-toggle @if(in_array($pageMaster[1], $ledger)) active @endif" href="#" id="navbarDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Laporan
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">     
+                <div>
+                    <a class="dropdown-item @if($pageMaster[1] == 'account') active @endif" href="{{ route('business.account.index', $business_id) }}">
+                        Akun
+                    </a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'journal') active @endif" href="{{ route('business.journal.index', $business_id) }}">
+                        Jurnal
+                    </a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'ledger') active @endif" href="{{ route('business.ledger.index', $business_id) }}">
+                        Buku Besar
+                    </a>
+                </div> 
+            </div>
+        </li>
     </ul>
 </div>

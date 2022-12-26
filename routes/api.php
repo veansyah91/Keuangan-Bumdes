@@ -36,6 +36,9 @@ use App\Http\Controllers\TrialBalanceReportController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\FixedAssetDepreciationController;
+use App\Http\Controllers\Business\BusinessLedgerController;
+use App\Http\Controllers\Business\BusinessAccountController;
+use App\Http\Controllers\Business\BusinessJournalController;
 use App\Http\Controllers\Business\AccountReceivableController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
@@ -55,53 +58,71 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => ['auth:sanctum', 'role:ADMIN']], function(){
-
-    Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
-    Route::get('/home/asset',[AdminController::class, 'asset']);
-    Route::get('/home/liability',[AdminController::class, 'liability']);
-    Route::get('/home/equity',[AdminController::class, 'equity']);
-
-    Route::get('/no-ref-contact-recomendation', [ContactController::class, 'noRefContactRecomendation']);
-    Route::get('/contact', [ContactController::class, 'getApiData']);
-    Route::get('/contacts', [ContactController::class, 'getData']);
-    Route::resource('/contact', ContactController::class)->only(['store','destroy','show', 'update']);
-    
-    Route::get('/no-ref-fixed-asset-recomendation', [FixedAssetController::class, 'noRefFixedAssetRecomendation']);
-    Route::get('/fixed-assets', [FixedAssetController::class, 'getData']);
-    Route::resource('/fixed-asset', FixedAssetController::class)->only(['store','destroy','show', 'update','edit']);
-
-    Route::get('/fixed-asset-depreciation', FixedAssetDepreciationController::class);
-
-    Route::get('/account', [AccountController::class, 'getApiData']);
-    Route::get('/account/{id}', [AccountController::class, 'show']);
-    Route::put('/account/{id}', [AccountController::class, 'update']);
-    Route::post('/account', [AccountController::class, 'store']);
+Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::resource('/sub-category-account', SubCategoryAccountController::class)->only(['index', 'store', 'destroy']);
-    Route::get('/journal', [JournalController::class, 'getApiData']);
-    Route::get('/no-ref-journal-recomendation', [JournalController::class, 'noRefJournalRecomendation']);
-    Route::resource('/journal', JournalController::class)->only(['store','destroy','show', 'update']);
 
-    Route::get('/no-ref-revenue-recomendation', [RevenueController::class, 'noRefRevenueRecomendation']);
-    Route::get('/revenue', [RevenueController::class, 'getApiData']);
-    Route::resource('/revenue', RevenueController::class)->only(['store','destroy','show', 'update']);
+    Route::group(['middleware' => ['role:ADMIN']], function(){
+        Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
+        Route::get('/home/asset',[AdminController::class, 'asset']);
+        Route::get('/home/liability',[AdminController::class, 'liability']);
+        Route::get('/home/equity',[AdminController::class, 'equity']);
+    
+        Route::get('/no-ref-contact-recomendation', [ContactController::class, 'noRefContactRecomendation']);
+        Route::get('/contact', [ContactController::class, 'getApiData']);
+        Route::get('/contacts', [ContactController::class, 'getData']);
+        Route::resource('/contact', ContactController::class)->only(['store','destroy','show', 'update']);
+        
+        Route::get('/no-ref-fixed-asset-recomendation', [FixedAssetController::class, 'noRefFixedAssetRecomendation']);
+        Route::get('/fixed-assets', [FixedAssetController::class, 'getData']);
+        Route::resource('/fixed-asset', FixedAssetController::class)->only(['store','destroy','show', 'update','edit']);
+    
+        Route::get('/fixed-asset-depreciation', FixedAssetDepreciationController::class);
+    
+        Route::get('/account', [AccountController::class, 'getApiData']);
+        Route::get('/account/{id}', [AccountController::class, 'show']);
+        Route::put('/account/{id}', [AccountController::class, 'update']);
+        Route::post('/account', [AccountController::class, 'store']);
+        Route::get('/journal', [JournalController::class, 'getApiData']);
+        Route::get('/no-ref-journal-recomendation', [JournalController::class, 'noRefJournalRecomendation']);
+        Route::resource('/journal', JournalController::class)->only(['store','destroy','show', 'update']);
+    
+        Route::get('/no-ref-revenue-recomendation', [RevenueController::class, 'noRefRevenueRecomendation']);
+        Route::get('/revenue', [RevenueController::class, 'getApiData']);
+        Route::resource('/revenue', RevenueController::class)->only(['store','destroy','show', 'update']);
+    
+        Route::get('/no-ref-expense-recomendation', [ExpenseController::class, 'noRefExpenseRecomendation']);
+        Route::get('/expense', [ExpenseController::class, 'getApiData']);
+        Route::resource('/expense', ExpenseController::class)->only(['store','destroy','show', 'update']);
+    
+        Route::get('/no-ref-cash-mutation-recomendation', [CashMutationController::class, 'noRefCashMutationRecomendation']);
+        Route::get('/cash-mutation', [CashMutationController::class, 'getApiData']);
+        Route::resource('/cash-mutation', CashMutationController::class)->only(['store','destroy','show', 'update']);
+    
+        Route::get('/report/cashflow', [CashflowReportController::class, 'getApiData']);
+        Route::get('/report/balance', [BalanceReportController::class, 'getApiData']);
+        Route::get('/report/balance-year', [BalanceReportController::class, 'getApiDataYear']);
+        Route::get('/report/lost-profit', [LostProfitReportController::class, 'getApiData']);
+        Route::get('/report/lost-profit-year', [LostProfitReportController::class, 'getApiDataYear']);
+        Route::get('/report/trial-balance', [TrialBalanceReportController::class, 'getApiData']);
+    
+        Route::get('/ledger',[LedgerController::class, 'getApiData']);
+    });
 
-    Route::get('/no-ref-expense-recomendation', [ExpenseController::class, 'noRefExpenseRecomendation']);
-    Route::get('/expense', [ExpenseController::class, 'getApiData']);
-    Route::resource('/expense', ExpenseController::class)->only(['store','destroy','show', 'update']);
+    Route::group(['middleware' => ['role:OPERATOR']], function(){
+        Route::get('/{business}/account', [BusinessAccountController::class, 'getApiData']);
+        Route::get('/{business}/account/{businessaccount}', [BusinessAccountController::class, 'show']);
+        Route::post('/{business}/account', [BusinessAccountController::class, 'store']);
+        Route::put('/{business}/account/{businessaccount}', [BusinessAccountController::class, 'update']);
 
-    Route::get('/no-ref-cash-mutation-recomendation', [CashMutationController::class, 'noRefCashMutationRecomendation']);
-    Route::get('/cash-mutation', [CashMutationController::class, 'getApiData']);
-    Route::resource('/cash-mutation', CashMutationController::class)->only(['store','destroy','show', 'update']);
+        Route::get('/{business}/journal', [BusinessJournalController::class, 'getApiData']);
+        Route::get('/{business}/journal/{businessjournal}', [BusinessJournalController::class, 'show']);
+        Route::post('/{business}/journal', [BusinessJournalController::class, 'store']);
+        Route::put('/{business}/journal/{businessjournal}', [BusinessJournalController::class, 'update']);
+        Route::get('/{business}/no-ref-journal-recomendation', [BusinessJournalController::class, 'noRefJournalRecomendation']);
 
-    Route::get('/report/cashflow', [CashflowReportController::class, 'getApiData']);
-    Route::get('/report/balance', [BalanceReportController::class, 'getApiData']);
-    Route::get('/report/balance-year', [BalanceReportController::class, 'getApiDataYear']);
-    Route::get('/report/lost-profit', [LostProfitReportController::class, 'getApiData']);
-    Route::get('/report/lost-profit-year', [LostProfitReportController::class, 'getApiDataYear']);
-    Route::get('/report/trial-balance', [TrialBalanceReportController::class, 'getApiData']);
+        Route::get('/{business}/ledger', [BusinessLedgerController::class, 'getApiData']);
 
-    Route::get('/ledger',[LedgerController::class, 'getApiData']);
+    });
     
 });
 
