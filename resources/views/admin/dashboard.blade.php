@@ -4,7 +4,7 @@
     <div class="page-heading">
         <div class="row justify-content-between">
             <div class="col-md-5 col-12 h3 my-auto">
-                Admin
+                Dasbor
             </div>
             <div class="col-md-5 d-flex">
                 <div>

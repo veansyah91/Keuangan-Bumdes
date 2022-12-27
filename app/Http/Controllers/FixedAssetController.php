@@ -152,11 +152,11 @@ class FixedAssetController extends Controller
         //jika debit akun adalah kas maka masukkan ke tabel arus kas dengan 
         if ((int)$account['code'] < 1300001) {
             Cashflow::create([
-                'account_id' => $account['id'],
+                'account_id' => $account_to_ledger['id'],
                 'no_ref' => $attributes['no_ref'],
                 'date' => $attributes['date'],
-                'account_code' => $account['code'],
-                'account_name' => $account['name'],
+                'account_code' => $account_to_ledger['code'],
+                'account_name' => $account_to_ledger['name'],
                 'type' => 'investment',
                 'debit' => 0,
                 'credit' => $attributes['value'],
@@ -295,11 +295,11 @@ class FixedAssetController extends Controller
         //jika debit akun adalah kas maka masukkan ke tabel arus kas dengan 
         if ((int)$account['code'] < 1300001) {
             Cashflow::create([
-                'account_id' => $account['id'],
+                'account_id' => $account_to_ledger['id'],
                 'no_ref' => $attributes['no_ref'],
                 'date' => $attributes['date'],
-                'account_code' => $account['code'],
-                'account_name' => $account['name'],
+                'account_code' => $account_to_ledger['code'],
+                'account_name' => $account_to_ledger['name'],
                 'type' => 'investment',
                 'debit' => 0,
                 'credit' => $attributes['value'],

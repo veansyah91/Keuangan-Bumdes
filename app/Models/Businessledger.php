@@ -13,7 +13,7 @@ class Businessledger extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Businessaccount::class, 'account_id');
     }
 
     public function scopeFilter($query, array $filters)

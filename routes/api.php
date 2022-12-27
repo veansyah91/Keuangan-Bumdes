@@ -40,7 +40,11 @@ use App\Http\Controllers\Business\BusinessLedgerController;
 use App\Http\Controllers\Business\BusinessAccountController;
 use App\Http\Controllers\Business\BusinessJournalController;
 use App\Http\Controllers\Business\AccountReceivableController;
+use App\Http\Controllers\Business\BusinessBalanceReportController;
+use App\Http\Controllers\Business\BusinessCashflowReportController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
+use App\Http\Controllers\Business\BusinessLostProfitReportController;
+use App\Http\Controllers\Business\BusinessTrialBalanceReportController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
 
 /*
@@ -121,6 +125,15 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
         Route::get('/{business}/no-ref-journal-recomendation', [BusinessJournalController::class, 'noRefJournalRecomendation']);
 
         Route::get('/{business}/ledger', [BusinessLedgerController::class, 'getApiData']);
+
+        //report
+            Route::get('/{business}/report/cashflow', [BusinessCashflowReportController::class, 'getApiData']);
+            Route::get('/{business}/report/balance', [BusinessBalanceReportController::class, 'getApiData']);
+            Route::get('/{business}/report/balance-year', [BusinessBalanceReportController::class, 'getApiDataYear']);
+            Route::get('/{business}/report/lost-profit', [BusinessLostProfitReportController::class, 'getApiData']);
+            Route::get('/{business}/report/lost-profit-year', [BusinessLostProfitReportController::class, 'getApiDataYear']);
+            Route::get('/{business}/report/trial-balance', [BusinessTrialBalanceReportController::class, 'getApiData']);
+        //
 
     });
     

@@ -8,15 +8,36 @@ const trialBalanceFooter = document.querySelector('#trial-balance-footer');
 function setDefault(){
     let date = new Date();
     year = date.getFullYear();
+    period.innerHTML = year;
+}
+
+function loading(){
+    return `
+        <tr>
+            <td colspan=8 class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
 }
 
 async function showReport(){
+    trialBalanceList.innerHTML = loading();
     try {
         url = `/api/report/trial-balance?year=${year}&end_year=${year}`;
 
         let res = await getData(url);
-        
-        period.innerHTML = res.period;
 
         let trialBalances = res.trial_balance;
         let list = '';
@@ -104,6 +125,7 @@ const setSelectYearValue = () => {
 const handleSelectYear = async (value) => {
     setDefault();
     year = parseInt(value.value);
+    period.innerHTML = year;
     await showReport();
 }
 

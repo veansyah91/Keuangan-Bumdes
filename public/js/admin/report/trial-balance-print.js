@@ -29,8 +29,30 @@ function setDefault(){
     year = date.getFullYear();
 }
 
+function loading(){
+    return `
+        <tr>
+            <td colspan=8 class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
+
 async function showReport(){
-    // try {
+    trialBalanceList.innerHTML = loading();
+    try {
         url = `/api/report/trial-balance?year=${year}&end_year=${year}`
         let res = await getData(url);
 
@@ -96,9 +118,9 @@ async function showReport(){
             </tr>
         `;
 
-    // } catch (error) {
-    //     console.log(error);
-    // }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const printButtonVisibility = () => {

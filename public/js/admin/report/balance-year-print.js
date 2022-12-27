@@ -146,7 +146,60 @@ const goToPrintCashflow = () => {
     window.open(url);
 }
 
+function loading(){
+    return `
+        <tr>
+            <td colspan="3" class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
+
+function loadingComponent(){
+    currentAsset.innerHTML = loading();
+    totalCurrentAssetNow.innerHTML = loading();
+    totalCurrentAssetBefore.innerHTML = loading();
+
+    nonCurrentAsset.innerHTML = loading();
+    totalNonCurrentAssetNow.innerHTML = loading();
+    totalNonCurrentAssetBefore.innerHTML = loading();
+
+    shortTermLiability.innerHTML = loading();
+    totalShortTermLiabilityNow.innerHTML = loading();
+    totalShortTermLiabilityBefore.innerHTML = loading();
+
+    longTermLiability.innerHTML = loading();
+    totalLongTermLiabilityNow.innerHTML = loading();
+    totalLongTermLiabilityBefore.innerHTML = loading();
+
+    equity.innerHTML = loading();
+    totalEquityNow.innerHTML = loading();
+    totalEquityBefore.innerHTML = loading();
+
+    totalAssetNow.innerHTML = loading();
+    totalAssetBefore.innerHTML = loading();
+
+    totalLiabilityNow.innerHTML = loading();
+    totalLiabilityBefore.innerHTML = loading();
+
+    totalLiabilityEquityNow.innerHTML = loading();
+    totalLiabilityEquityBefore.innerHTML = loading();
+}
+
 const showReport = async () => {
+    loadingComponent()
     try {
         let url = `/api/report/balance-year?year=${year}&end_year=${year}`;
 

@@ -62,7 +62,49 @@ async function nextButton(){
     await showJournal();
 }
 
+function loading(){
+    return `
+    <div class="d-flex d-md-none justify-content-center border-top border-bottom py-2">
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        
+    </div>
+
+    <div class="d-md-flex d-none justify-content-center border-top border-bottom py-2 px-1 content-data">
+        
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        
+    </div>
+    `
+}
+
+function loadingComponent(){
+    listData.innerHTML = loading();
+}
+
 async function showJournal(){
+    loadingComponent()
     try {
         let response = await getJournal(search,page, date_from, date_to, thisWeek, thisMonth, thisYear);
 

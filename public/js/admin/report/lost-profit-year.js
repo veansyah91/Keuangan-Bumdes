@@ -100,7 +100,51 @@ const showLostProfit = (component, totalComponentNow, totalComponentBefore, lost
     }
 }
 
+function loading(){
+    return `
+        <tr>
+            <td colspan="3" class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
+
+function loadingComponent(){
+    revenue.innerHTML = loading();
+    totalRevenueNow.innerHTML = loading();
+    totalRevenueBefore.innerHTML = loading();
+
+    cost.innerHTML = loading();
+    totalCostNow.innerHTML = loading();
+    totalCostBefore.innerHTML = loading();
+
+    grossLostProfitNow.innerHTML = loading();
+
+    grossLostProfitBefore.innerHTML = loading();
+
+    lostProfitBeforeTaxNow.innerHTML = loading();
+
+    lostProfitBeforeTaxBefore.innerHTML = loading();
+
+
+    lostProfitAfterTaxNow.innerHTML = loading();
+    lostProfitAfterTaxBefore.innerHTML = loading();
+}
+
 const showReport = async () => {
+    loadingComponent();
     try {
         let url = `/api/report/lost-profit-year?year=${year}&end_year=${year}`;
 

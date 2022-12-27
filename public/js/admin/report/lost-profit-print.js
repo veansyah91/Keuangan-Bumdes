@@ -61,10 +61,43 @@ const showLostProfit = (component, totalComponent, lostProfits, totalLostProfits
     }
 }
 
-const showReport = async () => {
-    try {
-        let url = `/api/report/lost-profit?date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`;
+function loading(){
+    return `
+        <tr>
+            <td colspan="3" class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
 
+function loadingComponent(){
+    revenue.innerHTML = loading();
+    totalRevenue.innerHTML = loading();
+    cost.innerHTML = loading();
+    totalCost.innerHTML = loading();
+
+    grossLostProfit.innerHTML = loading();
+    
+    lostProfitBeforeTax.innerHTML = loading();
+
+    lostProfitAfterTax.innerHTML = loading();
+}
+
+const showReport = async () => {
+    loadingComponent()
+    try {
         let res = await getData(url);
 
         period.innerHTML = res.period;
@@ -109,7 +142,7 @@ const showReport = async () => {
 window.addEventListener('load',async function(){
     let currentUrl = new URL(window.location.href);
 
-    url = `/api/report/cashflow${currentUrl.search}`;
+    url = `/api/report/lost-profit${currentUrl.search}`;
     setDefaultValue();
     await showReport();
 })

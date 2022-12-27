@@ -101,7 +101,45 @@ const goToPrintCashflow = () => {
     window.open(url);
 }
 
+function loading(){
+    return `
+        <tr>
+            <td colspan="3" class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
+
+function loadingComponent(){
+    totalAsset.innerHTML = loading();
+    totalLiabilityEquity.innerHTML = loading();
+
+    currentAsset.innerHTML = loading();
+    totalCurrentAsset.innerHTML = loading();
+
+    nonCurrentAsset.innerHTML = loading();
+    totalNonCurrentAsset.innerHTML = loading();
+
+    liability.innerHTML = loading();
+    totalLiability.innerHTML = loading();
+    equity.innerHTML = loading();
+    totalEquity.innerHTML = loading();
+}
+
 const showReport = async () => {
+    loadingComponent()
     try {
         let url = `/api/report/balance?date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`;
 

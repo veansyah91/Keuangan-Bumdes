@@ -25,4 +25,14 @@ class Businessaccount extends Model
             
         });
     }
+
+    public function cashflows()
+    {
+        return $this->hasMany(Businesscashflow::class, 'account_id');
+    }
+
+    public function ledgers()
+    {
+        return $this->hasMany(Businessledger::class, 'account_id');
+    }
 }

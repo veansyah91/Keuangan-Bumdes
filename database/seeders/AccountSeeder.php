@@ -233,6 +233,13 @@ class AccountSeeder extends Seeder
                 'sub_category' => 'Modal'
             ],
             [
+                'code' => '3100001',
+                'name' => 'Modal Penyertaan Desa',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Modal'
+            ],
+            [
                 'code' => '3200001',
                 'name' => 'Laba Ditahan',
                 'is_cash' => false,

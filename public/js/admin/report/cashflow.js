@@ -139,7 +139,45 @@ const showFinanceCash = () => {
     totalFinanceActivity.innerHTML = totalFinanceCashes < 0 ? `(${formatRupiah(totalFinanceCashes.toString())})` : formatRupiah(totalFinanceCashes.toString())
 }
 
+function loading(){
+    return `
+        <tr>
+            <td colspan="3" class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
+
+function loadingComponent(){
+    financeActivity.innerHTML = loading();
+    totalFinanceActivity.innerHTML = loading();
+
+    investmentActivity.innerHTML = loading();
+    totalInvestmentActivity.innerHTML = loading();
+
+    operationalActivity.innerHTML = loading();
+    totalOperationalActivity.innerHTML = loading();
+
+    increaseCash.innerHTML = loading();
+
+    endCash.innerHTML = loading();
+    startCash.innerHTML = loading();
+}
+
 const showReport = async () => {
+    loadingComponent()
     try {
         let url = `/api/report/cashflow?date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`;
 

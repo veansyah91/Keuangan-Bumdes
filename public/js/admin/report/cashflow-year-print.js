@@ -191,7 +191,53 @@ const handleSelectYear = async (value) => {
     await showReport();
 }
 
+function loading(){
+    return `
+        <tr>
+            <td colspan="3" class="text-center">
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `
+}
+
+function loadingComponent(){
+    investmentActivity.innerHTML = loading()
+
+    financeActivity.innerHTML = loading()
+
+    operationalActivity.innerHTML = loading()
+
+    totalInvestmentActivity.innerHTML = loading()
+
+    totalFinanceActivity.innerHTML = loading()
+
+    totalOperationalActivity.innerHTML = loading()
+    
+    increaseCashNow.innerHTML = loading()
+    increaseCashBefore.innerHTML = loading()
+
+    endCashNow.innerHTML = loading()
+    endCashBefore.innerHTML = loading()
+
+    startCashNow.innerHTML = loading()
+    startCashBefore.innerHTML = loading()
+    
+}
+
 const showReport = async () => {
+    loadingComponent()
     try {
         url = `/api/report/cashflow?year=${year}&end_year=${year}`;
 

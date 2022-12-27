@@ -246,7 +246,6 @@
                                 Uang Keluar
                             </a>
                         </li> 
-                        
                     {{-- @endif --}}
                 </ul>
             </li>
@@ -254,7 +253,7 @@
 
         {{-- Buku Besar --}}
         @php
-            $ledger = ['account', 'journal', 'ledger'];
+            $ledger = ['report'];
         @endphp
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-nav dropdown-toggle @if(in_array($pageMaster[1], $ledger)) active @endif" href="#" id="navbarDropdown" role="button"
@@ -264,14 +263,29 @@
 
             <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">     
                 <div>
-                    <a class="dropdown-item @if($pageMaster[1] == 'account') active @endif" href="{{ route('business.account.index', $business_id) }}">
-                        Akun
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'cashflow') active @endif @endif" href="{{ route('report.business.cashflow.index', $business_id) }}">
+                        Arus Kas
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'journal') active @endif" href="{{ route('business.journal.index', $business_id) }}">
-                        Jurnal
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'cashflow-year') active @endif @endif" href="{{ route('report.business.cashflow.year', $business_id) }}">
+                        Arus Kas Tahunan
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'ledger') active @endif" href="{{ route('business.ledger.index', $business_id) }}">
-                        Buku Besar
+                    <a><hr class="dropdown-divider"></a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'balance') active @endif @endif" href="{{ route('report.business.balance.index', $business_id) }}">
+                        Neraca
+                    </a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'balance-year') active @endif @endif" href="{{ route('report.business.balance.year', $business_id) }}">
+                        Neraca Tahunan
+                    </a>
+                    <a><hr class="dropdown-divider"></a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'lost-profit') active @endif @endif" href="{{ route('report.business.lost-profit.index', $business_id) }}">
+                        Laba Rugi
+                    </a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'lost-profit-year') active @endif @endif" href="{{ route('report.business.lost-profit.year', $business_id) }}">
+                        Laba Rugi Tahunan
+                    </a>
+                    <a><hr class="dropdown-divider"></a>
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'trial-balance') active @endif @endif" href="{{ route('report.business.trial-balance.index', $business_id) }}">
+                        Neraca Saldo
                     </a>
                 </div> 
             </div>

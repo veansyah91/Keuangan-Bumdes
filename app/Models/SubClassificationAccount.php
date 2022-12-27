@@ -23,4 +23,9 @@ class SubClassificationAccount extends Model
     {
         return $this->hasMany(Account::class);
     }
+
+    public function businessaccounts()
+    {
+        return $this->hasMany(Businessaccount::class);
+    }
 }

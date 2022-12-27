@@ -52,7 +52,6 @@ use App\Http\Controllers\BalanceReportController;
 use App\Http\Controllers\Business\AssetController;
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
-use App\Http\Controllers\Business\BusinessLedgerController;
 use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
 use App\Http\Controllers\Business\ProductController;
@@ -66,10 +65,15 @@ use App\Http\Controllers\Business\DailyIncomeController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\Business\BusinessIncomeController;
+use App\Http\Controllers\Business\BusinessLedgerController;
 use App\Http\Controllers\Business\BusinessAccountController;
 use App\Http\Controllers\Business\BusinessJournalController;
 use App\Http\Controllers\Business\AccountReceivableController;
+use App\Http\Controllers\Business\BusinessBalanceReportController;
+use App\Http\Controllers\Business\BusinessCashflowReportController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
+use App\Http\Controllers\Business\BusinessLostProfitReportController;
+use App\Http\Controllers\Business\BusinessTrialBalanceReportController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
 
 Route::get('/', function () {
@@ -326,10 +330,36 @@ Route::group(['middleware' => ['auth']], function(){
         //
 
          //Ledger Page
-         Route::get('/{business}/ledger', [BusinessLedgerController::class, 'index'])->name('business.ledger.index');
-        
-         Route::get('/{business}/ledger/print', [BusinessLedgerController::class, 'print']);
-     //
+            Route::get('/{business}/ledger', [BusinessLedgerController::class, 'index'])->name('business.ledger.index');
+            Route::get('/{business}/ledger/print', [BusinessLedgerController::class, 'print']);
+        //
+
+        //Report Page
+        //Cashflow Report Page
+            Route::get('/{business}/report/cashflow', [BusinessCashflowReportController::class, 'index'])->name('report.business.cashflow.index');
+            Route::get('/{business}/report/cashflow-year', [BusinessCashflowReportController::class, 'year'])->name('report.business.cashflow.year');
+            Route::get('/{business}/report/print-cashflow', [BusinessCashflowReportController::class, 'print'])->name('report.business.cashflow.print');
+            Route::get('/{business}/report/print-cashflow-year', [BusinessCashflowReportController::class, 'printYear'])->name('report.business.cashflow.print.year');
+        //
+
+        //Balance Report Page
+            Route::get('/{business}/report/balance', [BusinessBalanceReportController::class, 'index'])->name('report.business.balance.index');
+            Route::get('/{business}/report/balance-year', [BusinessBalanceReportController::class, 'year'])->name('report.business.balance.year');
+            Route::get('/{business}/report/print-balance', [BusinessBalanceReportController::class, 'print'])->name('report.business.balance.print');
+            Route::get('/{business}/report/print-balance-year', [BusinessBalanceReportController::class, 'printYear'])->name('report.business.balance.print.year');
+        //
+
+        //Lost Profit Report Page
+            Route::get('/{business}/report/lost-profit', [BusinessLostProfitReportController::class, 'index'])->name('report.business.lost-profit.index');
+            Route::get('/{business}/report/lost-profit-year', [BusinessLostProfitReportController::class, 'year'])->name('report.business.lost-profit.year');
+            Route::get('/{business}/report/print-lost-profit', [BusinessLostProfitReportController::class, 'print'])->name('report.business.lost-profit.print');
+            Route::get('/{business}/report/lost-profit-year-print', [BusinessLostProfitReportController::class, 'printYear'])->name('report.business.balance.print.year');
+        //
+
+        //Trial Balance
+            Route::get('/{business}/report/trial-balance', [BusinessTrialBalanceReportController::class, 'index'])->name('report.business.trial-balance.index');
+            Route::get('/{business}/report/trial-balance-print', [BusinessTrialBalanceReportController::class, 'print'])->name('report.business.balance.print.year');
+        //
 
         // Category Page 
             Route::get('/{business}/category', [CategoryController::class, 'index'])->name('business.category.index');

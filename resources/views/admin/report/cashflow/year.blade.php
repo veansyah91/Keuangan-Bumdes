@@ -67,20 +67,7 @@
                                 
                             </tbody>
                             <tfoot id="total-investment-activity">
-                                <tr>
-                                    <th class="w-50">Total Kas Investasi</th>
-                                    <th class="w-25">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                Rp. 
-                                            </div>
-                                            <div class="text-end" >
-                                                
-                                            </div>
-                                        </div>      
-                                    </th>
-                                    <td class="w-25"></td>
-                                </tr>
+                                
                             </tfoot>
                         </table>
                     </div>
