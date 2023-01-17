@@ -2,7 +2,7 @@
 
 @section('admin')
     <div class="page-heading">
-        <h3>Pengguna</h3>
+        <h3>Pengguna  @if (Auth::user()->getRoleNames()[0] == 'DEV') Admin @endif</h3>
     </div>
 
     <div class="page-content">
