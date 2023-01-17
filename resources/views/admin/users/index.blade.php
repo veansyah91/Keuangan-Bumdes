@@ -45,25 +45,29 @@
                     <tbody>
                         @if ($users->isNotEmpty())
                                 @if (Auth::user()->getRoleNames()[0] == 'DEV')
-                                    <tr>
-                                        <td>{{ $users[0]->name }}</td>
-                                        <td>{{ $users[0]->email }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#resetPasswordModal" onclick="resetPassword({{ $users[0]->id }})">Reset Password</button>
-                                        </td>
-                                        <td>{{ $users[0]->getRoleNames()[0] }}</td>
-                                        <td>
-                                            @if ($users[0]->businesses->count() > 0)
-                                                @foreach ($user[0]->businesses as $business)
-                                                    {{ $business->nama }}
-                                                @endforeach
-                                            @else
-                                                -
-                                            @endif
-                                        <td>
-                                            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="deleteConfirmation({{ $users[0]->id }})">Hapus</button>
-                                        </td>
-                                    </tr>    
+                                    @foreach ($users as $user)
+                                        @if ($user->getRoleNames()[0] == 'ADMIN')
+                                            <tr>
+                                                <td>{{ $user->name }}</td>
+                                                <td>{{ $user->email }}</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#resetPasswordModal" onclick="resetPassword({{ $user->id }})">Reset Password</button>
+                                                </td>
+                                                <td>{{ $user->getRoleNames()[0] }}</td>
+                                                <td>
+                                                    @if ($user->businesses->count() > 0)
+                                                        @foreach ($user->businesses as $business)
+                                                            {{ $business->nama }}
+                                                        @endforeach
+                                                    @else
+                                                        -
+                                                    @endif
+                                                <td>
+                                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="deleteConfirmation({{ $user->id }})">Hapus</button>
+                                                </td>
+                                            </tr>   
+                                        @endif
+                                    @endforeach
                                 @else
                                     @foreach ($users as $user)
                                         @if ($user->getRoleNames()[0] !== 'DEV')
