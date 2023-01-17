@@ -8,7 +8,9 @@ use App\Models\Identity;
 use Illuminate\Http\Request;
 use App\Models\Businessaccount;
 use App\Models\Businesscashflow;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\SubClassificationAccount;
 
 class BusinessCashflowReportController extends Controller
@@ -96,7 +98,11 @@ class BusinessCashflowReportController extends Controller
     }
 
     public function print(Business $business){
-
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.cashflow.print', [
             'author' => request()->user(),
             'business' => $business
@@ -104,6 +110,11 @@ class BusinessCashflowReportController extends Controller
     }
 
     public function printYear(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         $identity = Identity::first();
         return view('business.report.cashflow.print-year', [
             'author' => request()->user(),
@@ -113,11 +124,21 @@ class BusinessCashflowReportController extends Controller
     }
 
     public function year(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.cashflow.year', compact('business'));
     }
 
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.cashflow.index', compact('business'));
     }
 

@@ -37,6 +37,7 @@ class LostProfitReportController extends Controller
 
     public function getApiData(){
         $data = Account::where('code','>','3999999')
+                        ->where('name', '!=', 'Ikhtisar Laba Rugi')
                         ->whereHas('ledgers')
                         ->orderBy('code', 'asc')
                         ->get();
@@ -79,8 +80,8 @@ class LostProfitReportController extends Controller
             $totalNow = 0;
             $totalBefore = 0;
             foreach ($lost_profit_now->accounts as $account) {
-                $ledger_nows = Ledger::whereYear('date', request('year'))->where('account_id', $account['id'])->get();
-                $ledger_befores = Ledger::whereYear('date', request('year') - 1)->where('account_id', $account['id'])->get();
+                $ledger_nows = Ledger::whereYear('date', request('year'))->where('account_id', $account['id'])->where('account_name', '!=', 'Ikhtisar Laba Rugi')->get();
+                $ledger_befores = Ledger::whereYear('date', request('year') - 1)->where('account_id', $account['id'])->where('account_name', '!=', 'Ikhtisar Laba Rugi')->get();
 
                 if (count($ledger_nows) > 0) {
                     $totalNow += $ledger_nows->sum('debit') - $ledger_nows->sum('credit');

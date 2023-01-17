@@ -36,7 +36,7 @@
                 </div>
                 
                 <div class="border border-top border-bottom">
-                    <div class="d-md-flex d-none justify-content-between font-bold  py-2 px-1 border border-bottom">
+                    <div class="fw-bold d-md-flex d-none justify-content-between font-bold  py-2 px-1 border border-bottom">
                         <div style="width:1%" class="px-2">
                         </div>
                         <div style="width:10%" class="px-2">Kode</div>

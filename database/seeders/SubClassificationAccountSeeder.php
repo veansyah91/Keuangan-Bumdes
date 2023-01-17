@@ -51,6 +51,7 @@ class SubClassificationAccountSeeder extends Seeder
             ['name' => 'Beban Penyusutan', 'code' => '5700000'],
             ['name' => 'Beban Operasional', 'code' => '5800000'],
             ['name' => 'Beban Atas Pendapatan', 'code' => '5900000'],
+            ['name' => 'Iktisar Laba Rugi', 'code' => '5999000'],
         ];
 
         foreach ($data as $d) {

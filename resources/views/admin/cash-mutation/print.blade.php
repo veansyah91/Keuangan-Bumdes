@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Print Pengeluaran</title>
+    <title>Print Mutasi Kas</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -35,7 +35,7 @@
     <div class="p-4">
         <div class="row justify-content-center mb-3">
             <div class="col-12 text-center">
-                <h1 class="text-gray">Laporan Pengeluaran</h1>
+                <h1 class="text-gray">Laporan Mutasi Kas</h1>
             </div>
         </div>
 
@@ -52,13 +52,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($expenses as $expense)
+                    @foreach ($cashMutations as $cashMutation)
                         <tr>
-                            <td style="width: 15%">{{ $carbon::parse($expense->date)->isoformat('MMM, D Y') }}</td>
-                            <td style="width: 20%">{{ $expense->no_ref }}</td>
-                            <td style="width: 20%">{{ $expense->description }}</td>
-                            <td style="width: 25%">{{ $expense->detail }}</td>
-                            <td class="text-end" style="width: 20%">{{ number_format($expense->value, 0, '', '.')}}</td>
+                            <td style="width: 15%">{{ $carbon::parse($cashMutation->date)->isoformat('MMM, D Y') }}</td>
+                            <td style="width: 20%">{{ $cashMutation->no_ref }}</td>
+                            <td style="width: 20%">{{ $cashMutation->description }}</td>
+                            <td style="width: 25%">{{ $cashMutation->detail }}</td>
+                            <td class="text-end" style="width: 20%">{{ number_format($cashMutation->value, 0, '', '.')}}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -1,3 +1,5 @@
+const business = document.querySelector('#content').dataset.business;
+
 const searchInput = document.querySelector('#search-input');
 const listData = document.querySelector('#list-data');
 
@@ -21,8 +23,6 @@ let data = [];
 let subCategories = [];
 let search = '';
 let searchSubClassification = '';
-
-const business = document.querySelector('#content').dataset.business;
 
 let formData = {
     id: 0,

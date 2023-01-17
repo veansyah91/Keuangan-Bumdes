@@ -75,7 +75,7 @@
                         <th style="width: 25%">Kode Akun</th>
                         <th style="width: 25%">Nama Akun</th>
                         <th class="text-end" style="width: 25%">Debit</th>
-                        <th class="text-end" style="width: 25%">Kode Akun</th>
+                        <th class="text-end" style="width: 25%">Kredit</th>
                     </tr>
                 </thead>
                 <tbody>

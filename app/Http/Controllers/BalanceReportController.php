@@ -122,23 +122,25 @@ class BalanceReportController extends Controller
                 $i++;
             }
         }
-
+        
         $lost_profit_ledger_now = Ledger::whereYear('date','<=', request('year'))
                                     ->whereHas('account', function($query){
                                         $query->where('code', 'like', '4%')
                                                 ->orWhere('code', 'like', '5%');
                                     })
                                     ->get();
-        $lost_profit_ledger_before = Ledger::whereYear('date','<', request('year'))
-                                    ->whereHas('account', function($query){
-                                        $query->where('code', 'like', '4%')
-                                                ->orWhere('code', 'like', '5%');
-                                    })
-                                    ->get();
-
         $lost_profit_now = $lost_profit_ledger_now->sum('credit') - $lost_profit_ledger_now->sum('debit');
-        $lost_profit_before = $lost_profit_ledger_before->sum('credit') - $lost_profit_ledger_before->sum('debit');
+
         
+        $lost_profit_ledger_before = Ledger::whereYear('date','<', request('year'))
+                                            ->whereHas('account', function($query){
+                                                $query->where('code', 'like', '4%')
+                                                        ->orWhere('code', 'like', '5%');
+                                            })
+                                            ->get();
+                                            
+        $lost_profit_before = $lost_profit_ledger_before->sum('credit') - $lost_profit_ledger_before->sum('debit');
+
         $j = 0;
         $is_there_current_year_earnings_now = false;
         $is_there_current_year_earnings_before = false;
@@ -151,20 +153,20 @@ class BalanceReportController extends Controller
                     foreach ($account->ledgers as $ledger) {
                         $time = DateTime::createFromFormat("Y-m-d", $ledger->date);
                         if ($time->format("Y") < request('year')) {
-                            if ($report['name'] == 'Laba Tahun Berjalan') {
-                                $is_there_current_year_earnings_before = true;
-                            }
+                            $report['name'] == 'Laba Tahun Berjalan' ? 
+                                        $is_there_current_year_earnings_before = true :
+                                        $is_there_current_year_earnings_before = false;
                             $totalBefore += $ledger->debit - $ledger->credit;
                         }
 
-                        if ($report['name'] == 'Laba Tahun Berjalan') {
-                            $is_there_current_year_earnings_now = true;
-                        }
+                        $report['name'] == 'Laba Tahun Berjalan' ? 
+                                        $is_there_current_year_earnings_now = true :
+                                        $is_there_current_year_earnings_now = false;
                         
                         $totalNow += $ledger->debit - $ledger->credit;
                     }
                 }
-                if ($report['name'] == 'Laba Tahun Berjalan') {
+                if ($report['name'] == 'Laba') {
                     $report['total_now'] = $totalNow + $lost_profit_now;
                     $report['total_before'] = $totalBefore + $lost_profit_before;
                 } else {
@@ -180,8 +182,8 @@ class BalanceReportController extends Controller
             array_push($reportYear, [
                     "name" => "Laba Tahun Berjalan",
                     "code" => "3299999",
-                    "total_now" => -1 * $lost_profit_now,
-                    "total_before" => -1 * $lost_profit_before,
+                    "total_now" => -1 * ($lost_profit_now),
+                    "total_before" => -1 * ($lost_profit_before),
             ]);
         }
 

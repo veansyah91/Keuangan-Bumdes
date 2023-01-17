@@ -262,7 +262,7 @@ async function showContact(){
                         <button class="btn btn-sm" type="button" id="dropdownMenuButton${index}" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${i}">
+                        <ul class="dropdown-menu">
                             <li>
                                 <button class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#showDetailModal" onclick="showSingleContact(${res.id})" >
                                     <div class="row align-items-center justify-conter-start text-info">

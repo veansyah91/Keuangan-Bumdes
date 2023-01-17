@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Business;
 
+use App\Models\Contact;
 use App\Models\Invoice;
 use App\Models\Business;
 use App\Models\Identity;
@@ -23,30 +24,25 @@ class AccountReceivableController extends Controller
         if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
-        $accountReceivables = AccountReceivable::where('business_id', $business['id'])->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->paginate(10);
-        $sumAccountReceivable = AccountReceivable::all()->sum('sisa');
+        
         $identity = Identity::first();
-        return view('business.account-receivable.index', compact('business' ,'accountReceivables', 'sumAccountReceivable', 'identity'));
+        return view('business.account-receivable.index', compact('business','identity'));
     }
 
-    public function detail(Business $business, AccountReceivable $accountReceivable)
+    public function show(Business $business, $id)
     {
-        $data = [
-            'accountReceivable' => $accountReceivable,
-            'payment' => AccountReceivablePayment::whereAccountReceivableId($accountReceivable['id'])->get()
-        ];
+        $data = Contact::where('id', $id)
+                        ->whereHas('invoices')
+                        ->with('invoices', function($query) use ($business){
+                            $query->whereHas('accountReceivables')
+                                    ->with('accountReceivables');
+                        })
+                        ->first();
         
-        $response = [
-            'message' => "Berhasil Mendapatkan Data",
-            'status' => "Success",
-            'data' => $data
-        ];
-
-        try {
-            return response()->json($response, Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            return response()->json($th, 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
     }
 
     public function store(Business $business, Request $request)
@@ -74,62 +70,35 @@ class AccountReceivableController extends Controller
         return redirect('/' . $business['id'] . '/account-receivable');
     }
 
-    public function payLater(Business $business)
+    public function getData(Business $business)
     {
-        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        $data = Contact::where('name', 'like', '%' . request('search') . '%')
+                        ->whereHas('accountReceivables')
+                        ->with('accountReceivables')
+                        ->withSum('accountReceivables', 'debit')
+                        ->withSum('accountReceivables', 'credit')
+                        ->paginate(50);
+
         
-        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
-            return abort(403);
-        }
-        $accountReceivables = AccountReceivable::where('business_id', $business['id'])->where('sisa', '>', 0)->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->get();
-        $identity = Identity::first();
-        return view('business.account-receivable.pay-later', compact('business', 'accountReceivables', 'identity'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
     }
 
-    public function payLaterList(Business $business)
+    public function getDataByInvoice(Business $business, $contact)
     {
-        $accountReceivables = AccountReceivable::where('business_id', $business['id'])->where('sisa', '>', 0)->orderBy('created_at', 'desc')->orderBy('sisa', 'desc')->get();
+        $data = Invoice::where('contact_id', $contact)
+                        ->whereHas('accountReceivables')
+                        ->with('accountReceivables')
+                        ->withSum('accountReceivables', 'debit')
+                        ->withSum('accountReceivables', 'credit')
+                        ->paginate(50);
 
-        $data = [
-            "accountReceivables" => $accountReceivables
-        ];
-
-        $response = [
-            'message' => "Berhasil Mendapatkan Data",
-            'status' => "Success",
-            'data' => $data
-        ];
-
-        try {
-            return response()->json($response, Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            return response()->json($th, 500);
-        }
-    }
-
-    public function payLaterDetail($id)
-    {   
         
-        $accountReceivable = AccountReceivable::find($id);
-
-        $invoice = Invoice::find($accountReceivable['invoice_id']);
-        $details = $invoice->products;
-
-        $data = [
-            'accountReceivable' => $accountReceivable,
-            'invoice' => $invoice,
-        ];
-
-        $response = [
-            'message' => "Berhasil Mendapatkan Data",
-            'status' => 200,
-            'data' => $data
-        ];
-
-        try {
-            return response()->json($response, Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            return response()->json($th, 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'data' => $data,
+        ]);
     }
 }

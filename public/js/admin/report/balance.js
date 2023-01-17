@@ -161,26 +161,26 @@ const showReport = async () => {
             if (parseInt(balance.code) < 2000000) {
                 if (parseInt(balance.code) < 1600000) {
                     currentAssets = [...currentAssets, {
-                        name : `${balance.code} - ${balance.name}`,
+                        name : `${balance.name}`,
                         total : parseInt(balance.total)
                     }];
                     totalCurrentAssets += balance.total;
                 } else {
                     nonCurrentAssets = [...nonCurrentAssets, {
-                        name : `${balance.code} - ${balance.name}`,
+                        name : `${balance.name}`,
                         total : parseInt(balance.total)
                     }];
                     totalNonCurrentAssets += balance.total;
                 }
             } else if(parseInt(balance.code) < 3000000) {
                 liabilities = [...liabilities, {
-                    name : `${balance.code} - ${balance.name}`,
+                    name : `${balance.name}`,
                     total : parseInt(balance.total) * -1
                 }];
                 totalLiabilities += balance.total * -1;
             } else {
                 equities = [...equities, {
-                    name : `${balance.code} - ${balance.name}`,
+                    name : `${balance.name}`,
                     total : parseInt(balance.total) * -1
                 }];
                 totalEquities += balance.total * -1;
@@ -264,7 +264,6 @@ async function submitFilter(){
     await showReport();
 
 }
-
 
 window.addEventListener('load', async function(){
     setDefaultValue();

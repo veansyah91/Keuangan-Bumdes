@@ -2,23 +2,35 @@
 
 namespace App\Http\Controllers\Business;
 
-use Carbon\Carbon;
 use DateTime;
+use Carbon\Carbon;
 use App\Models\Business;
 use App\Models\Identity;
 use Illuminate\Http\Request;
 use App\Models\Businessledger;
 use App\Models\Businessaccount;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\SubClassificationAccount;
 
 class BusinessBalanceReportController extends Controller
 {
     public function index(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.balance.index', compact('business'));
     }
 
     public function print(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.balance.print', [
             'author' => request()->user(),
             'business' => $business,
@@ -26,11 +38,21 @@ class BusinessBalanceReportController extends Controller
     }
 
     public function year(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.balance.year', compact('business'));
     }
 
     public function printYear(Business $business){
         $identity = Identity::first();
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.balance.print-year', [
             'author' => request()->user(),
             'identity' => $identity,
@@ -45,7 +67,7 @@ class BusinessBalanceReportController extends Controller
                         ->orderBy('code', 'asc')
                         ->get();
 
-        $lost_profit_ledger = Businessledger::where('business_id', $business['id'])->filter(request(['date_to', 'end_week', 'end_month', 'end_year']))
+        $lost_profit_ledger = Businessledger::where('business_id', $business['id'])->where('business_id', $business['id'])->filter(request(['date_to', 'end_week', 'end_month', 'end_year']))
                                     ->whereHas('account', function($query){
                                         $query->where('code', 'like', '4%')
                                                 ->orWhere('code', 'like', '5%');
@@ -58,7 +80,7 @@ class BusinessBalanceReportController extends Controller
 
         foreach ($data as  $d) {
 
-            $ledgers = Businessledger::where('business_id', $business['id'])->filter(request(['date_to', 'end_week', 'end_month', 'end_year']))->where('account_id', $d['id'])->get();
+            $ledgers = Businessledger::where('business_id', $business['id'])->where('business_id', $business['id'])->filter(request(['date_to', 'end_week', 'end_month', 'end_year']))->where('account_id', $d['id'])->get();
 
             if ($d['name'] == 'Laba Tahun Berjalan') {
                 $d['total'] = $ledgers->sum('debit') - $ledgers->sum('credit') - $lost_profit;
@@ -100,98 +122,103 @@ class BusinessBalanceReportController extends Controller
     }
 
     public function getApiDataYear(Business $business){
-        $lastYears = [];
-        $balances = [];
-
-        $subaccounts = SubClassificationAccount::where('code','<','4100000')->get();
-                                            $dates = [];
+        $balanceNow = SubClassificationAccount::where('code','<','4100000')
+                                            ->has('businessaccounts')
+                                            ->with('businessaccounts', function($query) use ($business){
+                                                $query->where('business_id', $business['id'])
+                                                        ->where('code','<','4100000')
+                                                        ->whereHas('ledgers')       
+                                                        ->with('ledgers', function($query) use ($business){
+                                                                $query->where('business_id', $business['id'])
+                                                                    ->whereYear('date','<=', request('year'));
+                                                        });
+                                            })
+                                            ->get();
+                                        
+        $reportYear = [];
         $i = 0;
-        foreach ($subaccounts as $subaccount) {
-            $accounts = Businessaccount::where('business_id', $business['id'])->where('sub_classification_account_id', $subaccount->id)        
-                                        ->whereIsActive(true)
-                                        ->get();
 
-            foreach ($accounts as $ly) {
-                $businessLedgerTemps = Businessledger::where('business_id', $business['id'])->where('account_id', $ly->id)
-                                                        ->where(function($query){
-                                                            $query->whereYear('date', request('year'))
-                                                            ->orWhereYear('date', request('year')-1);
-                                                        })
-                                                        ->orderBy('date')
-                                                        ->get();
-
-                if (count($businessLedgerTemps) > 0) {
-                    $totalNow = 0;
-                    $totalBefore = 0;
-                    foreach ($businessLedgerTemps as $businessLedgerTemp) {
-                        $time = DateTime::createFromFormat("Y-m-d", $businessLedgerTemp->date);
-                        if ($time->format("Y") < request('year')) {
-                            $totalBefore += $businessLedgerTemp->debit - $businessLedgerTemp->credit;
-                        }
-                        else {
-                            $totalNow += $businessLedgerTemp->debit - $businessLedgerTemp->credit;
-                        }
+        foreach ($balanceNow as $sub) {
+            if (count($sub->businessaccounts) > 0) {
+                foreach ($sub->businessaccounts as $businessaccount) {
+                    if (count($businessaccount->ledgers) > 0) {
+                        $reportYear[$i] = $sub;
                     }
-                    $lastYears[$i]['ledgers'] = $businessLedgerTemps;
-                    $lastYears[$i]['name'] = $subaccount->name;
-                    $lastYears[$i]['code'] = $subaccount->code;
-
-                    $balances[$i]['total_now'] = $totalNow;
-                    $balances[$i]['total_before'] = $totalBefore;
-                    $balances[$i]['name'] = $subaccount->name;
-                    $balances[$i]['code'] = $subaccount->code;
-                    $i++;
                 }
+                $i++;
             }
         }
 
+        //laba rugi pada tabel buku besar tahun sekarang
         $lost_profit_ledger_now = Businessledger::where('business_id', $business['id'])->whereYear('date','<=', request('year'))
                                     ->whereHas('account', function($query){
                                         $query->where('code', 'like', '4%')
                                                 ->orWhere('code', 'like', '5%');
                                     })
                                     ->get();
+        //nilai laba rugi tahun sekarang
+        $lost_profit_now = $lost_profit_ledger_now->sum('credit') - $lost_profit_ledger_now->sum('debit');
 
+        //data tabel pada buku besar dengan akun laba
+        $lost_profit_ledger_account_profit_now = Businessledger::where('business_id', $business['id'])->whereYear('date','<=', request('year'))
+                                            ->whereHas('account', function($query){
+                                                $query->where('sub_category','Laba');
+                                            })
+                                            ->get();
+        
+        $lost_profit_account_profit_now = $lost_profit_ledger_account_profit_now->sum('credit') - $lost_profit_ledger_account_profit_now->sum('debit');
+
+        //laba rugi pada tabel buku besar tahun sebelumnya
         $lost_profit_ledger_before = Businessledger::where('business_id', $business['id'])->whereYear('date','<', request('year'))
                                     ->whereHas('account', function($query){
                                         $query->where('code', 'like', '4%')
                                                 ->orWhere('code', 'like', '5%');
                                     })
                                     ->get();
-
-        $lost_profit_now = $lost_profit_ledger_now->sum('credit') - $lost_profit_ledger_now->sum('debit');
+        //nilai laba rugi tahun sebelumnya
         $lost_profit_before = $lost_profit_ledger_before->sum('credit') - $lost_profit_ledger_before->sum('debit');
+
+        //data tabel pada buku besar dengan akun laba
+        $lost_profit_ledger_account_profit_before =Businessledger::where('business_id', $business['id'])->whereYear('date','<', request('year'))
+                                                    ->whereHas('account', function($query){
+                                                        $query->where('sub_category','Laba');
+                                                    })
+                                                    ->get();
+
+        $lost_profit_account_profit_before = $lost_profit_ledger_account_profit_before->sum('credit') - $lost_profit_ledger_account_profit_before->sum('debit');
+
         
         $j = 0;
         $is_there_current_year_earnings_now = false;
         $is_there_current_year_earnings_before = false;
 
-
-        if (count($lastYears) > 0) {
-            foreach ($lastYears as $lastYear) {
+        if (count($reportYear) > 0) {
+            foreach ($reportYear as $report) {
                 $totalNow = 0;
                 $totalBefore = 0;
-                foreach ($lastYear['ledgers'] as $ledger) {
-                    $time = DateTime::createFromFormat("Y-m-d", $ledger->date);
-                    if ($time->format("Y") < request('year')) {
-                        if ($lastYear['name'] == 'Laba Tahun Berjalan') {
-                            $is_there_current_year_earnings_before = true;
+                foreach ($report->businessaccounts as $account) {
+                    foreach ($account->ledgers as $ledger) {
+                        $time = DateTime::createFromFormat("Y-m-d", $ledger->date);
+                        if ($time->format("Y") < request('year')) {
+                            $report['name'] == 'Laba Tahun Berjalan' ? 
+                                        $is_there_current_year_earnings_before = true :
+                                        $is_there_current_year_earnings_before = false;
+                            $totalBefore += $ledger->debit - $ledger->credit;
                         }
-                        $totalBefore += $ledger->debit - $ledger->credit;
-                    }
 
-                    if ($lastYear['name'] == 'Laba Tahun Berjalan') {
-                        $is_there_current_year_earnings_now = true;
+                        $report['name'] == 'Laba Tahun Berjalan' ? 
+                                        $is_there_current_year_earnings_now = true :
+                                        $is_there_current_year_earnings_now = false;
+                        
+                        $totalNow += $ledger->debit - $ledger->credit;
                     }
-                    
-                    $totalNow += $ledger->debit - $ledger->credit;
                 }
-                if ($lastYear['name'] == 'Laba Tahun Berjalan') {
-                    $lastYear['total_now'] = $totalNow + $lost_profit_now;
-                    $lastYear['total_before'] = $totalBefore + $lost_profit_before;
+                if ($report['name'] == 'Laba Tahun Berjalan') {
+                    $report['total_now'] = $totalNow + $lost_profit_now;
+                    $report['total_before'] = $totalBefore + $lost_profit_before;
                 } else {
-                    $lastYear['total_now'] = $totalNow;
-                    $lastYear['total_before'] = $totalBefore;
+                    $report['total_now'] = $totalNow;
+                    $report['total_before'] = $totalBefore;
                 }
 
                 $j++;
@@ -199,22 +226,21 @@ class BusinessBalanceReportController extends Controller
         }
 
         if (!$is_there_current_year_earnings_now || !$is_there_current_year_earnings_before) {
-            array_push($balances, [
+            array_push($reportYear, [
                     "name" => "Laba Tahun Berjalan",
                     "code" => "3299999",
-                    "total_now" => -1 * $lost_profit_now,
-                    "total_before" => -1 * $lost_profit_before,
+                    "total_now" => -1 * ($lost_profit_now),
+                    "total_before" => -1 * ($lost_profit_before),
             ]);
         }
 
-       $period = Carbon::now()->isoformat(request('year'));
+        $period = Carbon::now()->isoformat(request('year'));
     
         return response()->json([
             'status' => 'success',
             'data' => [
-                'balance' => $balances,
+                'balance' => $reportYear,
                 'period' => $period,
-                'dates' => request('year'),
             ],
         ]); 
     }

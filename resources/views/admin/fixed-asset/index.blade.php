@@ -253,9 +253,9 @@
                         </div>
                         <div class="position-relative mb-3">
                             <div class="">
-                                <label for="debit-account-input" class="form-label">Akun Debit</label>
+                                <label for="credit-account-input" class="form-label">Akun Kredit</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control search-input-dropdown" placeholder="Akun Debit" aria-label="Akun Debit" aria-describedby="create-debit-account-input-account" list="dataSubClassificationAccount" onclick="showAccountDropdown()" onkeyup="changeAccountDropdown(this)" onchange="changeAccountValue(this)" id="debit-account-input" autocomplete="off">
+                                    <input type="text" class="form-control search-input-dropdown" placeholder="Akun Debit" aria-label="Akun Debit" aria-describedby="create-credit-account-input-account" list="dataSubClassificationAccount" onclick="showAccountDropdown()" onkeyup="changeAccountDropdown(this)" onchange="changeAccountValue(this)" id="credit-account-input" autocomplete="off">
                                 </div>
                             </div>
                             <div class="bg-light position-absolute list-group w-100 search-select overflow-auto custom-scroll border border-2 border-secondary" id="debit-account-list" style="max-height: 130px">

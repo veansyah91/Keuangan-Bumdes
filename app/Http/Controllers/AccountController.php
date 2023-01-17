@@ -127,7 +127,7 @@ class AccountController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'data' => Account::filter(request(['search','is_cash']))->orderBy('code', 'asc')->paginate(100),
+            'data' => Account::filter(request(['search']))->isCash(request(['is_cash']))->orderBy('code', 'asc')->paginate(100),
         ]);
     }
 }

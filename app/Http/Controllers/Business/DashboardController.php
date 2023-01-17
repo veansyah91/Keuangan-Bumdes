@@ -9,6 +9,7 @@ use App\Models\Business;
 use Illuminate\Support\Arr;
 use App\Models\BusinessUser;
 use Illuminate\Http\Request;
+use App\Models\Businessledger;
 use App\Models\BusinessBalance;
 use App\Models\BusinessExpense;
 use App\Helpers\BusinessUserHelper;
@@ -21,150 +22,76 @@ class DashboardController extends Controller
 {
     public function index(Business $business)
     {
-        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
-        
-        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
-            return abort(403);
-        }
-
-        $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
-
-        $now = Date('Y-m');
-
-        $months = [];
-
-        $varMonths = [];
-
-        $j = 0;
-        for ($i=6; $i >= 0; $i--) { 
-
-            $varMonths[$j] = date('Y-m', strtotime('-' . $i . 'month', strtotime($now)));
-            $m = Carbon::parse($varMonths[$j])->locale('id');
-            $months[$j] = $m->translatedFormat('F Y');
-            $j++;
-        }  
-
-        $expenses = [];
-        foreach ($varMonths as $key => $varMonth) {
-            $dt = Carbon::parse($varMonth);
-            $expenses[$key] = BusinessExpense::where('business_id', $business['id'])
-                                                ->whereMonth('tanggal_keluar', $dt->month)
-                                                ->whereYear('tanggal_keluar', $dt->year)
-                                                ->get()
-                                                ->sum('jumlah');
-        }
-        $incomes = [];
-        foreach ($varMonths as $key => $varMonth) {
-            $dt = Carbon::parse($varMonth);
-            $incomes[$key] = ClosingIncomeActivity::where('business_id', $business['id'])
-                                                ->whereMonth('tanggal', $dt->month)
-                                                ->whereYear('tanggal', $dt->year)
-                                                ->get()
-                                                ->sum('jumlah');
-        }
-
-        $getAsset = Asset::where('business_id', $business['id'])->get();
-        $sumAsset = $getAsset->sum(function ($query){
-            return $query['harga_satuan'] * $query['jumlah_bagus'];
-        });
-
-        $products = Product::query()->whereHas('stock', function($query){
-                        $query->where('jumlah', '>', 0);
-                    })           
-                    ->with('stock')             
-                    ->where('business_id', $business['id'])
-                    ->orderBy('created_at')
-                    ->orderBy('kategori')
-                    ->get();
-
-        $total = 0;
-
-        foreach ($products as $key => $product) {
-            $total += $product->modal * $product->stock->jumlah;
-        }
-
-        return view('business.dashboard.index', compact('business', 'businessBalance', 'sumAsset', 'total'));
+        return view('business.dashboard.index', compact('business'));
     }
 
-    public function cashflow(Business $business)
+    public function lostProfit(Business $business)
     {
+        $data = Businessledger::where('business_id', $business['id'])->filter(request(['outlet_id', 'month', 'year']))
+                        ->whereHas('account', function($query){
+                            $query->where('code', 'like', '4%')
+                                  ->orWhere('code', 'like', '5%');
+                        })
+                        ->get();
 
-        $now = Date('Y-m');
-
-        $months = [];
-
-        $varMonths = [];
-
-        $j = 0;
-        for ($i=6; $i >= 0; $i--) { 
-
-            $varMonths[$j] = date('Y-m', strtotime('-' . $i . 'month', strtotime($now)));
-            $m = Carbon::parse($varMonths[$j])->locale('id');
-            $months[$j] = $m->translatedFormat('F Y');
-            $j++;
-        }  
-
-        $expenses = [];
-        $incomes = [];
-        $profits = [];
-        foreach ($varMonths as $key => $varMonth) {
-            $dt = Carbon::parse($varMonth);
-            $expenses[$key] = BusinessExpense::where('business_id', $business['id'])
-                                                ->whereMonth('tanggal_keluar', $dt->month)
-                                                ->whereYear('tanggal_keluar', $dt->year)
-                                                ->get()
-                                                ->sum('jumlah');
-
-            $incomes[$key] = ClosingIncomeActivity::where('business_id', $business['id'])
-                                                ->whereMonth('tanggal', $dt->month)
-                                                ->whereYear('tanggal', $dt->year)
-                                                ->get()
-                                                ->sum('jumlah');
-            
-            $profits[$key] = $incomes[$key] - $expenses[$key];
-        }
-
-        $data = [
-            'label' => $months,
-            'expenses' => $expenses,
-            'incomes' => $incomes,
-            'profits' => $profits,
-        ];
-
-        $response = [
-            'message' => "Berhasil Mendapatkan Data",
-            'status' => 'Sucess',
-            'data' => $data
-        ];
-
-        try {
-            return response()->json($response, Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            return response()->json($th, 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                        'lost_profit' => $data->sum('credit') - $data->sum('debit'),
+                        'income' => $data->sum('credit'),
+                        'expense' => $data->sum('debit')
+                      ] 
+        ]);
     }
 
-    public function updateBusinessBalance(Business $business, Request $request)
+    public function asset(Business $business)
     {
-        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
-        
-        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
-            return abort(403);
-        }
-        
-        $businessBalance = BusinessBalance::where('business_id', $business['id'])->first();
+        $data = Businessledger::where('business_id', $business['id'])->whereDate('date', '<',  request('time_limit'))
+                        ->whereHas('account', function($query){
+                            $query->where('code', 'like', '1%');
+                        })
+                        ->get();
 
-        if ($businessBalance) {
-            $businessBalance->update([
-                'sisa' => $request->input_balance
-            ]);
-        } else {
-            BusinessBalance::create([
-                'sisa' => $request->input_balance,
-                'business_id' => $business['id']
-            ]);
-        }
+        return response()->json([
+            'status' => 'success',
+            'data' => $data->sum('debit') - $data->sum('credit')
+        ]);
+    }
 
-        return redirect('/' . $business['id'] . '/dashboard')->with('Success', 'Berhasil Mengubah Saldo');
+    public function liability(Business $business)
+    {
+        $data = Businessledger::where('business_id', $business['id'])->whereDate('date', '<',  request('time_limit'))
+                        ->whereHas('account', function($query){
+                            $query->where('code', 'like', '2%');
+                        })
+                        ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data->sum('credit') - $data->sum('debit')
+        ]);
+    }
+
+    public function equity(Business $business)
+    {
+        $data = Businessledger::where('business_id', $business['id'])->whereDate('date', '<',  request('time_limit'))
+                        ->whereHas('account', function($query){
+                            $query->where('code', 'like', '3%');
+                        })
+                        ->get();
+
+        $lost_profit_ledger = Businessledger::where('business_id', $business['id'])->whereDate('date', '<',  request('time_limit'))
+                                    ->whereHas('account', function($query){
+                                        $query->where('code', 'like', '4%')
+                                                ->orWhere('code', 'like', '5%');
+                                    })
+                                    ->get();
+
+        $lost_profit_value = $lost_profit_ledger->sum('credit') - $lost_profit_ledger->sum('debit');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data->sum('credit') - $data->sum('debit') + $lost_profit_value,
+        ]);
     }
 }

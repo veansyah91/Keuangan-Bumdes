@@ -204,6 +204,8 @@ async function submitDeleteJournal(){
     try {
         let response = await destroyJournal(deleteId);
 
+        console.log();
+
         let message = `${response.desc} Berhasil Dihapus`;
         
         myToast(message, 'success');

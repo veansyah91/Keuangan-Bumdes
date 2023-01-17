@@ -34,7 +34,7 @@ let formData = {
 const createModalLabel = document.querySelector('#createModalLabel');
 const noRefInput = document.querySelector('#no-ref-input');
 const nameInput = document.querySelector('#name-input');
-const debitAccountInput = document.querySelector('#debit-account-input');
+const creditAccountInput = document.querySelector('#credit-account-input');
 const dateInput = document.querySelector('#date-input');
 const valueInput = document.querySelector('#value-input');
 const salvageInput = document.querySelector('#salvage-input');
@@ -132,7 +132,7 @@ function selectSubClassification(value){
     formData.credit_account.id = parseInt(value.dataset.id);
     formData.credit_account.name = value.dataset.name;
 
-    debitAccountInput.value = formData.credit_account.name;
+    creditAccountInput.value = formData.credit_account.name;
     validateInputData();
 }
 
@@ -158,7 +158,7 @@ async function showAccountDropdown(){
 function setDefaultComponentValue(){
     nameInput.value = formData.name;
     noRefInput.value = formData.no_ref;
-    debitAccountInput.value = formData.credit_account.name;
+    creditAccountInput.value = formData.credit_account.name;
     dateInput.value = formData.date;
     valueInput.value = formatRupiah(formData.value.toString());
     salvageInput.value = formatRupiah(formData.salvage.toString());
@@ -415,10 +415,24 @@ const changeIsActiveInput = (value) => {
 const editData = async (id) => {
     document.querySelector('#is-active').classList.remove('d-none');
     createModalLabel.innerHTML = "Ubah Data";
-    noRefInput.setAttribute('disabled', 'disabled');
     let url = `/api/fixed-asset/${id}/edit`;
     let res = await getFixedAsset(url);
+    
+    noRefInput.setAttribute('disabled', 'disabled');
 
+    if (res.is_depreciate) {
+        dateInput.setAttribute('disabled', 'disabled');
+        valueInput.setAttribute('disabled', 'disabled');
+        salvageInput.setAttribute('disabled', 'disabled');
+        usefulLifeInput.setAttribute('disabled', 'disabled');
+        creditAccountInput.setAttribute('disabled', 'disabled');
+    } else {
+        dateInput.removeAttribute('disabled');
+        valueInput.removeAttribute('disabled');
+        salvageInput.removeAttribute('disabled');
+        usefulLifeInput.removeAttribute('disabled');
+        creditAccountInput.removeAttribute('disabled');
+    }
     isUpdate = true;
     updateId = id;
     formData = {

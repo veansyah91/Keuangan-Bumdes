@@ -49,18 +49,24 @@ async function showReport(){
         let totalCreditMutation = 0;
         let totalDebitMutation = 0;
 
-        trialBalances.map(trialBalance => {
-            totalCreditStart += trialBalance.credit_start;
-            totalDebitStart += trialBalance.debit_start;
-
-            totalCreditEnd += trialBalance.credit_end;
-            totalDebitEnd += trialBalance.debit_end;
-
-            totalCreditMutation += trialBalance.credit_mutation;
-            totalDebitMutation += trialBalance.debit_mutation;
-
+        trialBalances.map(trialBalance => {     
             debitStart = (trialBalance.debit_start - trialBalance.credit_start) > 0 ? trialBalance.debit_start - trialBalance.credit_start : 0;
             creditStart = (trialBalance.debit_start - trialBalance.credit_start) < 0 ? trialBalance.debit_start - trialBalance.credit_start : 0;
+
+            debitMutation = (trialBalance.debit_mutation - trialBalance.credit_mutation) > 0 ? trialBalance.debit_mutation - trialBalance.credit_mutation : 0;
+            creditMutation = (trialBalance.debit_mutation - trialBalance.credit_mutation) < 0 ? trialBalance.debit_mutation - trialBalance.credit_mutation : 0;
+
+            debitEnd = (trialBalance.debit_end - trialBalance.credit_end) > 0 ? trialBalance.debit_end - trialBalance.credit_end : 0;
+            creditEnd = (trialBalance.debit_end - trialBalance.credit_end) < 0 ? trialBalance.debit_end - trialBalance.credit_end : 0;
+
+            totalCreditStart += creditStart;
+            totalDebitStart += debitStart;
+
+            totalCreditMutation += debitMutation;
+            totalDebitMutation += debitMutation;
+
+            totalCreditEnd += creditEnd;
+            totalDebitEnd += debitEnd;
             list += 
                 (trialBalance.credit_end - trialBalance.debit_end == 0 
                 && trialBalance.credit_start - trialBalance.debit_start == 0
@@ -71,15 +77,14 @@ async function showReport(){
                     <td>${trialBalance.name}</td>
                     <td class="text-end">
                         ${formatRupiah(debitStart.toString())}
-                        
                     </td>
                     <td class="text-end">
                         ${formatRupiah(creditStart.toString())}
                     </td>
-                    <td class="text-end">${formatRupiah((trialBalance.debit_end - debitStart).toString())}</td>
-                    <td class="text-end">${formatRupiah((trialBalance.credit_end - creditStart).toString())}</td>
-                    <td class="text-end">${formatRupiah(trialBalance.debit_end.toString())}</td>
-                    <td class="text-end">${formatRupiah(trialBalance.credit_end.toString())}</td>
+                    <td class="text-end">${formatRupiah(debitMutation.toString())}</td>
+                    <td class="text-end">${formatRupiah(creditMutation.toString())}</td>
+                    <td class="text-end">${formatRupiah(debitEnd.toString())}</td>
+                    <td class="text-end">${formatRupiah(creditEnd.toString())}</td>
                 </tr>` ;
             
                 

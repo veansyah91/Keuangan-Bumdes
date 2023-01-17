@@ -203,10 +203,16 @@ class FixedAssetController extends Controller
     {
         $ledger = Ledger::where('no_ref', $fixedAsset['no_ref'])->where('credit', '>', 0)->first();
 
+        // check apabila telah dilakukan penyusutan maka data tidak dihapus
+        //ledger Akumulasi Penyusutan
+        $condition = 'Akumulasi Penyusutan ' . $fixedAsset['name'];
+        $depreciate = Ledger::where('account_name', $condition)->first();
+
         $fixedAsset['credit_account'] =[
             "id" => $ledger['account_id'],
             "name" => $ledger['account_name']
         ];
+        $fixedAsset["is_depreciate"] = $depreciate ? true : false;
         return response()->json([
             'status' => 'success',
             'data' => $fixedAsset,

@@ -155,7 +155,7 @@ class BusinessJournalController extends Controller
         // $data = Journal::find($id);
         $businessjournal['created_at_for_human'] = $businessjournal->updated_at->diffForHumans();
         $businessjournal['is_updated'] = $businessjournal->updated_at != $businessjournal->created_at ? true : false;
-        $businessjournal['ledgers'] = Businessledger::where('business_id', $business['id'])->where('no_ref', $businessjournal->no_ref)->get();
+        $businessjournal['ledgers'] = Businessledger::where('business_id', $business['id'])->where('no_ref', $businessjournal->no_ref)->orderBy('account_code')->orderBy('credit')->get();
 
         return response()->json([
             'status' => 'success',
@@ -274,33 +274,35 @@ class BusinessJournalController extends Controller
         ]);
     }
 
-    public function destroy(Businessjournal $businessjournal)
+    public function destroy( Business $business, Businessjournal $businessjournal)
     {
 
         // delete data in ledgers table first
-        $ledgers = Businessledger::where('no_ref', $journal->no_ref)->get();
+        $ledgers = Businessledger::where('no_ref', $businessjournal->no_ref)->get();
 
-        foreach ($ledgers as $ledger) {
-            $ledger->delete();
+        if (count($ledgers) > 0) {
+            foreach ($ledgers as $ledger) {
+                $ledger->delete();
+            }
         }
 
-        $cashflows = Businesscashflow::where('no_ref', $journal->no_ref)->get();
+        $cashflows = Businesscashflow::where('no_ref', $businessjournal->no_ref)->get();
         if (count($cashflows) > 0) {
             foreach ($cashflows as $cashflow) {
                 $cashflow->delete();
             }
         }
 
-        $journal->delete();
+        $businessjournal->delete();
 
         return response()->json([
             'status' => 'success',
-            'data' => $journal,
+            'data' => $businessjournal,
         ]);
     }
 
     public function print(Business $business){
-        $journals = Businessjournal::filter(request(['search','date_from','date_to','this_week','this_month','this_year']))->orderBy('date', 'asc')->get();
+        $journals = Businessjournal::where('business_id', $business['id'])->filter(request(['search','date_from','date_to','this_week','this_month','this_year']))->orderBy('date', 'asc')->get();
        
         return view('business.journal.print', [
             'journals' => $journals,
@@ -312,7 +314,7 @@ class BusinessJournalController extends Controller
     public function printDetail(Business $business, Businessjournal $businessjournal){
         $businessjournal['date_format'] = Carbon::createFromDate($businessjournal->date)->toFormattedDateString();
 
-        $ledgers = Businessledger::where('no_ref', $businessjournal->no_ref)->get();
+        $ledgers = Businessledger::where('business_id', $business['id'])->where('no_ref', $businessjournal->no_ref)->orderBy('account_code')->orderBy('credit')->get();
 
         return view('business.journal.print-detail', compact('businessjournal', 'ledgers', 'business'));
     }

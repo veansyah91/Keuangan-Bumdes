@@ -159,6 +159,8 @@ const showReport = async () => {
         let url = `/api/${business}/report/balance-year?year=${year}&end_year=${year}`;
 
         let res = await getData(url);
+
+        console.log(res);
         
         period.innerHTML = res.period;
         periodBefore.innerHTML = res.period - 1;

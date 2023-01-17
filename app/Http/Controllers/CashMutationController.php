@@ -253,4 +253,13 @@ class CashMutationController extends Controller
 
         return view('admin.cash-mutation.print-detail', compact('cashMutation', 'ledgers'));
     }
+
+    public function print(){
+        $cashMutations = CashMutation::filter(request(['search','date_from','date_to','this_week','this_month','this_year']))->orderBy('date', 'asc')->get();
+       
+        return view('admin.cash-mutation.print', [
+            'cashMutations' => $cashMutations,
+            'author' => request()->user()
+        ]);
+    }
 }

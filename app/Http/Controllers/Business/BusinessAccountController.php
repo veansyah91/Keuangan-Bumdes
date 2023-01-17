@@ -12,13 +12,17 @@ use App\Models\SubClassificationAccount;
 
 class BusinessAccountController extends Controller
 {
-
-    
     public function getApiData(Business $business)
     {
         return response()->json([
             'status' => 'success',
-            'data' => Businessaccount::filter(request(['search','is_cash']))->where('business_id', $business['id'])->orderBy('code', 'asc')->paginate(100),
+            'data' => Businessaccount::filter(request(['search']))
+                                        ->payment(request(['payment']))
+                                        ->payable(request(['payable']))
+                                        ->isCash(request(['is_cash']))
+                                        ->where('business_id', $business['id'])
+                                        ->orderBy('code', 'asc')
+                                        ->paginate(100),
         ]);
     }
 

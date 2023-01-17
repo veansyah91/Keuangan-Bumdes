@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Business;
 
+use App\Models\Product;
 use App\Models\Business;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Helpers\BusinessUserHelper;
 
+use App\Models\Businessaccount;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
@@ -26,21 +29,94 @@ class CategoryController extends Controller
 
     public function store(Business $business, Request $request)
     {
-        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
-        
-        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
-            return abort(403);
-        }
         $validatedData = $request->validate([
             'nama' => 'required'
         ]);
+
+        // cek apakah sudah ada kategori berdasarkan nama 
+        $category = Category::where('business_id', $business['id'])->where('nama', $validatedData['nama'])->first();
+
+        if ($category) {
+            throw ValidationException::withMessages([
+                'message' => ["Nama Kategori Sudah Digunakan"]
+            ]);
+        }
         
-        Category::create([
+        $category = Category::create([
             'nama' => strtoupper($validatedData['nama']),
             'business_id' => $business['id']
         ]);
 
-        return redirect('/' . $business['id'] . '/category')->with('Success', 'Berhasil Menambah Kategori');;
+        //buat akun
+        //persediaan
+        $account = Businessaccount::where('business_id', $business['id'])->where('sub_category', 'Persediaan Barang Dagang')->orderBy('id', 'desc')->first();
+        $new_code = (int)$account['code'] + 1;
+        Businessaccount::create([
+            'name' => 'Persediaan ' . $category['nama'],
+            'code' => $new_code,
+            'is_cash' => false,
+            'is_active' => true,
+            'sub_classification_account_id' => $account['sub_classification_account_id'],
+            'sub_category' => $account['sub_category'],
+            'business_id' => $account['business_id'],
+        ]);
+
+        //harga pokok penjualan
+        $account = Businessaccount::where('business_id', $business['id'])->where('sub_category', 'Harga Pokok Penjualan')->orderBy('id', 'desc')->first();
+        $new_code = (int)$account['code'] + 1;
+        Businessaccount::create([
+            'name' => 'Harga Pokok Penjualan ' . $category['nama'],
+            'code' => $new_code,
+            'is_cash' => false,
+            'is_active' => true,
+            'sub_classification_account_id' => $account['sub_classification_account_id'],
+            'sub_category' => $account['sub_category'],
+            'business_id' => $account['business_id'],
+        ]);
+
+        //penjualan
+        $account = Businessaccount::where('business_id', $business['id'])->where('sub_category', 'Penjualan Produk')->orderBy('id', 'desc')->first();
+        $new_code = (int)$account['code'] + 1;
+        Businessaccount::create([
+            'name' => 'Penjualan ' . $category['nama'],
+            'code' => $new_code,
+            'is_cash' => false,
+            'is_active' => true,
+            'sub_classification_account_id' => $account['sub_classification_account_id'],
+            'sub_category' => $account['sub_category'],
+            'business_id' => $account['business_id'],
+        ]);
+
+        //retur penjualan
+        $account = Businessaccount::where('business_id', $business['id'])->where('sub_category', 'Retur Penjualan')->orderBy('id', 'desc')->first();
+        $new_code = (int)$account['code'] + 1;
+        Businessaccount::create([
+            'name' => 'Retur Penjualan ' . $category['nama'],
+            'code' => $new_code,
+            'is_cash' => false,
+            'is_active' => true,
+            'sub_classification_account_id' => $account['sub_classification_account_id'],
+            'sub_category' => $account['sub_category'],
+            'business_id' => $account['business_id'],
+        ]);
+
+        //retur pembelian
+        $account = Businessaccount::where('business_id', $business['id'])->where('sub_category', 'Retur Pembelian')->orderBy('id', 'desc')->first();
+        $new_code = (int)$account['code'] + 1;
+        Businessaccount::create([
+            'name' => 'Retur Pembelian ' . $category['nama'],
+            'code' => $new_code,
+            'is_cash' => false,
+            'is_active' => true,
+            'sub_classification_account_id' => $account['sub_classification_account_id'],
+            'sub_category' => $account['sub_category'],
+            'business_id' => $account['business_id'],
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $category
+        ]);
     }
 
     public function delete(Business $business, Category $category)
@@ -50,9 +126,34 @@ class CategoryController extends Controller
         if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
+
+        
         $category->delete();
 
         return redirect('/' . $business['id'] . '/category')->with('Success', 'Berhasil Menghapus Kategori');;
+    }
+
+    public function destroy(Business $business, Category $category)
+    {
+        $product = Product::where('business_id', $business['id'])->where('category', $category['nama'])->first();
+
+        if ($product) {
+            throw ValidationException::withMessages([
+                'message' => ["Tidak Bisa Dihapus, Kategori Telah Digunakan Pada Produk"]
+            ]);
+        }
+        //delete akun
+        $accounts = Businessaccount::where('business_id', $business['id'])->where('name', 'like', '%' . $category['nama'])->get();
+        foreach ($accounts as $account) {
+            $account->delete();
+        }
+
+        $category->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $category
+        ]);
     }
 
     public function search(Business $business, Request $request)

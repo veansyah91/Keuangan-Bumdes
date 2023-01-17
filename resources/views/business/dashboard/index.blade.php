@@ -5,204 +5,153 @@
 @endsection
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-12">
-            <div class="card">
-                <div class="card-header fs-4 fw-bold">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    
-                    <div class="row justify-content-start fs-3 fw-bold">
-                        <div class="col-md-4 col-12">
-                            Kas
-                        </div>
-                        <div class="col-md-8 col-12">
-                            : Rp. {{ $businessBalance ? number_format($businessBalance['sisa'],0,",",".") : 0 }}
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-link btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="{{ route('business.business-balance-activity.index', $business->id) }}" class="dropdown-item btn btn-outline-danger edit-expense">
-                                            <i class="bi bi-list text-primary"></i>
-                                            Aktivitas
-                                        </a>
-                                    </li>
-                                    @role('ADMIN')
-                                    <li>
-                                        <button class="dropdown-item btn btn-outline-danger edit-expense" data-bs-toggle="modal" data-bs-target="#updateBalanceModal">
-                                            <i class="bi bi-pencil-square text-success"></i>
-                                            Ubah Saldo
-                                        </button>
-                                    </li>
-                                    @endrole
-                                </ul>
-                            </div>
-                        </div>
+        <div class="card" data-business="{{ $business->id }}" id="content">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <div class="col-md-6 col-12 h3 my-auto">
+                        Dasbor
                     </div>
-
-                    <hr>
-
-                    @if ($business->kategori == 'Pulsa')
-                        <div class="row justify-content-start fs-3 fw-bold mt-2">
-                            <div class="col-md-4 col-12">
-                                Saldo
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-12 col-md-8 table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th>Server</th>
-                                            <th>Jumlah</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center">TDC</td>
-                                            <td class="text-end">Rp. 3.000.000</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <hr> 
-                    @endif
-
-                    <div class="row justify-content-start fs-3 fw-bold mt-2">
-                        <h4 class="fs-3 fw-bold">
-                            Cash Flow
-                        </h4>
+                    <div class="col-md-6 d-flex justify-content-end">
                         <div>
-                            <canvas id="myChart"></canvas>
+                            <button class="btn btn-outline-secondary" type="button" onclick="prevMonth()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+                                <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
+                              </svg>
+                            </button>
                         </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="row justify-content-start fs-3 fw-bold mt-2">
-                        <div class="col-md-4 col-12">
-                            Asset
+                        <div>
+                            <input type="text" readonly class="form-control-plaintext pr-3 text-center border" placeholder="Filter" aria-label="Filter" 
+                            id="filter-value">
                         </div>
-                        <div class="col-md-8 col-12">
-                            : Rp. {{ number_format($sumAsset,0,",",".") }}
+                        <div>
+                            <button class="btn btn-outline-secondary" type="button" onclick="nextMonth()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+                                <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+                                </svg>
+                            </button>
                         </div>
-                    </div>
-
-                    <hr>
-
-                    @if ($business->kategori == 'Retail')
-                        <div class="row justify-content-start fs-3 fw-bold mt-2">
-                            <div class="col-md-4 col-12">
-                                Nilai Stok
-                            </div>
-                            <div class="col-md-8 col-12">
-                                : Rp. {{ number_format($total,0,",",".") }}
-                            </div>
-                        </div>
-                    @endif
-
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <form action="{{ route('business.dashboard.update-business-balance', [$business->id]) }}" method="post">
-        @csrf   
-        @method('patch')
-        <div class="modal fade" id="updateBalanceModal" tabindex="-1" aria-labelledby="updateBalanceModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="updateBalanceModalLabel">Ubah Saldo</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3 row">
-                            <label for="input-balance" class="col-sm-2 col-form-label">Saldo</label>
-                            <div class="col-sm-10">
-                                <input type="number" class="form-control" id="input-balance" name="input_balance" value="{{ $businessBalance ? $businessBalance['sisa'] : 0 }}" min="0">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Ubah</button>
                     </div>
                 </div>
             </div>
+            <div class="card-body">            
+                <div class="row mt-2 justify-content-between">
+                    <div class="col-md-4">
+                        <div class="row justify-content-between">
+                            <div class="col-2 my-auto" id="lost-profit-chart-icon">
+                                
+                            </div>
+                            <div class="col-10">
+                                <div class="h5 text-black-50 font-weight-bold" id="lost-profit-label">
+                                    
+                                </div>
+                                <div class="font-weight-bolder h4" id="lost-profit-value">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row justify-content-between">
+                            <div class="col-2 my-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-box-arrow-in-down-left text-primary" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M9.636 2.5a.5.5 0 0 0-.5-.5H2.5A1.5 1.5 0 0 0 1 3.5v10A1.5 1.5 0 0 0 2.5 15h10a1.5 1.5 0 0 0 1.5-1.5V6.864a.5.5 0 0 0-1 0V13.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                    <path fill-rule="evenodd" d="M5 10.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1H6.707l8.147-8.146a.5.5 0 0 0-.708-.708L6 9.293V5.5a.5.5 0 0 0-1 0v5z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10">
+                                <div class="h5 text-black-50 font-weight-bold">
+                                    Pendapatan
+                                </div>
+                                <div class="font-weight-bolder h4" id="income">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row justify-content-between">
+                            <div class="col-2 my-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-box-arrow-up-right text-danger" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                    <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10">
+                                <div class="h5 text-black-50 font-weight-bold">
+                                    Pengeluaran
+                                </div>
+                                <div class="font-weight-bolder h4" id="expense">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="h4 font-weight-bolder">
+                    Neraca
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-md-4">
+                        <div class="row justify-content-between">
+                            <div class="col-2 my-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-journal-bookmark-fill text-info" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8V1z"/>
+                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10">
+                                <div class="h5 text-black-50 font-weight-bold" >
+                                    Asset
+                                </div>
+                                <div class="font-weight-bolder h4 text-info" id="asset">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row justify-content-between">
+                            <div class="col-2 my-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-file-earmark-spreadsheet text-warning" viewBox="0 0 16 16">
+                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5v2zM3 12v-2h2v2H3zm0 1h2v2H4a1 1 0 0 1-1-1v-1zm3 2v-2h3v2H6zm4 0v-2h3v1a1 1 0 0 1-1 1h-2zm3-3h-3v-2h3v2zm-7 0v-2h3v2H6z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10">
+                                <div class="h5 text-black-50 font-weight-bold">
+                                    Kewajiban
+                                </div>
+                                <div class="font-weight-bolder h4 text-warning" id="liability">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row justify-content-between">
+                            <div class="col-2 my-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-file-earmark-bar-graph text-success" viewBox="0 0 16 16">
+                                    <path d="M10 13.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-6a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v6zm-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1z"/>
+                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                </svg>
+                            </div>
+                            <div class="col-10">
+                                <div class="h5 text-black-50 font-weight-bold">
+                                    Modal
+                                </div>
+                                <div class="font-weight-bolder h4 text-success" id="equity">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </form>   
-    
+   
+        
 @endsection
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        let pathUrl = window.location.pathname;
-        let businessId = pathUrl[1]
-    
-        axios.get(`/api/${businessId}/dashboard/cashflow`)
-        .then(res => {
-            let months = res.data.data.label;
-            let expenses = res.data.data.expenses;
-            let incomes = res.data.data.incomes;
-            let profits = res.data.data.profits;
-
-            const labels = [...months];
-        
-            const data = {
-                labels: labels,
-                datasets: [{
-                        label: 'Pemasukan',
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        data: [...incomes],
-                    },
-                    {
-                        label: 'Pengeluaran',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgb(54, 162, 235)',
-                        data: [...expenses],
-                    },
-                    {
-                        label: 'Laba',
-                        backgroundColor: 'rgba(255, 205, 86, 0.2)',
-                        borderColor: 'rgb(255, 205, 86)',
-                        data: [...profits],
-                    }
-                
-                ]
-            };
-        
-            const config = {
-                type: 'line',
-                data: data,
-                options: {}
-            };
-
-            const myChart = new Chart(
-                document.getElementById('myChart'),
-                config
-            );
-        })
-        .catch(err => {
-            console.log(err);
-        })
-
-
-    </script>
-
-    <script>
-        
-    </script>
-
-    <script type="text/javascript">
-        
-    </script>
+    <script src="/js/business/index.js"></script>
+    {{-- <script src="/js/admin/ledger/api.js"></script> --}}
 @endsection

@@ -379,6 +379,13 @@ class AccountSeeder extends Seeder
                 'is_active' => true,
                 'sub_category' => 'Beban Penyusutan'
             ],
+            [
+                'code' => '5999000',
+                'name' => 'Ikhtisar Laba Rugi',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Ikhtisar Laba Rugi'
+            ],
         ];
         
         foreach ($accounts as $account) {

@@ -64,7 +64,7 @@
                             <td>{{ $carbon::parse($journal->date)->isoformat('MMM, D Y') }}</td>
                             <td colspan="3">{{ $journal->desc }} - {{ $journal->detail }}</td>
                         </tr>
-                        @foreach (LedgerHelper::index($journal->no_ref) as $ledger)
+                        @foreach (LedgerHelper::business($business, $journal->no_ref) as $ledger)
                             @php
                                 $total_debit += $ledger->debit;
                                 $total_credit += $ledger->credit;
@@ -120,9 +120,6 @@
 
     <script src="{{ asset('vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}" defer></script>
 
-    <script src="{{ asset('js/admin/bootstrap.min.js') }}" defer></script>
-
-    <script src="{{ asset('js/admin/main.js') }}" defer></script> 
     <script src="{{ asset('js/public.js') }}" defer></script> 
     
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

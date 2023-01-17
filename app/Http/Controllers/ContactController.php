@@ -21,9 +21,6 @@ class ContactController extends Controller
 
     public function noRefContactRecomendation()
     {
-        // $ref_no = explode("-", request('search'));
-        
-
         $fix_ref_no = '';
 
         $ref = 'SUPP';
@@ -56,10 +53,10 @@ class ContactController extends Controller
         $attributes = $request->validate([
             'no_ref' => 'required',
             'name' => 'required',
-            'email' => 'email:rfc',
+            'email' => 'email:rfc|nullable',
             'type' => 'required',
-            'phone' => 'string',
-            'address' => 'string',
+            'phone' => 'string|nullable',
+            'address' => 'string|nullable',
         ]);
 
         $contact = Contact::create($attributes);
@@ -84,10 +81,10 @@ class ContactController extends Controller
          $attributes = $request->validate([
             'no_ref' => 'required',
             'name' => 'required',
-            'email' => 'email:rfc',
+            'email' => 'email:rfc|nullable',
             'type' => 'required',
-            'phone' => 'string',
-            'address' => 'string',
+            'phone' => 'string|nullable',
+            'address' => 'string|nullable',
         ]);
 
         $contact->update($attributes);
@@ -130,7 +127,7 @@ class ContactController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' =>Contact::where('name', 'like', '%' . request('search') . '%')->get(),
+                'data' =>Contact::filter(request(['search']))->type(request(['type']))->get(),
         ]); 
     }
 }

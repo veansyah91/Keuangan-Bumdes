@@ -8,15 +8,27 @@ use App\Models\Identity;
 use Illuminate\Http\Request;
 use App\Models\Businessledger;
 use App\Models\Businessaccount;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessTrialBalanceReportController extends Controller
 {
     public function index(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.report.trial-balance.index', compact('business'));
     }
 
     public function print(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         $identity = Identity::first();
         return view('business.report.trial-balance.print', [
             'author' => request()->user(),

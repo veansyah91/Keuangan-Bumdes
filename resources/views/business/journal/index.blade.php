@@ -60,7 +60,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="d-md-flex d-none justify-content-between font-bold border-top border-bottom py-2 px-1">
+                <div class="fw-bold d-md-flex d-none justify-content-between font-bold border-top border-bottom py-2 px-1">
                     <div style="width:1%" class="px-2">
                     </div>
                     <div style="width:10%" class="px-2 my-auto">Tanggal</div>

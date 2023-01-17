@@ -23,6 +23,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/business/custom.css') }}" rel="stylesheet">
+
+    @yield('style')
 </head>
 
 <body>
@@ -114,12 +116,6 @@
             </div>
         </div>
         
-    </div>
-
-    <div class="fixed-bottom text-end p-2 m-2 d-md-none d-block">
-        <a class="btn btn-secondary rounded-circle" href="#nav">
-            <i class="bi bi-arrow-up-circle"></i>
-        </a>
     </div>
 
     <div id="print" class="d-print-block d-none mt-3 mb-2 font-monospace" style="width: 55mm;color:black">

@@ -54,6 +54,7 @@ use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
 use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
+use App\Http\Controllers\Business\InvoiceController;
 use App\Http\Controllers\Business\ProductController;
 use App\Http\Controllers\LostProfitReportController;
 use App\Http\Controllers\Business\CategoryController;
@@ -62,16 +63,27 @@ use App\Http\Controllers\Business\SupplierController;
 use App\Http\Controllers\Business\DashboardController;
 use App\Http\Controllers\TrialBalanceReportController;
 use App\Http\Controllers\Business\DailyIncomeController;
+use App\Http\Controllers\Business\StockOpnameController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
+use App\Http\Controllers\Business\PurchaseGoodsController;
+use App\Http\Controllers\Business\AccountPayableController;
 use App\Http\Controllers\Business\BusinessIncomeController;
 use App\Http\Controllers\Business\BusinessLedgerController;
 use App\Http\Controllers\Business\BusinessAccountController;
+use App\Http\Controllers\Business\BusinessContactController;
+use App\Http\Controllers\Business\BusinessExpenseController;
 use App\Http\Controllers\Business\BusinessJournalController;
+use App\Http\Controllers\Business\BusinessRevenueController;
 use App\Http\Controllers\Business\AccountReceivableController;
+use App\Http\Controllers\Business\BusinessFixedAssetController;
+use App\Http\Controllers\Business\InventoryAdjustmentController;
+use App\Http\Controllers\Business\BusinessCashMutationController;
+use App\Http\Controllers\Business\AccountPayablePaymentController;
 use App\Http\Controllers\Business\BusinessBalanceReportController;
 use App\Http\Controllers\Business\BusinessCashflowReportController;
 use App\Http\Controllers\Business\BusinessBalanceActivityController;
+use App\Http\Controllers\Business\AccountReceivablePaymentController;
 use App\Http\Controllers\Business\BusinessLostProfitReportController;
 use App\Http\Controllers\Business\BusinessTrialBalanceReportController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
@@ -314,51 +326,100 @@ Route::group(['middleware' => ['auth']], function(){
             Route::post('/{business}/dashboard/business-balance-activity', [BusinessBalanceActivityController::class, 'store'])->name('business.business-balance-activity.store');
             Route::patch('/{business}/dashboard/business-balance-activity/{businessBalanceActivity}', [BusinessBalanceActivityController::class, 'update'])->name('business.business-balance-activity.update');
             Route::delete('/{business}/dashboard/business-balance-activity/{businessBalanceActivity}', [BusinessBalanceActivityController::class, 'delete'])->name('business.business-balance-activity.delete');
-
         // 
 
-        //Account Page
-            Route::get('/{business}/account', [BusinessAccountController::class, 'index'])->name('business.account.index');
+        //master
+            // contact
+                Route::get('/{business}/contact', [BusinessContactController::class, 'index'])->name('business.contact.index');
+            //
+            // fixed-asset
+                Route::get('/{business}/fixed-asset', [BusinessFixedAssetController::class, 'index'])->name('business.fixed-asset.index');
+            //
+
+
+        //ledgers
+            //Account Page
+                Route::get('/{business}/account', [BusinessAccountController::class, 'index'])->name('business.account.index');
+            //
+
+            //Journal Page
+                Route::get('/{business}/journal', [BusinessJournalController::class, 'index'])->name('business.journal.index');
+                Route::get('/{business}/journal/create', [BusinessJournalController::class, 'create'])->name('business.journal.create');
+                Route::get('/{business}/journal/{businessjournal}/edit', [BusinessJournalController::class, 'edit'])->name('business.journal.edit');
+                Route::get('/{business}/journal/print-detail/{businessjournal}', [BusinessJournalController::class, 'printDetail']);
+                Route::get('/{business}/journal/print', [BusinessJournalController::class, 'print']);
+            //
+
+            //Ledger Page
+                Route::get('/{business}/ledger', [BusinessLedgerController::class, 'index'])->name('business.ledger.index');
+                Route::get('/{business}/ledger/print', [BusinessLedgerController::class, 'print']);
+            //
         //
 
-        //Journal Page
-            Route::get('/{business}/journal', [BusinessJournalController::class, 'index'])->name('business.journal.index');
-            Route::get('/{business}/journal/create', [BusinessJournalController::class, 'create'])->name('business.journal.create');
-            Route::get('/{business}/journal/{businessjournal}/edit', [BusinessJournalController::class, 'edit'])->name('business.journal.edit');
-            Route::get('/{business}/journal/print-detail/{businessjournal}', [BusinessJournalController::class, 'printDetail']);
-            Route::get('/{business}/journal/print', [BusinessJournalController::class, 'print']);
+        //inventory
+            Route::get('/{business}/inventory-adjustment', [InventoryAdjustmentController::class, 'index'])->name('business.inventory-adjustment.index');
+            Route::get('/{business}/inventory-adjustment/create', [InventoryAdjustmentController::class, 'create'])->name('business.inventory-adjustment.create');
+            Route::get('/{business}/inventory-adjustment/{inventoryadjustment}/edit', [InventoryAdjustmentController::class, 'edit'])->name('business.inventory-adjustment.edit');
+            Route::get('/{business}/inventory-adjustment/print-detail/{inventoryadjustment}', [InventoryAdjustmentController::class, 'printDetail']);
         //
-
-         //Ledger Page
-            Route::get('/{business}/ledger', [BusinessLedgerController::class, 'index'])->name('business.ledger.index');
-            Route::get('/{business}/ledger/print', [BusinessLedgerController::class, 'print']);
+        //stock opname
+            Route::get('/{business}/stock-opname', [StockOpnameController::class, 'index'])->name('business.stock-opname.index');
+            Route::get('/{business}/stock-opname/create', [StockOpnameController::class, 'create'])->name('business.stock-opname.create');
+            Route::get('/{business}/stock-opname/{stockOpname}/edit', [StockOpnameController::class, 'edit'])->name('business.stock-opname.edit');
+            Route::get('/{business}/stock-opname/print-detail/{stockOpname}', [StockOpnameController::class, 'printDetail']);
         //
+        
 
         //Report Page
-        //Cashflow Report Page
-            Route::get('/{business}/report/cashflow', [BusinessCashflowReportController::class, 'index'])->name('report.business.cashflow.index');
-            Route::get('/{business}/report/cashflow-year', [BusinessCashflowReportController::class, 'year'])->name('report.business.cashflow.year');
-            Route::get('/{business}/report/print-cashflow', [BusinessCashflowReportController::class, 'print'])->name('report.business.cashflow.print');
-            Route::get('/{business}/report/print-cashflow-year', [BusinessCashflowReportController::class, 'printYear'])->name('report.business.cashflow.print.year');
+            //Cashflow Report Page
+                Route::get('/{business}/report/cashflow', [BusinessCashflowReportController::class, 'index'])->name('report.business.cashflow.index');
+                Route::get('/{business}/report/cashflow-year', [BusinessCashflowReportController::class, 'year'])->name('report.business.cashflow.year');
+                Route::get('/{business}/report/print-cashflow', [BusinessCashflowReportController::class, 'print'])->name('report.business.cashflow.print');
+                Route::get('/{business}/report/print-cashflow-year', [BusinessCashflowReportController::class, 'printYear'])->name('report.business.cashflow.print.year');
+            //
+
+            //Balance Report Page
+                Route::get('/{business}/report/balance', [BusinessBalanceReportController::class, 'index'])->name('report.business.balance.index');
+                Route::get('/{business}/report/balance-year', [BusinessBalanceReportController::class, 'year'])->name('report.business.balance.year');
+                Route::get('/{business}/report/print-balance', [BusinessBalanceReportController::class, 'print'])->name('report.business.balance.print');
+                Route::get('/{business}/report/print-balance-year', [BusinessBalanceReportController::class, 'printYear'])->name('report.business.balance.print.year');
+            //
+
+            //Lost Profit Report Page
+                Route::get('/{business}/report/lost-profit', [BusinessLostProfitReportController::class, 'index'])->name('report.business.lost-profit.index');
+                Route::get('/{business}/report/lost-profit-year', [BusinessLostProfitReportController::class, 'year'])->name('report.business.lost-profit.year');
+                Route::get('/{business}/report/print-lost-profit', [BusinessLostProfitReportController::class, 'print'])->name('report.business.lost-profit.print');
+                Route::get('/{business}/report/lost-profit-year-print', [BusinessLostProfitReportController::class, 'printYear'])->name('report.business.balance.print.year');
+            //
+
+            //Trial Balance
+                Route::get('/{business}/report/trial-balance', [BusinessTrialBalanceReportController::class, 'index'])->name('report.business.trial-balance.index');
+                Route::get('/{business}/report/trial-balance-print', [BusinessTrialBalanceReportController::class, 'print'])->name('report.business.balance.print.year');
+            //
         //
 
-        //Balance Report Page
-            Route::get('/{business}/report/balance', [BusinessBalanceReportController::class, 'index'])->name('report.business.balance.index');
-            Route::get('/{business}/report/balance-year', [BusinessBalanceReportController::class, 'year'])->name('report.business.balance.year');
-            Route::get('/{business}/report/print-balance', [BusinessBalanceReportController::class, 'print'])->name('report.business.balance.print');
-            Route::get('/{business}/report/print-balance-year', [BusinessBalanceReportController::class, 'printYear'])->name('report.business.balance.print.year');
-        //
-
-        //Lost Profit Report Page
-            Route::get('/{business}/report/lost-profit', [BusinessLostProfitReportController::class, 'index'])->name('report.business.lost-profit.index');
-            Route::get('/{business}/report/lost-profit-year', [BusinessLostProfitReportController::class, 'year'])->name('report.business.lost-profit.year');
-            Route::get('/{business}/report/print-lost-profit', [BusinessLostProfitReportController::class, 'print'])->name('report.business.lost-profit.print');
-            Route::get('/{business}/report/lost-profit-year-print', [BusinessLostProfitReportController::class, 'printYear'])->name('report.business.balance.print.year');
-        //
-
-        //Trial Balance
-            Route::get('/{business}/report/trial-balance', [BusinessTrialBalanceReportController::class, 'index'])->name('report.business.trial-balance.index');
-            Route::get('/{business}/report/trial-balance-print', [BusinessTrialBalanceReportController::class, 'print'])->name('report.business.balance.print.year');
+        //Cash and Bank
+            //revenue
+                Route::get('/{business}/revenue', [BusinessRevenueController::class, 'index'])->name('business.revenue.index');
+                Route::get('/{business}/revenue/create', [BusinessRevenueController::class, 'create'])->name('business.revenue.create');
+                Route::get('/{business}/revenue/{businessrevenue}/edit', [BusinessRevenueController::class, 'edit'])->name('business.revenue.edit');
+                Route::get('/{business}/revenue/print-detail/{businessrevenue}', [BusinessRevenueController::class, 'printDetail']);
+                Route::get('/{business}/revenue/print', [BusinessRevenueController::class, 'print']);
+            //
+            //expense
+                Route::get('/{business}/expense', [BusinessExpenseController::class, 'index'])->name('business.expense.index');
+                Route::get('/{business}/expense/create', [BusinessExpenseController::class, 'create'])->name('business.expense.create');
+                Route::get('/{business}/expense/{businessexpense}/edit', [BusinessExpenseController::class, 'edit'])->name('business.expense.edit');
+                Route::get('/{business}/expense/print-detail/{businessexpense}', [BusinessExpenseController::class, 'printDetail']);
+                Route::get('/{business}/expense/print', [BusinessExpenseController::class, 'print']);
+            //
+            //cash mutation
+                Route::get('/{business}/cash-mutation', [BusinessCashMutationController::class, 'index'])->name('business.cash-mutation.index');
+                Route::get('/{business}/cash-mutation/create', [BusinessCashMutationController::class, 'create'])->name('business.cash-mutation.create');
+                Route::get('/{business}/cash-mutation/{businesscashmutation}/edit', [BusinessCashMutationController::class, 'edit'])->name('business.cash-mutation.edit');
+                Route::get('/{business}/cash-mutation/print-detail/{businesscashmutation}', [BusinessCashMutationController::class, 'printDetail']);
+                Route::get('/{business}/cash-mutation/print', [BusinessCashMutationController::class, 'print']);
+            //
         //
 
         // Category Page 
@@ -390,9 +451,11 @@ Route::group(['middleware' => ['auth']], function(){
         // Product Page
             Route::get('/{business}/product', [ProductController::class, 'index'])->name('business.product.index');
             Route::get('/{business}/product/create', [ProductController::class, 'create'])->name('business.product.create');
-            Route::post('/{business}/product', [ProductController::class, 'store'])->name('business.product.store');
+            Route::get('/{business}/product/{product}/edit', [ProductController::class, 'edit'])->name('business.product.edit');
             Route::patch('/{business}/product/{product}', [ProductController::class, 'update'])->name('business.product.update');
             Route::delete('/{business}/product/{product}', [ProductController::class, 'delete'])->name('business.product.delete');
+            Route::get('/{business}/product/print', [ProductController::class, 'print'])->name('business.product.print');
+            Route::get('/{business}/product/print-stock', [ProductController::class, 'printStock'])->name('business.product.print-stock');
         // 
 
         // Incoming Item Page 
@@ -511,6 +574,21 @@ Route::group(['middleware' => ['auth']], function(){
             Route::get('/{business}/cashier-restaurant', [CashierController::class, 'indexRestaurant'])->name('business.cashier.index-restaurant');
         // 
 
+        //Invoices Page
+            Route::get('/{business}/invoice', [InvoiceController::class, 'index'])->name('business.invoice.index');
+            Route::get('/{business}/invoice/create', [InvoiceController::class, 'create'])->name('business.invoice.create');
+            Route::get('/{business}/invoice/{id}/edit', [InvoiceController::class, 'edit']);
+            Route::delete('/{business}/invoice/{id}/print-detail', [InvoiceController::class, 'destroy']);
+            Route::get('/{business}/invoice/{id}/print-detail', [InvoiceController::class, 'printDetail']);
+        //
+
+        //Purchase Goods Page
+            Route::get('/{business}/purchase-goods', [PurchaseGoodsController::class, 'index'])->name('business.purchase-goods.index');
+            Route::get('/{business}/purchase-goods/create', [PurchaseGoodsController::class, 'create'])->name('business.purchase-goods.create');
+            Route::get('/{business}/purchase-goods/{id}/edit', [PurchaseGoodsController::class, 'edit']);
+            Route::get('/{business}/purchase-goods/{id}/print-detail', [PurchaseGoodsController::class, 'printDetail']);
+        // 
+
         // Daily Income Page
             // Retail
             Route::get('/{business}/daily-incomes', [DailyIncomeController::class, 'index'])->name('business.daily-income.index');
@@ -617,10 +695,10 @@ Route::group(['middleware' => ['auth']], function(){
         //
 
         //Outcome Page
-            Route::get('/{business}/expense', [DailyOutcomeController::class, 'index'])->name('business.expense.index');
-            Route::post('/{business}/expense', [DailyOutcomeController::class, 'store'])->name('business.expense.store');
-            Route::patch('/{business}/expense/{expense}', [DailyOutcomeController::class, 'update'])->name('business.expense.update');
-            Route::delete('/{business}/expense/{expense}', [DailyOutcomeController::class, 'delete'])->name('business.expense.delete');
+            // Route::get('/{business}/expense', [DailyOutcomeController::class, 'index'])->name('business.expense.index');
+            // Route::post('/{business}/expense', [DailyOutcomeController::class, 'store'])->name('business.expense.store');
+            // Route::patch('/{business}/expense/{expense}', [DailyOutcomeController::class, 'update'])->name('business.expense.update');
+            // Route::delete('/{business}/expense/{expense}', [DailyOutcomeController::class, 'delete'])->name('business.expense.delete');
 
             // Excel
             Route::get('/{business}/business-expense/excel', function(Business $business, Request $request){
@@ -662,12 +740,30 @@ Route::group(['middleware' => ['auth']], function(){
 
         // 
 
-        // Finance Page
-            Route::get('/{business}/account-receivable', [AccountReceivableController::class, 'index'])->name('business.account-receivable.index');
-            Route::post('/{business}/account-receivable', [AccountReceivableController::class, 'store'])->name('business.account-receivable.store');
-            Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLater'])->name('business.account-receivable.pay-later');
+        // Finance Page 
+            //account receivable
+                Route::get('/{business}/account-receivable', [AccountReceivableController::class, 'index'])->name('business.account-receivable.index');
+                Route::post('/{business}/account-receivable', [AccountReceivableController::class, 'store'])->name('business.account-receivable.store');
+                Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLater'])->name('business.account-receivable.pay-later');
+            //
+            //account receivable payment
+                Route::get('/{business}/account-receivable-payment', [AccountReceivablePaymentController::class, 'index'])->name('business.account-receivable-payment.index');
+                Route::get('/{business}/account-receivable-payment/create', [AccountReceivablePaymentController::class, 'store'])->name('business.account-receivable-payment.create');
+                Route::get('/{business}/account-receivable-payment/{id}/print-detail', [AccountReceivablePaymentController::class, 'printDetail']);
+                Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLater'])->name('business.account-receivable.pay-later');
+            //
 
-            
+            //account payable
+            Route::get('/{business}/account-payable', [AccountPayableController::class, 'index'])->name('business.account-payable.index');
+            Route::post('/{business}/account-payable', [AccountPayableController::class, 'store'])->name('business.account-payable.store');
+            Route::get('/{business}/pay-later', [AccountPayableController::class, 'payLater'])->name('business.account-payable.pay-later');
+        //
+        //account payable payment
+            Route::get('/{business}/account-payable-payment', [AccountPayablePaymentController::class, 'index'])->name('business.account-payable-payment.index');
+            Route::get('/{business}/account-payable-payment/create', [AccountPayablePaymentController::class, 'store'])->name('business.account-payable-payment.create');
+            Route::get('/{business}/account-payable-payment/{id}/print-detail', [AccountPayablePaymentController::class, 'printDetail']);
+            Route::get('/{business}/pay-later', [AccountPayableController::class, 'payLater'])->name('business.account-payable.pay-later');
+        //
         // 
     //
     

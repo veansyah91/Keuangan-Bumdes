@@ -20,6 +20,10 @@ class Account extends Model
                         ->orWhere('code', 'like', '%' . $search . '%')
                         ->orWhere('sub_category', 'like', '%' . $search . '%');
         });
+    }
+
+    public function scopeIsCash($query, array $filters)
+    {
 
         $query->when($filters['is_cash'] ?? false, function($query, $is_cash){
             $query->where('is_cash', $is_cash);

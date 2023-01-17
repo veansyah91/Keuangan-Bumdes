@@ -19,12 +19,33 @@ class Businessaccount extends Model
                         ->orWhere('code', 'like', '%' . $search . '%')
                         ->orWhere('sub_category', 'like', '%' . $search . '%');
         });
+    }
+
+    public function scopeIsCash($query, array $filters)
+    {
 
         $query->when($filters['is_cash'] ?? false, function($query, $is_cash){
             $query->where('is_cash', $is_cash);
             
         });
     }
+
+    public function scopePayment($query, array $filters)
+    {
+        $query->when($filters['payment'] ?? false, function($query, $payment){
+            $query->where('is_cash', $payment)->orWhere('sub_category', 'Piutang Usaha');
+            
+        });
+    }
+
+    public function scopePayable($query, array $filters)
+    {
+        $query->when($filters['payable'] ?? false, function($query, $payable){
+            $query->where('is_cash', $payable)->orWhere('sub_category', 'Utang Usaha');
+            
+        });
+    }
+    
 
     public function cashflows()
     {

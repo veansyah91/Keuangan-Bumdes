@@ -28,7 +28,7 @@
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
                             <label for="date-input" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="date-input" placeholder="Tanggal">
+                            <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDataInput(this)">
                             
                         </div>
                     </div>

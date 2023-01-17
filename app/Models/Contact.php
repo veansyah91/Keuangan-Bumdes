@@ -21,4 +21,32 @@ class Contact extends Model
                 ->orWhere('type', 'like', '%' . $search . '%');
         });
     }
+    public function scopeType($query, array $filters)
+    {
+        // filter type
+        $query->when($filters['type'] ?? false, function($query, $type){
+            return $query->where('type', $type);
+        });
+    }
+
+    public function accountReceivables()
+    {
+        return $this->hasMany(AccountReceivable::class);
+    }
+
+    public function accountPayables()
+    {
+        return $this->hasMany(AccountPayable::class);
+    }
+
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function purchaseGoods()
+    {
+        return $this->hasMany(PurchaseGoods::class);
+    }
 }

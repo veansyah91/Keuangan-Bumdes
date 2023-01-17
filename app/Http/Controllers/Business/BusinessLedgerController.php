@@ -7,11 +7,18 @@ use App\Models\Business;
 use Illuminate\Http\Request;
 use App\Models\Businessledger;
 use App\Models\Businessaccount;
+use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessLedgerController extends Controller
 {
     public function print(Business $business){
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         $account = Businessaccount::find(request('account_id'));
         // dd($account);
         $ledgers = Businessledger::filter(request(['account_id','search','date_from','date_to','this_week','this_month','this_year']))
@@ -83,7 +90,11 @@ class BusinessLedgerController extends Controller
         ]);
     }
     public function index(Business $business)
-    {
+        {$businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.ledger.index', compact('business'));
     }
 
