@@ -82,7 +82,20 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::resource('/contact', ContactController::class)->only(['store','destroy','show', 'update']);
     Route::get('/no-ref-contact-recomendation', [ContactController::class, 'noRefContactRecomendation']);
 
+    //Regional
+    //village
+    Route::get('/village', function(){
+        $villages = Village::paginate(50);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $villages,
+        ]);
+    });
+
     Route::group(['middleware' => ['role:ADMIN']], function(){
+
+        //
         Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
         Route::get('/home/asset',[AdminController::class, 'asset']);
         Route::get('/home/liability',[AdminController::class, 'liability']);
@@ -294,35 +307,35 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     
 });
 
-// Route::get('/villages', function(){
-//     $villages = Village::where('nama', 'like', '%' . request('village') . '%')->skip(0)->take(5)->get();
+Route::get('/villages', function(){
+    $villages = Village::where('nama', 'like', '%' . request('village') . '%')->skip(0)->take(5)->get();
 
-//     $data = [];
+    $data = [];
 
-//     foreach ($villages as $key => $village) {
-//         $district = District::where('kode', $village->kode_kecamatan)->first();
-//         $regency = Regency::where('kode', $district['kode_kabupaten'])->first();
-//         $province = Province::where('kode', $regency['kode_provinsi'])->first();
-//         $data[$key] = [
-//             'desa' => $village->nama,
-//             'kecamatan' => $district['nama'],
-//             'kabupaten' => $regency['nama'],
-//             'provinsi' => $province['nama'],            
-//         ];
-//     }
+    foreach ($villages as $key => $village) {
+        $district = District::where('kode', $village->kode_kecamatan)->first();
+        $regency = Regency::where('kode', $district['kode_kabupaten'])->first();
+        $province = Province::where('kode', $regency['kode_provinsi'])->first();
+        $data[$key] = [
+            'desa' => $village->nama,
+            'kecamatan' => $district['nama'],
+            'kabupaten' => $regency['nama'],
+            'provinsi' => $province['nama'],            
+        ];
+    }
 
-//     $response = [
-//         'message' => 'Berhasil Mengambil Data Desa',
-//         'data' => $data,
-//     ];
+    $response = [
+        'message' => 'Berhasil Mengambil Data Desa',
+        'data' => $data,
+    ];
 
-//     try {
-//         return response()->json($response, Response::HTTP_OK);
-//     } catch (\Throwable $th) {
-//         return response()->json($th, 500);
-//     }     
+    try {
+        return response()->json($response, Response::HTTP_OK);
+    } catch (\Throwable $th) {
+        return response()->json($th, 500);
+    }     
 
-// });
+});
 
 // Route::get('/income/{income}', function(Income $income){
     
