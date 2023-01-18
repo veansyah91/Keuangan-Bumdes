@@ -60,7 +60,6 @@ const showOperationalCash = () => {
     let list = '';
     totalOperationalCashes = 0;
     if (operationalCashes.length > 0) {
-
         operationalCashes.map(cash => {
             totalOperationalCashes += cash.debit - cash.credit;
             list += `
@@ -88,7 +87,6 @@ const showInvestmentCash = () => {
     let list = '';
     totalInvesmentCashes = 0;
     if (investmentCashes.length > 0) {
-
         investmentCashes.map(cash => {
             totalOperationalCashes += cash.debit - cash.credit;
             list += `

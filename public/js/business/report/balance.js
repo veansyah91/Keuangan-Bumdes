@@ -65,8 +65,8 @@ const setDefaultValue = () => {
 }
 
 const showBalance = (component, totalComponent, balances, totalBalances) => {
+    let list = '';
     if (balances.length > 0) {
-        let list = '';
 
         balances.map(balance => {
             list += balance.total != 0 ? `
@@ -90,8 +90,8 @@ const showBalance = (component, totalComponent, balances, totalBalances) => {
             </tr>
             ` : ''
         });
-        component.innerHTML = list;
     }
+    component.innerHTML = list;
 
     totalComponent.innerHTML = `${formatRupiah(totalBalances.toString())}`;
 

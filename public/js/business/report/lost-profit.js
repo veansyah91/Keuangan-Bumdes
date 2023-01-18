@@ -56,8 +56,8 @@ const setDefaultValue = () => {
 
 
 const showLostProfit = (component, totalComponent, lostProfits, totalLostProfits) => {
+    let list = '';
     if (lostProfits.length > 0) {
-        let list = '';
 
         lostProfits.map(lostProfit => {
             list += lostProfit.total > 0 ? `
@@ -81,10 +81,10 @@ const showLostProfit = (component, totalComponent, lostProfits, totalLostProfits
             </tr>
             ` : ''
         });
-        component.innerHTML = list;
-
-        totalComponent.innerHTML = `${formatRupiah(totalLostProfits.toString())}`;
     }
+    component.innerHTML = list;
+
+    totalComponent.innerHTML = `${formatRupiah(totalLostProfits.toString())}`;
 }
 
 const showReport = async () => {
