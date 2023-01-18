@@ -192,7 +192,7 @@ const handleSelectYear = async (value) => {
 }
 
 const showReport = async () => {
-    // try {
+    try {
         url = `/api/${business}/report/cashflow?year=${year}&end_year=${year}`;
 
         let res = await getData(url);
@@ -279,9 +279,9 @@ const showReport = async () => {
         startCashNow.innerHTML = `${formatRupiah((res.totalBalance - (totalBalanceNow)).toString())}`;
         startCashBefore.innerHTML = `${formatRupiah((res.totalBalance - totalBalanceNow - totalBalanceBefore).toString())}`;
         
-    // } catch (error) {
-    //     console.log(error);
-    // }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const printButtonVisibility = () => {
