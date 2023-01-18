@@ -7,6 +7,8 @@ let timeLimit = '';
 
 let lostProfit = 0;
 
+let salesDailyChart = '';
+
 const defineComponentElement = () => {
     const filterValue = document.querySelector('#filter-value');
     const lostProfitLabel = document.querySelector('#lost-profit-label');
@@ -61,11 +63,18 @@ const showMonthStatus = (month, year) => {
     filterValue.value = `${monthReadable(month)} ${year}`;
 }
 
+
+function destroyChart(){
+    //clear all chart
+    salesDailyChart.destroy();
+}
+
 const showData = async () => {
     await getLostProfit();
     await getAsset();
     await getLiability();
     await getEquity();
+    await showDailySalesChart();
 }
 
 const setDefaultValue = async () => {
@@ -98,27 +107,27 @@ const getLostProfit = async () => {
             Authorization : tokenIndex
         }
     })
-                .then(res=> {
-                    let data = res.data.data;
-                    lostProfit = data.lost_profit;
-                    lostProfitLabel.innerHTML = data.lost_profit > 1 ? "Laba" : "Rugi";
+    .then(res=> {
+        let data = res.data.data;
+        lostProfit = data.lost_profit;
+        lostProfitLabel.innerHTML = data.lost_profit > 1 ? "Laba" : "Rugi";
 
-                    lostProfitValue.innerHTML = `Rp.${formatRupiah(data.lost_profit.toString())}`;
-                    
-                    lostProfitChartIcon.innerHTML = data.lost_profit > 1 ?
-                                                    `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-graph-up-arrow text-success" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z"/>
-                                                </svg>` 
-                                                : `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-graph-down-arrow text-danger" viewBox="0 0 16 16">
-                                                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5Z"/>
-                                              </svg>`;
+        lostProfitValue.innerHTML = `Rp.${formatRupiah(data.lost_profit.toString())}`;
+        
+        lostProfitChartIcon.innerHTML = data.lost_profit > 1 ?
+                                        `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-graph-up-arrow text-success" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z"/>
+                                    </svg>` 
+                                    : `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-graph-down-arrow text-danger" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5Z"/>
+                                    </svg>`;
 
-                    income.innerHTML = `Rp.${formatRupiah(data.income.toString())}`;
-                    expense.innerHTML = `Rp.${formatRupiah(data.expense.toString())}`;
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+        income.innerHTML = `Rp.${formatRupiah(data.income.toString())}`;
+        expense.innerHTML = `Rp.${formatRupiah(data.expense.toString())}`;
+    })
+    .catch(err => {
+        console.log(err);
+    })
 }
 
 const getAsset = async () => {
@@ -200,6 +209,7 @@ const prevMonth = async () => {
 
     showMonthStatus(month, year);
     setLoading();
+    destroyChart();
     await showData();
 }
 
@@ -219,11 +229,52 @@ const nextMonth = async () => {
 
     showMonthStatus(month, year);
     setLoading();
+    destroyChart();
     await showData();
+}
+
+const showDailySalesChart = async () => {
+    const ctx = document.getElementById('daily-sales-chart');
+
+    let url = `/api/${business}/home/sales-chart?&time_limit=${timeLimit}`;
+
+    await axios.get(url, {
+        headers:{
+            Authorization : tokenIndex
+        }
+    })
+    .then(res=> {
+        let data = res.data.data;
+
+        salesDailyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'Penjualan Harian',
+                data: data.data,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+    })
+
+    
 }
 
 
 window.addEventListener('load', async function(){
     setLoading();
     await setDefaultValue();
+    
 })

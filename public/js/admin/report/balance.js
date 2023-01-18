@@ -65,7 +65,6 @@ const setDefaultValue = () => {
 const showBalance = (component, totalComponent, balances, totalBalances) => {
     let list = '';
     if (balances.length > 0) {
-
         balances.map(balance => {
             list += balance.total != 0 ? `
             <tr>
@@ -89,8 +88,8 @@ const showBalance = (component, totalComponent, balances, totalBalances) => {
             ` : ''
         });
     }
+    
     component.innerHTML = list;
-
     totalComponent.innerHTML = `${formatRupiah(totalBalances.toString())}`;
 
 }
@@ -144,8 +143,6 @@ const showReport = async () => {
         let url = `/api/report/balance?date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`;
 
         let res = await getData(url);
-
-        console.log(res);
 
         period.innerHTML = res.period;
 

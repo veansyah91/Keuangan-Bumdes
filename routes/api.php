@@ -94,12 +94,14 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     });
 
     Route::group(['middleware' => ['role:ADMIN']], function(){
+        //dasbor
+            Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
+            Route::get('/home/asset',[AdminController::class, 'asset']);
+            Route::get('/home/liability',[AdminController::class, 'liability']);
+            Route::get('/home/equity',[AdminController::class, 'equity']);
 
+            
         //
-        Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
-        Route::get('/home/asset',[AdminController::class, 'asset']);
-        Route::get('/home/liability',[AdminController::class, 'liability']);
-        Route::get('/home/equity',[AdminController::class, 'equity']);
         
         Route::get('/no-ref-fixed-asset-recomendation', [FixedAssetController::class, 'noRefFixedAssetRecomendation']);
         Route::get('/fixed-assets', [FixedAssetController::class, 'getData']);
@@ -274,6 +276,10 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
             Route::get('/{business}/home/asset',[DashboardController::class, 'asset']);
             Route::get('/{business}/home/liability',[DashboardController::class, 'liability']);
             Route::get('/{business}/home/equity',[DashboardController::class, 'equity']);
+
+            //daily sales chart
+                Route::get('/{business}/home/sales-chart',[DashboardController::class, 'salesChart']);
+            //
         //
 
         //account
@@ -336,92 +342,3 @@ Route::get('/villages', function(){
     }     
 
 });
-
-// Route::get('/income/{income}', function(Income $income){
-    
-//     $response = [
-//         'message' => 'Berhasil Mengambil Data Income',
-//         'data' => $income,
-//     ];
-
-//     try {
-//         return response()->json($response, Response::HTTP_OK);
-//     } catch (\Throwable $th) {
-//         return response()->json($th, 500);
-//     } 
-// });
-
-// Route::get('/outcome/{outcome}', function(Outcome $outcome){
-    
-//     $response = [
-//         'message' => 'Berhasil Mengambil Data outcome',
-//         'data' => $outcome,
-//     ];
-
-//     try {
-//         return response()->json($response, Response::HTTP_OK);
-//     } catch (\Throwable $th) {
-//         return response()->json($th, 500);
-//     } 
-// });
-
-// Route::get('/business/{business}', function(Business $business){
-    
-//     $response = [
-//         'message' => 'Berhasil Mengambil Data Unit Usaha',
-//         'data' => $business,
-//     ];
-
-//     try {
-//         return response()->json($response, Response::HTTP_OK);
-//     } catch (\Throwable $th) {
-//         return response()->json($th, 500);
-//     } 
-// });
-
-
-
-// Route::get('/{business}/brand', [BrandController::class, 'search']);
-// Route::post('/{business}/brand', [BrandController::class, 'apiValidate']);
-
-// Route::get('/{business}/supplier', [SupplierController::class, 'search']);
-// Route::get('/{business}/supplier/{supplier}', [SupplierController::class, 'detail']);
-// Route::post('/{business}/supplier', [SupplierController::class, 'apiValidate']);
-
-// Route::get('/{business}/customer/{customer}', [CustomerController::class, 'detail']);
-// Route::get('/{business}/customer', [CustomerController::class, 'search']);
-// Route::post('/{business}/customer', [CustomerController::class, 'apiValidate']);
-
-
-
-// Route::post('/{business}/incoming-item', [IncomingItemController::class, 'apiValidate']);
-
-// Route::get('/incoming-item/stock/{stock}', [IncomingItemController::class, 'getStock']);
-
-// Route::get('/{business}/stock/{stock}', [StockController::class, 'detail']);
-// Route::post('/{business}/stock', [StockController::class, 'apiValidate']);
-// Route::get('/stock/{product}', [StockController::class, 'search']);
-
-// Route::get('/asset/{asset}', [AssetController::class, 'detail']);
-// Route::post('/asset', [AssetController::class, 'apiValidate']);
-
-// Route::post('/{business}/cashier', [CashierController::class, 'store']);
-
-// Route::get('/{business}/balance-transaction', [BusinessBalanceElectricActivityController::class, 'indexApi']);
-
-// Route::get('/invoice-detail/{invoice}', [CashierController::class, 'invoiceDetail']);
-// Route::delete('/invoice-detail/{invoiceId}/{productId}', [CashierController::class, 'deleteInvoiceDetail']);
-// Route::post('/cashier/add-order', [CashierController::class, 'addOrder']);
-// Route::post('/cashier/{invoice}/update', [CashierController::class, 'invoiceUpdate']);
-
-// Route::get('/{business}/account-receivable/{accountReceivable}', [AccountReceivableController::class, 'detail']);
-// Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLaterList']);
-// Route::get('/pay-later/detail/{id}', [AccountReceivableController::class, 'payLaterDetail']);
-
-// Route::get('/expense/{expense}', [DailyOutcomeController::class, 'detail']);
-// Route::post('/{business}/expense', [DailyOutcomeController::class, 'apiValidate']);
-
-// dashboard
-// Route::get('/{business}/dashboard/cashflow', [DashboardController::class, 'cashflow']);
-// Route::post('/{business}/dashboard/business-balance-activity', [BusinessBalanceActivityController::class, 'apiValidate']);
-// Route::get('/{business}/dashboard/business-balance-activity/{businessBalanceActivity}', [BusinessBalanceActivityController::class, 'detail']);

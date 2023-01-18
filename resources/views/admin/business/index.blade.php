@@ -76,42 +76,19 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori1" checked value="Retail">
-                                            <label class="form-check-label" for="kategori1">
-                                                Retail
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori2" value="Restoran">
-                                            <label class="form-check-label" for="kategori2">
-                                                Restoran / Cafe
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori3" value="Pulsa">
-                                            <label class="form-check-label" for="kategori3">
-                                                Pulsa
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori4" value="Restoran">
-                                            <label class="form-check-label" for="kategori4">
-                                                Kredit
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori5" value="Lainnya">
+                                            <input class="form-check-input" type="radio" name="kategori" id="kategori5" value="Lainnya" checked>
                                             <label class="form-check-label" for="kategori5">
-                                                Lainnya
+                                                Non Credit
                                             </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="kategori" id="kategori6" value="Kredit" disabled>
+                                            <label class="form-check-label" for="kategori6">
+                                                Credit 
+                                            </label>
+                                            <small class="badge bg-danger">Segera</small>
                                         </div>
                                     </div>
                                 </div>
@@ -191,8 +168,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                
                             </div>
                         </div>
                         <div class="col-12 mt-2">
@@ -248,8 +223,6 @@
             });
 
             status.value = data.status;
-
-            // data.status ? 
         }
 
         const deleteConfirmation = (id) => {
