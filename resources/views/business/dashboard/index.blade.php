@@ -149,9 +149,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-lg-8">
-                        <div>
-                            <canvas id="daily-sales-chart"></canvas>
-                        </div>
+                        <canvas id="daily-sales-chart"></canvas>
                     </div>
                 </div>
                 

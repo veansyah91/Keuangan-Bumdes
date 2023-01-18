@@ -37,7 +37,7 @@
         @if ($identity)
             <div class="header row">
                 <div class="col-2" id="logo-bumdes">
-                    <img src="{{ asset($identity['logo_usaha']) }}" alt="logo_usaha" class="img-fluid mt-2 p-3" alt="logo_usaha" width="200px">
+                    <img src="{{ asset($identity['logo_usaha']) }}" alt="logo_usaha" class="img-fluid mt-2 p-3" alt="logo_usaha" width="200px" loading='lazy'>
                 </div>
                 <div class="col-8 my-auto" id="identity">
                     <h4 class="font-bold">{{ $identity['nama_bumdes'] }}</h4>
