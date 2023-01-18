@@ -157,10 +157,10 @@
                                             <div class="text-end" id="total-equity">
                                                 
                                             </div>
-                                        </div>  
+                                        </div>      
                                     </th>
+                                    <th class="w-25" style="width: 25%"></th>
                                 </tr>
-                                <th class="w-25"></th>
                             </tfoot>
                             
                         </table>

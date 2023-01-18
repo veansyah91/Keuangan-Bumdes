@@ -57,10 +57,10 @@ const setDefaultValue = () => {
 }
 
 const showOperationalCash = () => {
+    let list = '';
+    totalOperationalCashes = 0;
     if (operationalCashes.length > 0) {
-        let list = '';
 
-        totalOperationalCashes = 0;
         operationalCashes.map(cash => {
             totalOperationalCashes += cash.debit - cash.credit;
             list += `
@@ -78,17 +78,16 @@ const showOperationalCash = () => {
                 </td>
                 <td w-25></td>
             </tr>`;
-        })
-
-        operationalActivity.innerHTML = list;
-        totalOperationalActivity.innerHTML = totalOperationalCashes < 0 ? `(${formatRupiah(totalOperationalCashes.toString())})` : formatRupiah(totalOperationalCashes.toString())
+        })  
     }
+    operationalActivity.innerHTML = list;
+    totalOperationalActivity.innerHTML = totalOperationalCashes < 0 ? `(${formatRupiah(totalOperationalCashes.toString())})` : formatRupiah(totalOperationalCashes.toString());
 }
 
 const showInvestmentCash = () => {
+    let list = '';
+    totalInvesmentCashes = 0;
     if (investmentCashes.length > 0) {
-        let list = '';
-        totalInvesmentCashes = 0;
 
         investmentCashes.map(cash => {
             totalOperationalCashes += cash.debit - cash.credit;
@@ -108,17 +107,16 @@ const showInvestmentCash = () => {
                 <td w-25></td>
             </tr>`;
         })
-        investmentActivity.innerHTML = list ;        
     }
-    totalInvestmentActivity.innerHTML = totalInvesmentCashes < 0 ? `(${formatRupiah(totalInvesmentCashes.toString())})` : formatRupiah(totalInvesmentCashes.toString())
+    investmentActivity.innerHTML = list ;        
+    totalInvestmentActivity.innerHTML = totalInvesmentCashes < 0 ? `(${formatRupiah(totalInvesmentCashes.toString())})` : formatRupiah(totalInvesmentCashes.toString());
     
 }
 
 const showFinanceCash = () => {
+    let list = '';
+    totalFinanceCashes = 0;
     if (financeCashes.length > 0) {
-        let list = '';
-        totalFinanceCashes = 0;
-
         financeCashes.map(cash => {
             totalOperationalCashes += cash.debit - cash.credit;
             list += `
@@ -137,8 +135,8 @@ const showFinanceCash = () => {
                 <td w-25></td>
             </tr>`;
         })
-        financeActivity.innerHTML = list;        
     }
+    financeActivity.innerHTML = list;        
     totalFinanceActivity.innerHTML = totalFinanceCashes < 0 ? `(${formatRupiah(totalFinanceCashes.toString())})` : formatRupiah(totalFinanceCashes.toString())
 }
 

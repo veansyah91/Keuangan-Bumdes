@@ -391,9 +391,9 @@ class AccountSeeder extends Seeder
         foreach ($accounts as $account) {
             //find single data sub classification account by finding the sub_category
             $subClassification = SubClassificationAccount::where('name', $account['sub_category'])->first();
-            $account['sub_classification_account_id'] = $subClassification->id;
             
             if ($subClassification) {
+                $account['sub_classification_account_id'] = $subClassification['id'];
                 Account::create($account);
             }
         }

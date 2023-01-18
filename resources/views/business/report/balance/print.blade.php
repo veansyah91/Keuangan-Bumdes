@@ -179,7 +179,6 @@
                             </tr>
                             <th class="w-25"></th>
                         </tfoot>
-                        
                     </table>
 
                     <table class="table">
