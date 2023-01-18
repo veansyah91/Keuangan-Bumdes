@@ -60,8 +60,8 @@ const setDefaultValue = () => {
 
 
 const showLostProfit = (component, totalComponentNow, totalComponentBefore, lostProfits, totalLostProfitsNow, totalLostProfitsBefore) => {
+    let list = '';
     if (lostProfits.length > 0) {
-        let list = '';
         
         lostProfits.map(lostProfit => {
             list += `
@@ -92,12 +92,12 @@ const showLostProfit = (component, totalComponentNow, totalComponentBefore, lost
             </tr>
             ` 
         });
-        component.innerHTML = list;
-
-        totalComponentNow.innerHTML = `${formatRupiah(totalLostProfitsNow.toString())}`;
-        
-        totalComponentBefore.innerHTML = `${formatRupiah(totalLostProfitsBefore.toString())}`;
     }
+    component.innerHTML = list;
+
+    totalComponentNow.innerHTML = `${formatRupiah(totalLostProfitsNow.toString())}`;
+    
+    totalComponentBefore.innerHTML = `${formatRupiah(totalLostProfitsBefore.toString())}`;
 }
 
 function loading(){
