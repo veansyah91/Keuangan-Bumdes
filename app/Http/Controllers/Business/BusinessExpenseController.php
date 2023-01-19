@@ -7,8 +7,8 @@ use App\Models\Business;
 use Illuminate\Http\Request;
 use App\Models\Businessledger;
 use App\Models\Businessaccount;
-use App\Models\Businessexpense;
 use App\Models\Businessjournal;
+use App\Models\Businessexpense;
 use App\Models\Businesscashflow;
 use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
@@ -132,7 +132,6 @@ class BusinessExpenseController extends Controller
 
     public function noRefExpenseRecomendation(Business $business)
     {
-        // $ref_no = explode("-", request('search'));
         $businessexpense = Businessexpense::where('business_id', $business['id'])->orderBy('id', 'desc')->first();
 
         $fix_ref_no = '';

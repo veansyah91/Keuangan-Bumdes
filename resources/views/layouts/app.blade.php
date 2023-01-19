@@ -132,6 +132,15 @@
     <script src="{{ asset('js/business/main.js') }}" defer></script> 
     <script src="{{ asset('js/public.js') }}" defer></script> 
 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9B8M2Y1DJ"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Z9B8M2Y1DJ');
+    </script>
+
     {{-- <script src="{{ asset('js/dist/just-validate.production.min') }}"></script> --}}
 
     {{-- Toast JS --}}

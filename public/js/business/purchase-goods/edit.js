@@ -155,10 +155,10 @@ const componentListInput = (index) => {
                     </div>
                 </div>
             </div>
-            <div class="col-1 col-md-2 text-end">
+            <div class="col-2 col-md-2 text-end">
                 <input type="text" class="form-control text-end qty-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].qty}" onkeyup="setCurrencyFormat(this)" onchange="changeQty(this)" data-order="${index}">
             </div>
-            <div class="col-3 col-md-2 text-end">
+            <div class="col-2 col-md-2 text-end">
                 <input type="text" class="form-control text-end unit-price-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].unit_price.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeSellingPrice(this)" data-order="${index}">
             </div>
             <div class="col-3 col-md-2 text-end">
