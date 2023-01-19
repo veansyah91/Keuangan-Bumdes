@@ -30,11 +30,11 @@
             <a class="btn btn-primary" href="{{ route('business.product.create', $business->id) }}">Tambah Data</a>
         </div>
         <div class="fixed-bottom text-end mb-3 mr-3 d-md-none ">
-            <button class="btn btn-primary rounded-circle" href="{{ route('business.product.create', $business->id) }}">
+            <a class="btn btn-primary rounded-circle" href="{{ route('business.product.create', $business->id) }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
                 </svg>
-            </button>
+            </a>
         </div>
     </div>
 
