@@ -73,14 +73,14 @@
                     <div class="col-12 col-lg-6">
                         <div class="mb-3">
                             <label for="unit-price-input" class="form-label">Harga Beli</label>
-                            <input type="text" class="form-control text-end" id="unit-price-input" placeholder="Harga Beli" onchange="changeUnitPrice(this)" autocomplete="off" onclick="this.select()" value="0" onkeyup="setCurrencyFormat(this)">
+                            <input type="text" class="form-control text-end" id="unit-price-input" placeholder="Harga Beli" onchange="changeUnitPrice(this)" autocomplete="off" onclick="this.select()" value="0" onkeyup="setCurrencyFormat(this)" inputmode="numeric">
                             
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="mb-3">
                             <label for="selling-price-input" class="form-label">Harga Jual</label>
-                            <input type="text" class="form-control text-end" id="selling-price-input" placeholder="Harga Jual" onchange="changeSellingPrice(this)" autocomplete="off" onclick="this.select()" value="0" onkeyup="setCurrencyFormat(this)">
+                            <input type="text" class="form-control text-end" id="selling-price-input" placeholder="Harga Jual" onchange="changeSellingPrice(this)" autocomplete="off" onclick="this.select()" value="0" onkeyup="setCurrencyFormat(this)" inputmode="numeric">
                         </div>
                     </div>
                 </div>

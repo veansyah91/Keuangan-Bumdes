@@ -82,10 +82,10 @@
                             <div class="col-4">
                                 Produk
                             </div>
-                            <div class="col-1 col-md-2 text-end">
+                            <div class="col-2 col-md-2 text-end">
                                 Qty
                             </div>
-                            <div class="col-3 col-md-2 text-end">
+                            <div class="col-2 col-md-2 text-end">
                                 Harga
                             </div>
                             <div class="col-3 col-md-2 text-end">
