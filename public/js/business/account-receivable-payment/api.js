@@ -1,4 +1,6 @@
 const business = document.querySelector('#content').dataset.business;
+const businessName = document.querySelector('#content').dataset.businessName;
+const identity = document.querySelector('#content').dataset.identity;
 const id = document.querySelector('#content').dataset.invoice;
 
 const token = `Bearer ${localStorage.getItem('token')}`;

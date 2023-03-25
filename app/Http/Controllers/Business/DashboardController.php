@@ -22,6 +22,11 @@ class DashboardController extends Controller
 {
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.dashboard.index', compact('business'));
     }
 

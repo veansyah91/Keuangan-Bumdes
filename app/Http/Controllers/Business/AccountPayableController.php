@@ -30,7 +30,8 @@ class AccountPayableController extends Controller
         $data = Contact::where('id', $id)
                         ->whereHas('purchaseGoods')
                         ->with('purchaseGoods', function($query) use ($business){
-                            $query->whereHas('accountPayables')
+                            $query->whereHas('accountPayables',  fn($query) => 
+                            $query->where('business_id', $business['id']))
                                     ->with('accountPayables');
                         })
                         ->first();
@@ -41,10 +42,14 @@ class AccountPayableController extends Controller
         ]);
     }
 
+    
+
     public function getData(Business $business)
     {
         $data = Contact::where('name', 'like', '%' . request('search') . '%')
-                        ->whereHas('accountPayables')
+                        ->whereHas('accountPayables',  fn($query) => 
+                        $query
+                        ->where('business_id', $business['id']))
                         ->with('accountPayables')
                         ->withSum('accountPayables', 'debit')
                         ->withSum('accountPayables', 'credit')
@@ -60,7 +65,8 @@ class AccountPayableController extends Controller
     public function getDataByPurchaseGoods(Business $business, $contact)
     {
         $data = PurchaseGoods::where('contact_id', $contact)
-                        ->whereHas('accountPayables')
+                        ->whereHas('accountPayables',  fn($query) => 
+                        $query->where('business_id', $business['id']))
                         ->with('accountPayables')
                         ->withSum('accountPayables', 'debit')
                         ->withSum('accountPayables', 'credit')

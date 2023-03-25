@@ -24,6 +24,9 @@
 
     <link href="{{ asset('css/business/custom.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('images/logo/icon.ico') }}" rel="icon">
+
+
     @yield('style')
 </head>
 

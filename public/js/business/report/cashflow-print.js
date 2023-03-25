@@ -58,7 +58,6 @@ const showOperationalCash = () => {
     let list = '';
     totalOperationalCashes = 0;
     if (operationalCashes.length > 0) {
-
         operationalCashes.map(cash => {
             totalOperationalCashes += cash.debit - cash.credit;
             list += `
@@ -70,17 +69,16 @@ const showOperationalCash = () => {
                             Rp. 
                         </div>
                         <div class="text-end">
-                            ${cash.credit > 0 ? `(${formatRupiah(cash.credit.toString())})` : formatRupiah(cash.debit.toString())}
+                            ${cash.credit - cash.debit > 0 ? `(${formatRupiah((cash.credit - cash.debit).toString())})` : formatRupiah((cash.credit - cash.debit).toString())}
                         </div>
                     </div>                                        
                 </td>
                 <td w-25></td>
             </tr>`;
-        })
-
+        })  
     }
     operationalActivity.innerHTML = list;
-    totalOperationalActivity.innerHTML = totalOperationalCashes < 0 ? `(${formatRupiah(totalOperationalCashes.toString())})` : formatRupiah(totalOperationalCashes.toString())
+    totalOperationalActivity.innerHTML = totalOperationalCashes < 0 ? `(${formatRupiah(totalOperationalCashes.toString())})` : formatRupiah(totalOperationalCashes.toString());
 }
 
 const showInvestmentCash = () => {
@@ -149,7 +147,7 @@ const showReport = async () => {
             if (cashflows.type == 'investment') {
                 investmentCashes = [...investmentCashes, cashflows];
             } else if (cashflows.type == 'finance') {
-                financeCashes = [...investmentCashes, cashflows];
+                financeCashes = [...financeCashes, cashflows];
             } else {
                 operationalCashes = [...operationalCashes, cashflows];
             }
@@ -160,10 +158,10 @@ const showReport = async () => {
         showInvestmentCash();
         showFinanceCash();
 
-        increaseCash.innerHTML = `${(totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes) < 0 ? '-' : ''}${formatRupiah((totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes).toString())}`;
+        increaseCash.innerHTML = `${(totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes) < 0 ? '(' : ''}${formatRupiah((totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes).toString())}${(totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes) < 0 ? ')' : ''}`;
 
-        endCash.innerHTML = `${formatRupiah(res.totalBalance.toString())}`;
-        startCash.innerHTML = `${formatRupiah((res.totalBalance - (totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes)).toString())}`;
+        endCash.innerHTML = `${res.totalBalance < 0 ? '(' : ''}${formatRupiah(res.totalBalance.toString())}${res.totalBalance < 0 ? ')' : ''}`;
+        startCash.innerHTML = `${(res.totalBalance - (totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes)) < 0 ? '(' : ''}${formatRupiah((res.totalBalance - (totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes)).toString())}${(res.totalBalance - (totalOperationalCashes + totalInvesmentCashes + totalFinanceCashes)) < 0 ? ')' : ''}`;
         
     } catch (error) {
         console.log(error);

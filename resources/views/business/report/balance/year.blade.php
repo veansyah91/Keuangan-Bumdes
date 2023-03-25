@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="page-heading d-flex justify-content-between my-auto">
-        <h3>Laporan Neraca Saldo Tahunan</h3>
+        <h3>Laporan Neraca Tahunan</h3>
 
         <div class="d-flex">
             <div class="mx-1">

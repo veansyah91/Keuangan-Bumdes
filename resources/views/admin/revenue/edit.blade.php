@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6" >
                         <div class="mb-3">
-                            <label for="contact" class="form-label">Diterima Dari</label>
+                            <label for="contact" class="form-label fw-bold">Diterima Dari</label>
                             <div class="position-relative">
                                 <input type="text" class="form-control search-input-dropdown" placeholder="Kontak" aria-label="Kontak" aria-describedby="input-contact"
                                 onclick="showContactDropdown(this)" onkeyup="showContactDropdown(this)"
@@ -35,7 +35,7 @@
                     </div>
                     <div class="col-12 col-md-6" >
                         <div class="mb-3">
-                            <label for="to-account" class="form-label">Ke Akun</label>
+                            <label for="to-account" class="form-label fw-bold">Ke Akun</label>
                             <div class="position-relative">
                                 <input type="text" class="form-control search-input-dropdown" placeholder="Akun Kas" aria-label="Akun Kas" aria-describedby="input-to-account"
                                 onclick="showToAccountDropdown(this)" onkeyup="showToAccountDropdown(this)"
@@ -51,20 +51,20 @@
                     
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDateInput(this)">
                             
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="no-ref-input" class="form-label">No Referensi</label>
+                            <label for="no-ref-input" class="form-label fw-bold">No Referensi</label>
                             <input type="text" class="form-control" id="no-ref-input" placeholder="No Referensi" onchange="noRefChange(this)">
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="description-input" class="form-label">Deskripsi</label>
+                            <label for="description-input" class="form-label fw-bold">Deskripsi</label>
                             <input type="text" class="form-control" id="description-input" placeholder="Deskripsi" onchange="getNoRefAccountAuto(this)">
                             
                         </div>
@@ -73,7 +73,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="detail-input" class="form-label">Detail (optional) </label>
+                            <label for="detail-input" class="form-label fw-bold">Detail (optional) </label>
                             <input type="text" class="form-control" id="detail-input" placeholder="Detail" onchange="detailInputChange(this)">
                         </div>
                     </div>

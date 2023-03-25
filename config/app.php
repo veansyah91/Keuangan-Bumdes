@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'id',
 
     /*
     |--------------------------------------------------------------------------
@@ -166,6 +166,8 @@ return [
          * Package Service Providers...
          */
 
+        Riskihajar\Terbilang\TerbilangServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -177,12 +179,14 @@ return [
         App\Providers\MonthServiceProvider::class,
         App\Providers\BusinessUserServiceProvider::class,
         App\Providers\LedgerServiceProvider::class,
+        App\Providers\SubscribeInvoiceProvider::class,
+        App\Providers\OverDueSubscribeProvider::class,
 
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Maatwebsite\Excel\ExcelServiceProvider::class,
+        // Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
@@ -239,8 +243,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        // 'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Terbilang' => Riskihajar\Terbilang\Facades\Terbilang::class,
 
         'IdentityHelp' => App\Helpers\IdentityHelper::class,
         'IncomingItemHelper' => App\Helpers\IncomingItemHelper::class,
@@ -248,6 +253,8 @@ return [
         'MonthHelper' => App\Helpers\MonthHelper::class,
         'BusinessUserHelper' => App\Helpers\BusinessUserHelper::class,
         'LedgerHelper' => App\Helpers\LedgerHelper::class,
+        'SubscribeInvoiceHelper' => App\Helpers\SubscribeInvoiceHelper::class,
+        'OverDueSubscribeHelper' => App\Helpers\OverDueSubscribeHelper::class,
     ],
 
 ];

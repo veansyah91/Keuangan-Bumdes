@@ -16,17 +16,22 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\FixedAssetController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\CashMutationController;
 use App\Http\Controllers\BalanceReportController;
+use App\Http\Controllers\Business\LendController;
 use App\Http\Controllers\Business\AssetController;
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
 use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
+use App\Http\Controllers\Business\DepositController;
 use App\Http\Controllers\Business\InvoiceController;
+use App\Http\Controllers\Business\OverDueController;
 use App\Http\Controllers\Business\ProductController;
+use App\Http\Controllers\InvoiceSubscribeController;
 use App\Http\Controllers\LostProfitReportController;
 use App\Http\Controllers\Business\CategoryController;
 use App\Http\Controllers\Business\CustomerController;
@@ -34,19 +39,25 @@ use App\Http\Controllers\Business\SupplierController;
 use App\Http\Controllers\Business\DashboardController;
 use App\Http\Controllers\SubCategoryAccountController;
 use App\Http\Controllers\TrialBalanceReportController;
+use App\Http\Controllers\Business\WithdrawalController;
 use App\Http\Controllers\Business\StockOpnameController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\Business\PurchaseGoodsController;
+use App\Http\Controllers\Business\SavingAccountController;
 use App\Http\Controllers\FixedAssetDepreciationController;
 use App\Http\Controllers\Business\AccountPayableController;
 use App\Http\Controllers\Business\BusinessLedgerController;
+use App\Http\Controllers\Business\DebtSubmissionController;
 use App\Http\Controllers\Business\BusinessAccountController;
 use App\Http\Controllers\Business\BusinessExpenseController;
 use App\Http\Controllers\Business\BusinessJournalController;
 use App\Http\Controllers\Business\BusinessRevenueController;
+use App\Http\Controllers\Business\ChangesInEquityController;
 use App\Http\Controllers\Business\AccountReceivableController;
+use App\Http\Controllers\Business\CreditApplicationController;
 use App\Http\Controllers\Business\BusinessFixedAssetController;
+use App\Http\Controllers\Business\CreditSalesInvoiceController;
 use App\Http\Controllers\Business\ProductStockOpnameController;
 use App\Http\Controllers\Business\InventoryAdjustmentController;
 use App\Http\Controllers\Business\BusinessCashMutationController;
@@ -79,6 +90,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::resource('/sub-category-account', SubCategoryAccountController::class)->only(['index', 'store', 'destroy']);
     Route::get('/contact', [ContactController::class, 'getApiData']);
     Route::get('/contacts', [ContactController::class, 'getData']);
+    Route::get('/contact-with-detail', [ContactController::class, 'detail']);
     Route::resource('/contact', ContactController::class)->only(['store','destroy','show', 'update']);
     Route::get('/no-ref-contact-recomendation', [ContactController::class, 'noRefContactRecomendation']);
 
@@ -93,14 +105,21 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
         ]);
     });
 
+    Route::group(['middleware' => ['auth']], function(){
+        Route::get('/invoice-subscribe/{id}/payment-confirmation', [InvoiceSubscribeController::class, 'paymentConfirmation'])->name('invoice.subscribe.payment-confirmation')->middleware('admin');
+
+    });
+
     Route::group(['middleware' => ['role:ADMIN']], function(){
         //dasbor
             Route::get('/home/lost-profit',[AdminController::class, 'lostProfit']);
             Route::get('/home/asset',[AdminController::class, 'asset']);
             Route::get('/home/liability',[AdminController::class, 'liability']);
             Route::get('/home/equity',[AdminController::class, 'equity']);
+        //
 
-            
+        //
+            Route::get('/business/{business}', [BusinessController::class, 'show']);
         //
         
         Route::get('/no-ref-fixed-asset-recomendation', [FixedAssetController::class, 'noRefFixedAssetRecomendation']);
@@ -134,6 +153,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
         Route::get('/report/balance-year', [BalanceReportController::class, 'getApiDataYear']);
         Route::get('/report/lost-profit', [LostProfitReportController::class, 'getApiData']);
         Route::get('/report/lost-profit-year', [LostProfitReportController::class, 'getApiDataYear']);
+        Route::get('/report/changes-in-equity', [App\Http\Controllers\ChangesInEquityController::class, 'getApiData']);
         Route::get('/report/trial-balance', [TrialBalanceReportController::class, 'getApiData']);
     
         Route::get('/ledger',[LedgerController::class, 'getApiData']);
@@ -149,6 +169,70 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
             Route::delete('/{business}/fixed-asset/{businessfixedasset}', [BusinessFixedAssetController::class, 'destroy']);
         
             Route::get('/{business}/fixed-asset-depreciation', BusinessFixedAssetDepreciationController::class);
+        //
+
+        //saving-account
+            Route::get('/{business}/no-ref-saving-account-recomendation', [SavingAccountController::class, 'noRefSavingAccountRecomendation']);
+            Route::get('/{business}/saving-account', [SavingAccountController::class, 'getData']);
+            Route::get('/{business}/saving-account/{id}/book-api', [SavingAccountController::class, 'getDataAccountPayable']);
+            Route::post('/{business}/saving-contact', [SavingAccountController::class, 'store']);
+            Route::get('/{business}/saving-contact/{id}', [SavingAccountController::class, 'show']);
+            Route::put('/{business}/saving-contact/{id}', [SavingAccountController::class, 'update']);
+            Route::delete('/{business}/saving-contact/{id}', [SavingAccountController::class, 'destroy']);
+        //
+
+        //deposit
+            Route::get('/{business}/no-ref-deposit-recomendation', [DepositController::class, 'noRefDepositRecomendation']);
+            Route::get('/{business}/deposit', [DepositController::class, 'getData']);
+            Route::post('/{business}/deposit', [DepositController::class, 'store']);
+            Route::get('/{business}/deposit/{id}', [DepositController::class, 'show']);
+            Route::put('/{business}/deposit/{id}', [DepositController::class, 'update']);
+            Route::delete('/{business}/deposit/{id}', [DepositController::class, 'destroy']);
+        //
+
+        //withdrawal
+            Route::get('/{business}/no-ref-withdrawal-recomendation', [WithdrawalController::class, 'noRefWithdrawalRecomendation']);
+            Route::get('/{business}/withdrawal', [WithdrawalController::class, 'getData']);
+            Route::post('/{business}/withdrawal', [WithdrawalController::class, 'store']);
+            Route::get('/{business}/withdrawal/{id}', [WithdrawalController::class, 'show']);
+            Route::put('/{business}/withdrawal/{id}', [WithdrawalController::class, 'update']);
+            Route::delete('/{business}/withdrawal/{id}', [WithdrawalController::class, 'destroy']);
+        //
+
+        //debt submission
+            Route::get('/{business}/no-ref-debt-submission-recomendation', [DebtSubmissionController::class, 'noRefDebtSubmissionRecomendation']);
+            Route::get('/{business}/debt-submission', [DebtSubmissionController::class, 'getData']);
+            Route::post('/{business}/debt-submission', [DebtSubmissionController::class, 'store']);
+            Route::get('/{business}/debt-submission/{id}', [DebtSubmissionController::class, 'show']);
+            Route::put('/{business}/debt-submission/{id}', [DebtSubmissionController::class, 'update']);
+            Route::delete('/{business}/debt-submission/{id}', [DebtSubmissionController::class, 'destroy']);
+        //
+
+        //lend
+            Route::get('/{business}/no-ref-lend-recomendation', [LendController::class, 'noRefLendRecomendation']);
+            Route::get('/{business}/lend', [LendController::class, 'getData']);
+            Route::post('/{business}/lend', [LendController::class, 'store']);
+            Route::get('/{business}/lend/{id}', [LendController::class, 'show']);
+            Route::put('/{business}/lend/{id}', [LendController::class, 'update']);
+            Route::delete('/{business}/lend/{id}', [LendController::class, 'destroy']);
+        //
+
+        //credit application
+            Route::get('/{business}/no-ref-credit-application-recomendation', [CreditApplicationController::class, 'noRefCreditApplicationRecomendation']);
+            Route::get('/{business}/credit-application', [CreditApplicationController::class, 'getData']);
+            Route::post('/{business}/credit-application', [CreditApplicationController::class, 'store']);
+            Route::get('/{business}/credit-application/{id}', [CreditApplicationController::class, 'show']);
+            Route::put('/{business}/credit-application/{id}', [CreditApplicationController::class, 'update']);
+            Route::delete('/{business}/credit-application/{id}', [CreditApplicationController::class, 'destroy']);
+        //
+
+        //credit-sales
+            Route::get('/{business}/no-ref-credit-sales-recomendation', [CreditSalesInvoiceController::class, 'noRefCreditSalesInvoiceRecomendation']);
+            Route::get('/{business}/credit-sales', [CreditSalesInvoiceController::class, 'getData']);
+            Route::post('/{business}/credit-sales', [CreditSalesInvoiceController::class, 'store']);
+            Route::get('/{business}/credit-sales/{id}', [CreditSalesInvoiceController::class, 'show']);
+            Route::put('/{business}/credit-sales/{id}', [CreditSalesInvoiceController::class, 'update']);
+            Route::delete('/{business}/credit-sales/{id}', [CreditSalesInvoiceController::class, 'destroy']);
         //
 
         //category
@@ -202,6 +286,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
             Route::get('/{business}/account-receivable', [AccountReceivableController::class, 'getData']);
             Route::get('/{business}/account-receivable-by-invoice/{contact}', [AccountReceivableController::class, 'getDataByInvoice']);
             Route::get('/{business}/account-receivable/{id}', [AccountReceivableController::class, 'show']);
+            Route::get('/{business}/account-receivable/{id}/lend', [AccountReceivableController::class, 'lend']);
             Route::put('/{business}/account-receivable/{id}', [AccountReceivableController::class, 'update']);
             Route::post('/{business}/account-receivable', [AccountReceivableController::class, 'store']);
             Route::delete('/{business}/account-receivable/{account-receivable}', [AccountReceivableController::class, 'destroy']);
@@ -214,6 +299,13 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
             Route::get('/{business}/account-receivable-payment/{id}', [AccountReceivablePaymentController::class, 'show']);
             Route::put('/{business}/account-receivable-payment/{id}', [AccountReceivablePaymentController::class, 'update']);
             Route::delete('/{business}/account-receivable-payment/{id}', [AccountReceivablePaymentController::class, 'destroy']);
+        //
+
+        //over due
+            Route::get('/{business}/over-due', [OverDueController::class, 'getApi']);
+            Route::get('/{business}/over-due/{id}', [OverDueController::class, 'getSingleApi']);
+            Route::delete('/{business}/over-due/{id}', [OverDueController::class, 'writeOff']);
+            Route::get('/{business}/over-due/reload', [OverDueController::class, 'update']);
         //
 
         //purchase goods
@@ -308,6 +400,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
             Route::get('/{business}/report/balance-year', [BusinessBalanceReportController::class, 'getApiDataYear']);
             Route::get('/{business}/report/lost-profit', [BusinessLostProfitReportController::class, 'getApiData']);
             Route::get('/{business}/report/lost-profit-year', [BusinessLostProfitReportController::class, 'getApiDataYear']);
+            Route::get('/{business}/report/changes-in-equity', [ChangesInEquityController::class, 'getApiData']);
             Route::get('/{business}/report/trial-balance', [BusinessTrialBalanceReportController::class, 'getApiData']);
         //
     
@@ -342,3 +435,4 @@ Route::get('/villages', function(){
     }     
 
 });
+

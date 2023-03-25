@@ -14,7 +14,7 @@
                     <div class="d-flex">
                         <input type="text" class="form-control search-input-dropdown" id="search-input-dropdown" placeholder="Pilih Akun" aria-label="Akun" aria-describedby="create-sub-category-account" onclick="showAccountDropdown(this)" onkeyup="showAccountDropdown(this)"
                         onchange="changeAccountDropdown(this)" autocomplete="off">
-                        <a class="btn" target="_blank" href="{{ route('account.index') }}"><i class="bi bi-search"></i></a>
+                        <a class="btn" target="_blank" href="{{ route('business.account.index', $business->id ) }}"><i class="bi bi-search"></i></a>
                     </div>
                     <div class="d-none bg-light position-absolute list-group w-100 search-select overflow-auto custom-scroll border border-2 border-secondary" id="account-list" style="max-height: 130px; z-index:1">
                         <button type="button" class="list-group-item list-group-item-action text-center disabled" disabled>

@@ -69,9 +69,9 @@ class BusinessFixedAssetDepreciationController extends Controller
                                 'date' => $last_date,
                                 'detail' => 'Penyusutan Harta Tetap - ' .  $fixedAsset['name'],
                                 'business_id' => $business['id'],
+                                'no_ref' => $fix_ref_no,
                             ],
                             [
-                                'no_ref' => $fix_ref_no,
                                 'desc' => 'Penyusutan Harta Tetap',
                                 'value' => $depreciatePerMonth,
                                 'author' => $request->user()->name,

@@ -244,16 +244,16 @@
                     </div>
                     <div class="modal-body overflow-auto custom-scroll" style="height: 400px;">                        
                         <div class="mb-3">
-                            <label for="no-ref-input" class="form-label">No Ref</label>
+                            <label for="no-ref-input" class="form-label fw-bold">No Ref</label>
                             <input type="text" class="form-control" id="no-ref-input" placeholder="" onchange="noRefInputChange(this)">
                         </div>
                         <div class="mb-3">
-                            <label for="name-input" class="form-label">Nama Item (Akun Akan Dibuat Otomatis pada Debit)</label>
+                            <label for="name-input" class="form-label fw-bold">Nama Item (Akun Akan Dibuat Otomatis pada Debit)</label>
                             <input type="text" class="form-control" id="name-input" placeholder="Nama" required onchange="nameInputChange(this)">
                         </div>
                         <div class="position-relative mb-3">
                             <div class="">
-                                <label for="credit-account-input" class="form-label">Akun Kredit</label>
+                                <label for="credit-account-input" class="form-label fw-bold">Akun Kredit</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control search-input-dropdown" placeholder="Akun Debit" aria-label="Akun Debit" aria-describedby="create-credit-account-input-account" list="dataSubClassificationAccount" onclick="showAccountDropdown()" onkeyup="changeAccountDropdown(this)" onchange="changeAccountValue(this)" id="credit-account-input" autocomplete="off">
                                 </div>
@@ -263,19 +263,19 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal Pembelian</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal Pembelian</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Nama" required onchange="dateInputChange(this)">
                         </div>
                         <div class="mb-3">
-                            <label for="value-input" class="form-label">Nilai Perolehan</label>
+                            <label for="value-input" class="form-label fw-bold">Nilai Perolehan</label>
                             <input type="text" class="form-control text-end" id="value-input" placeholder="" required onchange="valueInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="setCurrencyFormat(this)">
                         </div>
                         <div class="mb-3">
-                            <label for="salvage-input" class="form-label">Nilai Residu</label>
+                            <label for="salvage-input" class="form-label fw-bold">Nilai Residu</label>
                             <input type="text" class="form-control text-end" id="salvage-input" placeholder="" required onchange="salvageInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="setCurrencyFormat(this)">
                         </div>
                         <div class="mb-3">
-                            <label for="useful-life-input" class="form-label">Umur Penggunaan (bulan)</label>
+                            <label for="useful-life-input" class="form-label fw-bold">Umur Penggunaan (bulan)</label>
                             <input type="text" class="form-control text-end" id="useful-life-input" placeholder="" required onchange="useFulInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="setCurrencyFormat(this)">
                         </div>
                         <div class="form-check form-switch" id="is-active">

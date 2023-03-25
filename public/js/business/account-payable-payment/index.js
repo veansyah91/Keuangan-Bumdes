@@ -151,7 +151,7 @@ function selectContact(value)
         id : parseInt(value.dataset.id),
         name : value.dataset.name
     }
-    formData.description = `Pembayaran Utang Oleh ${formData.contact.name}`;
+    formData.description = `Pembayaran Utang Kepada ${formData.contact.name}`;
     document.querySelector('#contact').value = formData.contact.name;
     document.querySelector('#description').value = formData.description;
     validationInput();

@@ -22,15 +22,18 @@ class BusinessLedgerController extends Controller
         $account = Businessaccount::find(request('account_id'));
         // dd($account);
         $ledgers = Businessledger::filter(request(['account_id','search','date_from','date_to','this_week','this_month','this_year']))
+                        ->orderBy('credit')
                         ->orderBy('date', 'asc')->get();
 
         //get all
         $amountLedgerAll = Businessledger::filter(request(['outlet_id','account_id','date_to', 'end_week', 'end_month', 'end_year']))
+                                ->orderBy('credit')
                                 ->get();
 
         //get base on filtering by date or time
         $amountLedger = Businessledger::filter(request(['outlet_id','account_id','search','date_from','date_to','this_week','this_month','this_year']))
                                 ->eachAccount(request(['lost_profit']))
+                                ->orderBy('credit')
                                 ->get();
 
         $period = '';
@@ -65,17 +68,22 @@ class BusinessLedgerController extends Controller
     {
         $ledgers = Businessledger::filter(request(['account_id','search','date_from','date_to','this_week','this_month','this_year']))
                                 ->where('business_id', $business['id'])
-                        ->orderBy('date', 'desc')->orderBy('id', 'desc')->paginate(50);
+                                ->orderBy('date', 'desc')
+                                ->orderBy('id', 'desc')
+                                ->orderBy('credit')
+                                ->paginate(50);
 
         //get all
         $amountLedgerAll = Businessledger::filter(request(['account_id','date_to', 'end_week','end_month','end_year']))
                                 ->where('business_id', $business['id'])
+                                ->orderBy('credit')
                                 ->get();
 
         //get base on filtering by date or time
         $amountLedger = Businessledger::filter(request(['account_id','search','date_from','date_to','this_week','this_month','this_year']))
                                 ->where('business_id', $business['id'])
                                 ->eachAccount(request(['lost_profit']))
+                                ->orderBy('credit')
                                 ->get();
 
 

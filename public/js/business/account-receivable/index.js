@@ -96,7 +96,7 @@ async function showAccountReceivable(){
             let list = '';
             response.data.map((res, index) => {
             total += res.value;
-            let sisa = parseInt(res.account_receivables_sum_debit) - parseInt(res.account_receivables_sum_credit);
+            let sisa = parseInt(res.total_debit) - parseInt(res.total_credit);
             list += `
             <div class="d-flex d-md-none justify-content-between border-top border-bottom py-2">
                 <div style="width:10%" class="my-auto">
@@ -162,8 +162,8 @@ async function showAccountReceivable(){
                     </div>
                 </div>
                 <div style="width:20%" class="px-2 my-auto">${res.name}</div>
-                <div style="width:20%" class="px-2 my-auto text-end">${formatRupiah(res.account_receivables_sum_debit)}</div>
-                <div style="width:20%" class="px-2 my-auto text-end">${formatRupiah(res.account_receivables_sum_credit)}</div>
+                <div style="width:20%" class="px-2 my-auto text-end">${formatRupiah(res.total_debit)}</div>
+                <div style="width:20%" class="px-2 my-auto text-end">${formatRupiah(res.total_credit)}</div>
                 <div style="width:20%" class="px-2 my-auto text-end">${formatRupiah(sisa.toString())}</div>
                 
             </div>`

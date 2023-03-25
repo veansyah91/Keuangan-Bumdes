@@ -165,7 +165,7 @@ async function showSearchContact(search){
     
     let list = '';
     contactList.data.map(contact => {
-        let sisa = parseInt(contact.account_receivables_sum_debit) - parseInt(contact.account_receivables_sum_credit);
+        let sisa = parseInt(contact.total_debit) - parseInt(contact.total_credit);
         list += sisa > 0 ? `
         <button type="button" class="list-group-item list-group-item-action" onclick="selectContact(this)" data-name="${contact.name}" data-id="${contact.id}">
             <div class="row justify-content-between">
@@ -204,6 +204,7 @@ function changeContact(value)
 
 async function showContactDropdown(value){
     document.querySelector('#contact-list').classList.remove('d-none');
+    document.querySelector('#invoice-dropdown-input').classList.remove('position-relative');
     
     showSearchContact(value.value);
 }
@@ -214,6 +215,7 @@ function selectInvoice(value){
         no_ref: value.dataset.noRef
     }
     formData.value = parseInt(value.dataset.value);
+    formData.balance = 0;
 
     document.querySelector('#invoice').value = formData.invoice.no_ref;
     document.querySelector('#value').value = formatRupiah(formData.value.toString());
@@ -228,15 +230,21 @@ async function showSearchInvoice(search){
     
     let list = '';
     invoiceList.data.map(invoice => {
-        let sisa = parseInt(invoice.account_receivables_sum_debit) - parseInt(invoice.account_receivables_sum_credit);
-        list += sisa > 0 ? `
-        <button type="button" class="list-group-item list-group-item-action" onclick="selectInvoice(this)" data-no-ref="${invoice.no_ref}" data-id="${invoice.id}" data-value="${sisa}">
+        //sisa bayar atau pembayaran perbulan
+        let installment = Math.round(parseInt(invoice.total_debit) / parseInt(invoice.tenor));
+
+        if (installment > parseInt(invoice.total_debit) - parseInt(invoice.total_credit)) {
+            installment = parseInt(invoice.total_debit) - parseInt(invoice.total_credit);
+        }
+        
+        list += installment > 0 ? `
+        <button type="button" class="list-group-item list-group-item-action" onclick="selectInvoice(this)" data-no-ref="${invoice.no_ref}" data-id="${invoice.id}" data-value="${installment}">
             <div class="row justify-content-between">
                 <div class="col">
                     <div>${invoice.no_ref}</div>
                 </div>
                 <div class="col">
-                    <div class="text-success text-end"><small> Sisa: Rp. ${formatRupiah(sisa.toString())}</small></div>
+                    <div class="text-success text-end"><small> Angsuran: Rp. ${formatRupiah(installment.toString())}</small></div>
                 </div>
             </div>
         </button>
@@ -356,12 +364,12 @@ async function editData(id)
             description: res.description,
             no_ref: res.no_ref,
             contact: {
-                id: res.contact.id,
-                name: res.contact.name
+                id: res.accountReceivable.contact.id,
+                name: res.accountReceivable.contact.name
             },
             invoice: {
-                id: res.invoice.id,
-                no_ref: res.invoice.no_ref
+                id: res.accountReceivable.invoice.id,
+                no_ref: res.accountReceivable.invoice.no_ref
             },
             value: res.value,
             debit: {
@@ -369,7 +377,6 @@ async function editData(id)
                 name: res.debit.name
             }
         }
-
         validationInput();
 
         setDefaultComponentValue();
@@ -393,9 +400,13 @@ async function submitAccountReceivable(event)
         if (isUpdate) {
             res = await updateAccountReceivablePayment(formData, dataId);
 
+            window.open(`/${res.business_id}/account-receivable-payment/${res.id}/print-detail`);
+
             message = `Pembayaran Piutang Oleh ${formData.contact.name} Berhasil Diubah`;
         } else {
             res = await postAccountReceivablePayment(formData);
+
+            window.open(`/${res.business_id}/account-receivable-payment/${res.id}/print-detail`);
 
             message = `Pembayaran Piutang Oleh ${formData.contact.name} Berhasil Ditambahkan`;
             setDefaultValue();
@@ -571,23 +582,54 @@ async function showSingleAccountReceivablePayment(id){
     try {
         let res = await getSingleAccountReceivablePayment(id);
 
+        formData = {
+            category: res.accountReceivable.category,
+            date: res.date,
+            description: res.description,
+            no_ref: res.no_ref,
+            contact: {
+                id: res.accountReceivable.contact.id,
+                phone: res.accountReceivable.contact.phone,
+                name: res.accountReceivable.contact.name,
+                nik: res.accountReceivable.contact.detail.nik,
+            },
+            invoice: {
+                id: res.accountReceivable.invoice.id,
+                no_ref: res.accountReceivable.invoice.no_ref,
+                date: res.accountReceivable.invoice.date,
+                value: res.accountReceivable.invoice.value,
+            },
+            length: res.accountReceivable.invoice.account_receivables.length - 1,
+            product: {
+                name: res.accountReceivable.invoice.products.length > 0 ?
+                res.accountReceivable.invoice.products[0].name : '',
+            },
+            totalDebit: parseInt(res.accountReceivable.invoice.account_receivables_sum_debit),
+            totalCredit: parseInt(res.accountReceivable.invoice.account_receivables_sum_credit),
+            value: res.value,
+            debit: {
+                id: res.debit.id,
+                name: res.debit.name
+            }
+        }
+
         dateDetail.innerHTML = `: ${dateReadable(res.date)}`;
         document.querySelector('#author-detail').innerHTML = `: ${res.author}`;
         noRefDetail.innerHTML = `: ${res.no_ref}`;
 
         authorDetail.innerHTML = `: ${res.author}`;
-        contactNameDetail.innerHTML = `: ${res.contact.name}`;
-        contactAddressDetail.innerHTML = `: ${res.contact.address ? res.contact.address :  ''}`;
+        contactNameDetail.innerHTML = `: ${res.accountReceivable.contact.name}`;
+        contactAddressDetail.innerHTML = `: ${res.accountReceivable.contact.address ? res.accountReceivable.contact.address :  ''}`;
 
         document.querySelector('#btn-submit-print-single').dataset.id = id;
         
         contentDetail.innerHTML = `
         <div class="row mt-2 text-gray">
             <div class="col-4 text-start p-2 border border-white">
-                ${res.invoice.no_ref}
+                ${res.accountReceivable.invoice.no_ref}
             </div>
             <div class="col-4 text-start p-2 border border-white">
-                ${dateReadable(res.invoice.date)}
+                ${dateReadable(res.accountReceivable.invoice.date)}
             </div>
             <div class="col-4 text-end p-2 border border-white">
                 ${formatRupiah(res.value.toString())}
@@ -657,6 +699,36 @@ async function submitFilter(){
     setQuery();
     await showAccountReceivablePayment();
 
+}
+
+function sendWa(){
+    //set link send to wa
+    let waLink = 'https://web.whatsapp.com/send';
+
+    //validation phone number
+    let phoneNumber = formData.contact.phone;
+
+    if (phoneNumber[0] == '0') {
+        let temp = phoneNumber.substring(1, phoneNumber.length);
+        phoneNumber = '62' + temp;
+    }
+
+    let label = 'Penjualan';
+
+    if (formData.category == 'credit') {
+        label = 'Kredit'
+    } else if(formData.category == 'lend') {
+        label = 'Pinjaman'
+    }
+
+    let message = `*FAKTUR PEMBAYARAN ANGSURAN*%0A-------------------------------------------------------%0A*Kepada*%0A*Nama:* ${formData.contact.name.toUpperCase()}%0A*NIK:* ${formData.contact.nik.toUpperCase()}%0A*No HP:* ${formData.contact.phone.toUpperCase()}%0A%0A*Untuk Pembayaran*%0A*No Ref Faktur ${label}:* ${formData.invoice.no_ref}%0A*Tanggal Faktur ${label}:* ${dateReadable(formData.invoice.date)}${formData.category == 'lend' ? '' : '%0A*Produk:*'} ${formData.product.name}%0A*Nilai ${label}:* Rp. ${formatRupiah(formData.invoice.value.toString())}%0A-------------------------------------------------------%0A*No Ref:* ${formData.no_ref.toUpperCase()}%0A*Tanggal:* ${dateReadable(formData.date)}%0A*Jumlah Bayar:* Rp. ${formatRupiah(formData.value.toString())}%0A*Lunas:* Rp. ${formatRupiah((formData.totalCredit - formData.value).toString())}%0A*Sisa:* Rp. ${formatRupiah((formData.totalDebit - formData.totalCredit).toString())}%0A*Pembayaran Ke-:* ${formData.length}%0A%0AUnit Usaha ${businessName.toUpperCase()}%0ABUMDES ${identity.toUpperCase()}%0A
+    `
+
+    //value
+    let content = `${waLink}?phone=${phoneNumber}&text=${message}`;
+    
+    /* Whatsapp Window Open */
+    window.open(content, '_blank');
 }
 
 

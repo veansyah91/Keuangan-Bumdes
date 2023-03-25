@@ -6,7 +6,6 @@
     </div>
 
     <div class="page-content">
-
         <div class="border-bottom py-2 mb-2">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
         </div>
@@ -66,29 +65,28 @@
                     <div class="modal-body">
                         <div class="col-12 mt-2">
                             <div class="mb-3">
-                                <label for="nama" class="form-label">Nama Unit Usaha</label>
+                                <label for="nama" class="form-label fw-bold">Nama Unit Usaha</label>
                                 <input type="text" class="form-control" id="nama" name="nama" aria-describedby="namaHelp" required>
                             </div>
                         </div>
                         <div class="col-12 mt-2">
                             <div class="mb-3">
-                                <label for="tanggal_masuk" class="form-label">Jenis Usaha</label>
+                                <label for="tanggal_masuk" class="form-label fw-bold">Jenis Usaha</label>
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori5" value="Lainnya" checked>
+                                            <input class="form-check-input" type="radio" name="kategori" id="kategori5" value="lainnya" checked>
                                             <label class="form-check-label" for="kategori5">
-                                                Non Credit
+                                                Umum
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="kategori" id="kategori6" value="Kredit" disabled>
+                                            <input class="form-check-input" type="radio" name="kategori" id="kategori6" value="simpan-pinjam">
                                             <label class="form-check-label" for="kategori6">
-                                                Credit 
+                                                Simpan Pinjam / Kredit
                                             </label>
-                                            <small class="badge bg-danger">Segera</small>
                                         </div>
                                     </div>
                                 </div>
@@ -119,51 +117,27 @@
                     <div class="modal-body">
                         <div class="col-12 mt-2">
                             <div class="mb-3">
-                                <label for="nama" class="form-label">Nama Unit Usaha</label>
+                                <label for="nama" class="form-label fw-bold">Nama Unit Usaha</label>
                                 <input type="text" class="form-control" id="nama-edit" name="nama" aria-describedby="namaHelp" required>
                             </div>
                         </div>
                         <div class="col-12 mt-2">
                             <div class="mb-3">
-                                <label for="tanggal_masuk" class="form-label">Jenis Usaha</label>
+                                <label for="tanggal_masuk" class="form-label fw-bold">Jenis Usaha</label>
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-check">
-                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori-edit-1" value="Retail">
-                                            <label class="form-check-label" for="kategori-edit-1">
-                                                Retail
+                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori5" value="lainnya" checked>
+                                            <label class="form-check-label" for="kategori5">
+                                                Umum
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="form-check">
-                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori-edit-2" value="Restoran">
-                                            <label class="form-check-label" for="kategori-edit-2">
-                                                Restoran / Cafe
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori-edit-3" value="Pulsa">
-                                            <label class="form-check-label" for="kategori-edit-3">
-                                                Pulsa
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori-edit-4" value="Restoran">
-                                            <label class="form-check-label" for="kategori-edit-4">
-                                                Kredit
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori-edit-5" value="Lainnya">
-                                            <label class="form-check-label" for="kategori-edit-5">
-                                                Lainnya
+                                            <input class="form-check-input kategori-edit" type="radio" name="kategori" id="kategori6" value="simpan-pinjam">
+                                            <label class="form-check-label" for="kategori6">
+                                                Simpan Pinjam / Kredit
                                             </label>
                                         </div>
                                     </div>
@@ -172,7 +146,7 @@
                         </div>
                         <div class="col-12 mt-2">
                             <div class="mb-3 row">
-                                <label for="status" class="col-sm-2 col-form-label">Status</label>
+                                <label for="status" class="col-sm-2 col-form-label fw-bold">Status</label>
                                 <div class="col-sm-10">
                                     <select class="form-select" aria-label="Default select example" id="status" name="status">
                                         <option value="active">Active</option>
@@ -195,13 +169,18 @@
 
 @section('script')
     <script type="text/javascript">
+        const token = `Bearer ${localStorage.getItem('token')}`;
 
-        const getData = (id) => {
+        const getData = async (id) => {
             let url= `/api/business/${id}`;
 
-            return fetch(url)
-                .then(response => response.json())
-                .then(response => response.data)
+            let response = await axios.get(url, {
+                headers:{
+                    Authorization : token
+                }
+            })
+
+            return response.data.data;
         }
 
         const ubahModalFunc = async (id) => {
@@ -214,7 +193,12 @@
 
             let data = await getData(id);
 
+
             namaEdit.value = data.nama;
+
+            kategoriEdit.map(ke => {
+                ke.removeAttribute('checked');
+            });
 
             kategoriEdit.map(ke => {
                 if (ke.value == data.kategori) {

@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="page-heading d-flex justify-content-between my-auto" data-business="{{ $business->id }}" id="content">
-        <h3>Laporan Neraca Saldo</h3>
+        <h3>Laporan Neraca</h3>
 
         <div class="d-flex">
             <div class="mx-1">

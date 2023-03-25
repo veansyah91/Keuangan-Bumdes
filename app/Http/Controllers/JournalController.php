@@ -44,6 +44,7 @@ class JournalController extends Controller
         $newRecords = [];
 
         $i = 0;
+        
         foreach ($request->listInput as $list) {
             $account = Account::find($list['accountId']);
 
@@ -60,7 +61,6 @@ class JournalController extends Controller
             ]);
 
             //cash flow
-
             if ($account['is_cash']) {
                 $to_cashflow = true;
             } else {

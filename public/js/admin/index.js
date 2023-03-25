@@ -199,7 +199,9 @@ const prevMonth = async () => {
 
     showMonthStatus(month, year);
     setLoading();
-    await showData();
+    setTimeout(async () => {
+        await showData();        
+    }, 500);
 }
 
 const nextMonth = async () => {
@@ -218,7 +220,9 @@ const nextMonth = async () => {
 
     showMonthStatus(month, year);
     setLoading();
-    await showData();
+    setTimeout(async () => {
+        await showData();        
+    }, 300);
 }
 
 

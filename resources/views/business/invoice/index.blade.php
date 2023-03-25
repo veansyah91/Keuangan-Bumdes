@@ -16,6 +16,9 @@
             <div class="mx-1">
                 <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterModal" onclick="filterButton()"><i class="bi bi-filter"></i></button>
             </div>
+            <div class="mx-1">
+                <button class="btn btn-outline-secondary" onclick="goToPrintInvoices()"><i class="bi bi-printer"></i></button>
+            </div>
             
         </div>
         <div class="d-none d-md-block">

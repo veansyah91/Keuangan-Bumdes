@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Business;
 
+use Carbon\Carbon;
 use App\Models\Stock;
 use App\Models\Invoice;
 use App\Models\Product;
@@ -120,7 +121,6 @@ class InvoiceController extends Controller
         }
 
         foreach ($request->listInput as $listInput) {
-            
             //akun Penjualan Berdasarkan Kategori (credit)
                 $product = Product::find($listInput['productId']);
                 $account_name = 'Penjualan ' . $product['category'];
@@ -599,11 +599,6 @@ class InvoiceController extends Controller
                 $stock->delete();
             }
         }
-
-        //cek apakah ada data pada table account receivable
-
-
-        // 
         
         $journal = Businessjournal::where('business_id', $business['id'])
                             ->where('no_ref', $invoice['no_ref'])
@@ -627,5 +622,36 @@ class InvoiceController extends Controller
                     ->first();
 
         return view('business.invoice.print-detail', compact('business', 'invoice', 'identity'));
+    }
+
+    public function print(Business $business){
+        $identity = Identity::first();
+
+        $invoices = Invoice::where('business_id', $business['id'])
+                            ->filter(request(['search','date_from','date_to','this_week','this_month','this_year']))
+                            ->orderBy('date', 'asc')
+                            ->get();
+
+        $period = '';
+        if (request('date_from') && request('date_to')) {
+            $period = request('date_from') == request('date_to') ? Carbon::parse(request('date_from'))->isoformat('MMM, D Y') : Carbon::parse(request('date_from'))->isoformat('MMM, D Y') . ' - ' . Carbon::parse(request('date_to'))->isoformat('MMM, D Y');
+        } elseif (request('this_week')) {
+            $period = Carbon::parse(now()->startOfWeek())->isoformat('MMM, D Y') . ' - ' . Carbon::parse(now()->endOfWeek())->isoformat('MMM, D Y');
+            
+        } elseif (request('this_month'))
+        {
+            $period = Carbon::now()->isoformat('MMMM, Y');
+        } else{
+            $period = Carbon::now()->isoformat('Y');
+        }
+                            // dd($invoices);
+       
+        return view('business.invoice.print', [
+            'invoices' => $invoices,
+            'business' => $business,
+            'identity' => $identity,
+            'period' => $period,
+            'author' => request()->user()
+        ]);
     }
 }

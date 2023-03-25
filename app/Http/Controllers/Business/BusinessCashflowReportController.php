@@ -36,30 +36,73 @@ class BusinessCashflowReportController extends Controller
         }        
 
         $lastYears = [];
+        $baseAccountCategory = [];
 
         $subaccounts = SubClassificationAccount::all();
 
         $i = 0;
         foreach ($subaccounts as $subaccount) {
-            $accounts = Businessaccount::where('business_id', $business['id'])->where('sub_classification_account_id', $subaccount->id)->whereIsActive(true)
+            $accounts = Businessaccount::where('business_id', $business['id'])
+                                        ->where('sub_classification_account_id', $subaccount->id)
+                                        ->whereIsActive(true)
                                         ->get();
 
-            
+            $total_credit_now = 0;
+            $total_credit_before = 0;
+            $total_debit_now = 0;
+            $total_debit_before = 0;
+
             foreach ($accounts as $ly) {
-                $businessCashflowTemps = Businesscashflow::where('business_id', $business['id'])->where('account_id', $ly->id)
+                $businessCashflowTemps = Businesscashflow::where('business_id', $business['id'])
+                                                        ->where('account_id', $ly->id)
                                                         ->where(function($query){
                                                             $query->whereYear('date', request('year'))
                                                             ->orWhereYear('date', request('year')-1);
                                                         })
                                                         ->get();
 
+                $businessCashflowTempNows = Businesscashflow::where('business_id', $business['id'])
+                                                        ->where('account_id', $ly->id)
+                                                        ->where(function($query){
+                                                            $query->whereYear('date', request('year'));
+                                                        })
+                                                        ->get();
+
+                $businessCashflowTempBefores = Businesscashflow::where('business_id', $business['id'])
+                                                        ->where('account_id', $ly->id)
+                                                        ->where(function($query){
+                                                            $query->orWhereYear('date', request('year')-1);
+                                                        })
+                                                        ->get();
+                
                 if (count($businessCashflowTemps) > 0) {
-                    $lastYears[$i]['cashflows'] = $businessCashflowTemps;
-                    $lastYears[$i]['sub'] = $subaccount->name;
-                    $lastYears[$i]['sub_code'] = $subaccount->code;
-                    $i++;
+                    array_push($lastYears, [
+                        'account' => $ly->name,
+                        'cashflows' => $businessCashflowTemps,
+                        'sub' => $subaccount->name,
+                        'sub_code' => $subaccount->code,
+                    ]);
+
+                    $total_credit_now += $businessCashflowTempNows->sum("credit");
+                    $total_debit_now += $businessCashflowTempNows->sum("debit");
+
+                    $total_credit_before += $businessCashflowTempBefores->sum("credit");
+                    $total_debit_before += $businessCashflowTempBefores->sum("debit");
                 }
+
             }
+            if ($total_credit_before > 0 || $total_debit_before > 0 || $total_credit_now > 0 || $total_debit_now > 0) {
+                array_push($baseAccountCategory, [
+                    'credit_before' => $total_credit_before,
+                    'debit_before' => $total_debit_before,
+                    'credit_now' => $total_credit_now,
+                    'debit_now' => $total_debit_now,
+                    'cashflows' => $businessCashflowTemps,
+                    'sub' => $subaccount->name,
+                    'sub_code' => $subaccount->code,
+                ]);
+            }
+            
         }
 
         $totalBalance = Businesscashflow::where('business_id', $business['id'])->where('business_id', $business['id'])
@@ -93,6 +136,7 @@ class BusinessCashflowReportController extends Controller
                 'business' => $business,
                 'totalBalance' => $totalBalance->sum('debit') - $totalBalance->sum('credit'),
                 'lastYear' => $lastYears,
+                'baseAccountCategory' => $baseAccountCategory,
             ],
         ]); 
     }
@@ -139,72 +183,7 @@ class BusinessCashflowReportController extends Controller
         if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
             return abort(403);
         }
+
         return view('business.report.cashflow.index', compact('business'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Businesscashflow  $businesscashflow
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Businesscashflow $businesscashflow)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Businesscashflow  $businesscashflow
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Businesscashflow $businesscashflow)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Businesscashflow  $businesscashflow
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Businesscashflow $businesscashflow)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Businesscashflow  $businesscashflow
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Businesscashflow $businesscashflow)
-    {
-        //
     }
 }

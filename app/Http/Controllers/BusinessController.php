@@ -29,15 +29,16 @@ class BusinessController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'nama' => 'required'
+        ]);
+
+        $business = Business::create([
+            'nama' => $validatedData['nama'],
+            'kategori' => $request->kategori,
+            'status' => 'active',
         ]);
 
         $ref = 'BUSS';
@@ -89,12 +90,6 @@ class BusinessController extends Controller
             ]);
         }
 
-        $business = Business::create([
-            'nama' => $validatedData['nama'],
-            'kategori' => $request->kategori,
-            'status' => 'active',
-        ]);
-
         //buat akun
         $accounts = [
             [
@@ -124,6 +119,13 @@ class BusinessController extends Controller
                 'is_cash' => false,
                 'is_active' => true,
                 'sub_category' => 'Piutang Usaha'
+            ],
+            [
+                'code' => '1310001',
+                'name' => 'Piutang Nasabah Simpan Pinjam',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Piutang Nasabah'
             ],
             [
                 'code' => '1399001',
@@ -265,6 +267,13 @@ class BusinessController extends Controller
                 'sub_category' => 'Utang Usaha'
             ],
             [
+                'code' => '2180001',
+                'name' => 'Tabungan Nasabah',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Tabungan Nasabah'
+            ],
+            [
                 'code' => '2190001',
                 'name' => 'Utang Belum Ditagih',
                 'is_cash' => false,
@@ -308,27 +317,48 @@ class BusinessController extends Controller
             ],
             [
                 'code' => '3100001',
-                'name' => 'Modal Disetor',
+                'name' => 'Penyertaan Modal Desa',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Modal'
+                'sub_category' => 'Penyertaan Modal Desa'
             ],
             [
-                'code' => '3200001',
+                'code' => '3110001',
+                'name' => 'Penyertaan Modal Masyarakat',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Penyertaan Modal Masyarakat'
+            ],
+            [
+                'code' => '3400001',
+                'name' => 'Bagi Hasil Penyertaan Modal Desa',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Bagi Hasil Penyertaan Modal Desa'
+            ],
+            [
+                'code' => '3410001',
+                'name' => 'Bagi Hasil Penyertaan Modal Masyarakat',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Bagi Hasil Penyertaan Modal Masyarakat'
+            ],
+            [
+                'code' => '3600001',
                 'name' => 'Laba Ditahan',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Laba'
+                'sub_category' => 'Laba Ditahan'
             ],
             [
-                'code' => '3300000',
+                'code' => '3700001',
                 'name' => 'Laba Tahun Berjalan',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Laba'
+                'sub_category' => 'Laba Tahun Berjalan'
             ],   
             [
-                'code' => '3900000',
+                'code' => '3200001',
                 'name' => 'Modal Unit Usaha',
                 'is_cash' => false,
                 'is_active' => true,
@@ -405,11 +435,18 @@ class BusinessController extends Controller
                 'sub_category' => 'Retur Pembelian'
             ],
             [
-                'code' => '5200000',
+                'code' => '5200001',
                 'name' => 'Potongan Pembelian',
                 'is_cash' => false,
                 'is_active' => true,
                 'sub_category' => 'Potongan Pembelian'
+            ],
+            [
+                'code' => '5400001',
+                'name' => 'Beban Piutang',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Beban Piutang'
             ],
             [
                 'code' => '5800001',
@@ -440,6 +477,13 @@ class BusinessController extends Controller
                 'sub_category' => 'Beban Operasional'
             ],
             [
+                'code' => '5400001',
+                'name' => 'Beban Piutang',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Beban Piutang'
+            ],
+            [
                 'code' => '5600001',
                 'name' => 'Beban Pajak',
                 'is_cash' => false,
@@ -452,6 +496,13 @@ class BusinessController extends Controller
                 'is_cash' => false,
                 'is_active' => true,
                 'sub_category' => 'Beban Penyusutan'
+            ],
+            [
+                'code' => '5999000',
+                'name' => 'Ikhtisar Laba Rugi',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Ikhtisar Laba Rugi'
             ],
         ];
 
@@ -472,11 +523,10 @@ class BusinessController extends Controller
 
     public function show(Business $business)
     {
-        //
-    }
-    public function edit(Business $business)
-    {
-        //
+        return response()->json([
+            'status' => 'success',
+            'data' => $business,
+        ]); 
     }
 
     public function update(Request $request, Business $business)
@@ -515,10 +565,5 @@ class BusinessController extends Controller
         ]);
 
         return redirect('/business');
-    }
-
-    public function destroy(Business $business)
-    {
-        //
     }
 }

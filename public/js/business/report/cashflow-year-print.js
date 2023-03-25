@@ -66,37 +66,11 @@ const setDefaultValue = () => {
 }
 
 const listReportDetails = (data) => {
-    let totalDebitNow = 0;
-    let totalCreditNow = 0;
-    let totalDebitBefore = 0;
-    let totalCreditBefore = 0;
 
     let listRevenueActivity = ``;
     let listCostActivity = ``;
-    
-    data.cashflows.map(cashflow => {
-        
-        let date = new Date(cashflow.date);
-            
-            if (date.getFullYear() == year) {
-                
-                if (cashflow.debit > 0) {
-                    totalDebitNow += cashflow.debit;
-                } else {
-                    totalCreditNow += cashflow.credit;
-                }
-            }
-            else {
-                if (cashflow.debit > 0) {
-                    totalDebitBefore += cashflow.debit;
-                } else {
-                    totalCreditBefore += cashflow.credit;
-                }
-            }
 
-    })
-
-    listRevenueActivity +=  totalDebitNow - totalDebitBefore != 0 ? `
+    listRevenueActivity += `
                     <tr>
                         <td class="w-50">${data.sub}</td>
                         <td class="w-25">
@@ -105,7 +79,7 @@ const listReportDetails = (data) => {
                                     Rp. 
                                 </div>
                                 <div class="text-end">
-                                    ${formatRupiah(totalDebitNow.toString())}
+                                    ${formatRupiah(data.debit_now.toString())}
                                 </div>
                             </div>                                        
                         </td>
@@ -115,13 +89,13 @@ const listReportDetails = (data) => {
                                     Rp. 
                                 </div>
                                 <div class="text-end">
-                                    ${formatRupiah(totalDebitBefore.toString())}
+                                ${formatRupiah(data.debit_before.toString())}
                                 </div>
                             </div></td>
                     </tr>
-                ` : '';
+                ` ;
 
-    listCostActivity +=  totalCreditNow - totalCreditBefore != 0 ? `
+    listCostActivity += `
                 <tr>
                     <td class="w-50">${data.sub}</td>
                     <td class="w-25">
@@ -130,7 +104,7 @@ const listReportDetails = (data) => {
                                 Rp. 
                             </div>
                             <div class="text-end">
-                                ${ totalCreditNow > 0 ? `(${formatRupiah(totalCreditNow.toString())})` : 0 }
+                                ${ data.credit_now > 0 ? `(${formatRupiah(data.credit_now.toString())})` : 0 }
                             </div>
                         </div>                                        
                     </td>
@@ -140,14 +114,14 @@ const listReportDetails = (data) => {
                                 Rp. 
                             </div>
                             <div class="text-end">
-                                ${ totalCreditBefore > 0 ? `(${formatRupiah(totalCreditBefore.toString())})` : 0 }
+                                ${ data.credit_before > 0 ? `(${formatRupiah(data.credit_before.toString())})` : 0 }
                             </div>
                         </div></td>
                 </tr>
-                `: '';
+                `;
 
-    totalNow = totalDebitNow - totalCreditNow
-    totalBefore = totalDebitBefore - totalCreditBefore
+    totalNow = data.debit_now - data.credit_now
+    totalBefore = data.debit_before - data.credit_before
 
     return {
         listRevenueActivity, listCostActivity, totalNow, totalBefore
@@ -221,11 +195,11 @@ const showReport = async () => {
                         </tr>`
                         
         period.innerHTML = res.period;
-        periodTitle.innerHTML = res.period;
-        yearLabel.innerHTML = res.period;
-        periodBefore.innerHTML = res.period - 1;       
+        periodBefore.innerHTML = res.period - 1;
 
-        res.lastYear.map(data => {
+        yearLabel.innerHTML = res.period
+
+        res.baseAccountCategory.map(data => {
             if (parseInt(data.sub_code) > 1500000 && parseInt(data.sub_code) < 2000000) {
                 
                 const { listRevenueActivity, listCostActivity, totalNow, totalBefore } = listReportDetails(data);
@@ -273,11 +247,13 @@ const showReport = async () => {
         increaseCashNow.innerHTML = `${(totalBalanceNow) < 0 ? '-' : ''}${formatRupiah((totalBalanceNow).toString())}`;
         increaseCashBefore.innerHTML = `${(totalBalanceBefore) < 0 ? '-' : ''}${formatRupiah((totalBalanceBefore).toString())}`;
 
-        endCashNow.innerHTML = `${formatRupiah(res.totalBalance.toString())}`;
-        endCashBefore.innerHTML = `${formatRupiah((res.totalBalance - totalBalanceNow).toString())}`;
+        endCashNow.innerHTML = `${res.totalBalance < 0 ? '-' : ''}${formatRupiah(res.totalBalance.toString())}`;
 
-        startCashNow.innerHTML = `${formatRupiah((res.totalBalance - (totalBalanceNow)).toString())}`;
-        startCashBefore.innerHTML = `${formatRupiah((res.totalBalance - totalBalanceNow - totalBalanceBefore).toString())}`;
+        endCashBefore.innerHTML = `${(res.totalBalance - totalBalanceNow) < 0 ? '-' : ''}${formatRupiah((res.totalBalance - totalBalanceNow).toString())}`;
+
+        startCashNow.innerHTML = `${(res.totalBalance - totalBalanceNow) < 0 ? '-' : ''}${formatRupiah((res.totalBalance - (totalBalanceNow)).toString())}`;
+        
+        startCashBefore.innerHTML = `${(res.totalBalance - totalBalanceNow - totalBalanceBefore) < 0 ? '-' : ''}${formatRupiah((res.totalBalance - totalBalanceNow - totalBalanceBefore).toString())}`;
         
     } catch (error) {
         console.log(error);

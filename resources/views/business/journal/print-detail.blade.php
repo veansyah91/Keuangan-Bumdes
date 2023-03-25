@@ -133,8 +133,7 @@
     <script src="{{ asset('vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}" defer></script>
 
     <script src="{{ asset('js/admin/bootstrap.min.js') }}" defer></script>
-
-    <script src="{{ asset('js/admin/main.js') }}" defer></script> 
+    
     <script src="{{ asset('js/public.js') }}" defer></script> 
     
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

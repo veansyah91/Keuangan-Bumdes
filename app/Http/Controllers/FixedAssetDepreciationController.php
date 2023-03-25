@@ -66,9 +66,9 @@ class FixedAssetDepreciationController extends Controller
                             [
                                 'date' => $last_date,
                                 'detail' => 'Penyusutan Harta Tetap - ' .  $fixedAsset['name'],
+                                'no_ref' => $fix_ref_no,
                             ],
                             [
-                                'no_ref' => $fix_ref_no,
                                 'desc' => 'Penyusutan Harta Tetap',
                                 'value' => $depreciatePerMonth,
                                 'author' => $request->user()->name,

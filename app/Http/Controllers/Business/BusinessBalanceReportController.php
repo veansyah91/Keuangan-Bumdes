@@ -93,7 +93,7 @@ class BusinessBalanceReportController extends Controller
         if (!$is_there_current_year_earnings) {
             $data[count($data)] = [
                 "name" => "Laba Tahun Berjalan",
-                "code" => "3299999",
+                "code" => "3700001",
                 "total" => -1 * $lost_profit
             ];
         }
@@ -162,7 +162,7 @@ class BusinessBalanceReportController extends Controller
         //data tabel pada buku besar dengan akun laba
         $lost_profit_ledger_account_profit_now = Businessledger::where('business_id', $business['id'])->whereYear('date','<=', request('year'))
                                             ->whereHas('account', function($query){
-                                                $query->where('sub_category','Laba');
+                                                $query->where('sub_category','like','Laba%');
                                             })
                                             ->get();
         
@@ -181,7 +181,7 @@ class BusinessBalanceReportController extends Controller
         //data tabel pada buku besar dengan akun laba
         $lost_profit_ledger_account_profit_before =Businessledger::where('business_id', $business['id'])->whereYear('date','<', request('year'))
                                                     ->whereHas('account', function($query){
-                                                        $query->where('sub_category','Laba');
+                                                        $query->where('sub_category','like','Laba%');
                                                     })
                                                     ->get();
 
@@ -228,7 +228,7 @@ class BusinessBalanceReportController extends Controller
         if (!$is_there_current_year_earnings_now || !$is_there_current_year_earnings_before) {
             array_push($reportYear, [
                     "name" => "Laba Tahun Berjalan",
-                    "code" => "3299999",
+                    "code" => "3700001",
                     "total_now" => -1 * ($lost_profit_now),
                     "total_before" => -1 * ($lost_profit_before),
             ]);

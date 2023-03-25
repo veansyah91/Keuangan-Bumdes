@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Print Journal</title>
+    <title>Print Journal Periode : {{$period}}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -42,10 +42,15 @@
                 <h4 class="text-gray">Laporan Jurnal</h4>
             </div>
         </div>
+        <div class="row justify-content-center">
+            <div class="col-12 text-end">
+                <p class="fst-italic">Periode: {{$period}}</p>
+            </div>
+        </div>
 
         <div style="font-size:12pt;">
     
-            <table class="mt-5 table table-bordered border-dark">
+            <table class="mt-3 table table-bordered border-dark">
                 <thead style="border: solid 0 0 black">
                     <tr>
                         <th style="width: 20%">Tanggal/No. Referensi</th>
@@ -60,9 +65,9 @@
                         $total_credit = 0;
                     @endphp
                     @foreach ($journals as $journal)
-                        <tr>
-                            <td>{{ $carbon::parse($journal->date)->isoformat('MMM, D Y') }}</td>
-                            <td colspan="3">{{ $journal->desc }} - {{ $journal->detail }}</td>
+                        <tr style="background-color: #D9D9D9">
+                            <td class="fw-bold">{{ $carbon::parse($journal->date)->isoformat('MMM, D Y') }}</td>
+                            <td colspan="3" class="fw-bold">{{ $journal->desc }} - {{ $journal->detail }}</td>
                         </tr>
                         @foreach (LedgerHelper::business($business, $journal->no_ref) as $ledger)
                             @php
@@ -72,12 +77,12 @@
                             <tr>
                                 <td class="text-end">{{ $ledger->no_ref }}</td>
                                 <td>
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            {{ $ledger->account_name }}
-                                        </div>
-                                        <div>
+                                    <div class="d-flex justify-content-start">
+                                        <div class="col-4 my-auto">
                                             {{ $ledger->account_code }}
+                                        </div>
+                                        <div class="col-8 text-start">
+                                            {{ $ledger->account_name }}
                                         </div>
                                     </div>
                                     

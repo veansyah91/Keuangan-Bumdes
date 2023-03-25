@@ -42,6 +42,12 @@ function dateNow(){
     return year + "-" + month + "-" + day;
 }
 
+function addMonths(date, months) {
+    date.setMonth(date.getMonth() + months);
+  
+    return date;
+}
+
 const waktu = (dateInputType=false) => {
     date = new Date();
     millisecond = date.getMilliseconds();

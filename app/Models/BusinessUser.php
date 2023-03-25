@@ -11,4 +11,9 @@ class BusinessUser extends Model
 
     protected $table = 'business_user';
     protected $guarded = [];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

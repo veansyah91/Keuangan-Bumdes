@@ -13,7 +13,7 @@ class Businesscashflow extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Businessaccount::class);
     }
 
     public function scopeFilter($query, array $filters)

@@ -35,10 +35,13 @@
   <body class="text-center bg-secondary bg-opacity-25">
     <main class="form-signin bg-white shadow">
         <div class="p-2">
+            <div class="mb-3">
+                <div class="col-12 text-center">
+                    <img src="{{ asset('images/logo/logo.png') }}" alt="logo-bumdes-pintar" class="w-50">
+                </div>
+            </div>
             <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <h1 class="h3 mb-3 fw-normal">Halaman Login</h1>
-    
+                @csrf    
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control @error('email') is-invalid @enderror" id="floatingInput" placeholder="name@example.com" name="email">
                     

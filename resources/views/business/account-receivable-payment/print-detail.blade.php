@@ -48,7 +48,7 @@
 
                 <div class="row justify-content-center my-2 ">
                     <div class="col-12 text-center">
-                        <h4 class="text-gray font-bold">Faktur Pemyaran Piutang</h4>
+                        <h4 class="text-gray font-bold">Faktur Pembayaran Piutang</h4>
                     </div>
                 </div>
 

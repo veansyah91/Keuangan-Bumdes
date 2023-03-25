@@ -404,7 +404,6 @@ const deleteRowInput = (value) => {
     }
 
     validationInput();
-
 }
 
 async function submitInvoice(){
@@ -421,7 +420,7 @@ async function submitInvoice(){
 
         setDefaultValue();
         setValueInputComponent();
-        goToPintInvoice(result['id']);
+        goToPrintInvoice(result['id']);
     } catch (error) {
         console.log(error);
     }
@@ -509,7 +508,6 @@ function changePayment(value)
         }
 
         document.querySelector('#account-debit-input').value = '';
-        
     }
 }
 

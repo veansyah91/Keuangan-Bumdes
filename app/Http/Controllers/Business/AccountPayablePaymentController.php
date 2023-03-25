@@ -93,15 +93,18 @@ class AccountPayablePaymentController extends Controller
         $attributes['account_name'] = $account['name'];
         Businessledger::create($attributes);
 
+        //cashflow
+        $attributes['type'] = 'operation';
+        $attributes['credit'] = $attributes['value'];
+        $attributes['debit'] = 0;
+        $cashFlow = Businesscashflow::create($attributes);
+
         //debit
         $account = Businessaccount::where('business_id', $business['id'])->where('id', $request->credit['id'])->first();
         $attributes['account_id'] = $account['id'];
         $attributes['account_code'] = $account['code'];
         $attributes['account_name'] = $account['name'];
-        $attributes['type'] = 'operation';
-        $attributes['credit'] = $attributes['value'];
-        $attributes['debit'] = 0;
-        $cashFlow = Businesscashflow::create($attributes);
+        
         $journal = Businessledger::create($attributes);
 
         return response()->json([
@@ -164,11 +167,11 @@ class AccountPayablePaymentController extends Controller
 
         $accountPayablePayment = AccountPayablePayment::find($id);
 
-        //hapus data pada account receivable
+        //update data pada account receivable
         $accountPayable = AccountPayable::where('business_id', $business['id'])->where('no_ref', $accountPayablePayment['no_ref'])->first();
         $accountPayable->update($attributes);
 
-        //hapus data pada journal
+        //update data pada journal
         $journal = Businessjournal::where('business_id', $business['id'])->where('no_ref', $accountPayablePayment['no_ref'])->first();
         $journal->update($attributes);
 
@@ -181,20 +184,22 @@ class AccountPayablePaymentController extends Controller
         $ledgers = Businessledger::where('business_id', $business['id'])->where('no_ref', $accountPayablePayment['no_ref'])->where('debit', '>', 0)->first();
         $ledgers->update($attributes);
 
+        //cashflow
+        $attributes['type'] = 'operation';
+        $attributes['credit'] = $attributes['value'];
+        $attributes['debit'] = 0;
+
+        $cashFlow = Businesscashflow::where('business_id', $business['id'])->where('no_ref', $accountPayablePayment['no_ref'])->first();
+        $cashFlow->update($attributes);
+
         //buku besar pada debit
         $ledgers = Businessledger::where('business_id', $business['id'])->where('no_ref', $accountPayablePayment['no_ref'])->where('credit', '>', 0)->first();
         $account = Businessaccount::where('business_id', $business['id'])->where('id', $request->credit['id'])->first();
         $attributes['account_id'] = $account['id'];
         $attributes['account_code'] = $account['code'];
         $attributes['account_name'] = $account['name'];
-        $attributes['type'] = 'operation';
-        $attributes['credit'] = $attributes['value'];
-        $attributes['debit'] = 0;
+        
         $ledgers->update($attributes);
-
-        //cashflow
-        $cashFlow = Businesscashflow::where('business_id', $business['id'])->where('no_ref', $accountPayablePayment['no_ref'])->first();
-        $cashFlow->update($attributes);
 
         //ubah account receivable payment table
         $accountPayablePayment->update($attributes);

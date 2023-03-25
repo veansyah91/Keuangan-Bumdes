@@ -10,8 +10,10 @@ use Illuminate\Http\Request;
 use App\Models\Businessledger;
 use App\Models\Businessaccount;
 use App\Models\Businessjournal;
+use App\Helpers\BusinessUserHelper;
 use App\Models\InventoryAdjustment;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryAdjustmentController extends Controller
 {
@@ -50,12 +52,22 @@ class InventoryAdjustmentController extends Controller
 
     public function index(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.inventory-adjustment.index', [
             'business' => $business, ]);
     }
 
     public function create(Business $business)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.inventory-adjustment.create', [
             'business' => $business, ]);
     }
@@ -256,6 +268,11 @@ class InventoryAdjustmentController extends Controller
 
     public function edit(Business $business, InventoryAdjustment $inventoryadjustment)
     {
+        $businessUser = BusinessUserHelper::index($business['id'], Auth::user()['id']);
+        
+        if (!$businessUser && !Auth::user()->hasRole('ADMIN')) {
+            return abort(403);
+        }
         return view('business.inventory-adjustment.edit', compact('business', 'inventoryadjustment'));
     }
 

@@ -9,7 +9,16 @@ class Contact extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['no_ref', 'name', 'email', 'type', 'phone', 'address'];
+    protected $fillable = [
+        'no_ref', 
+        'name', 
+        'email', 
+        'type', 
+        'phone', 
+        'address',
+    ];
+
+    protected $with = ['savingAccount', 'accountReceivables', 'accountPayables', 'invoices', 'purchaseGoods', 'detail'];
 
     public function scopeFilter($query, array $filters)
     {
@@ -39,7 +48,6 @@ class Contact extends Model
         return $this->hasMany(AccountPayable::class);
     }
 
-
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
@@ -48,5 +56,13 @@ class Contact extends Model
     public function purchaseGoods()
     {
         return $this->hasMany(PurchaseGoods::class);
+    }
+
+    public function detail(){
+        return $this->hasOne(ContactDetail::class);
+    }
+
+    public function savingAccount(){
+        return $this->hasMany(SavingAccount::class);
     }
 }

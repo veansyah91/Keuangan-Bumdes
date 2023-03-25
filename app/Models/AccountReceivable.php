@@ -9,7 +9,9 @@ class AccountReceivable extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['no_ref', 'business_id', 'invoice_id', 'contact_id', 'contact_name', 'debit','credit', 'date', 'description'];
+    protected $fillable = ['no_ref', 'business_id', 'invoice_id', 'contact_id', 'contact_name', 'debit','credit', 'date', 'description', 'late', 'due_date', 'tenor', 'debt_submission_id', 'category', 'author', 'status', 'is_paid_off', 'credit_application_id', 'due_date_temp'];
+     
+    protected $with = ['invoice'];
 
     public function scopeFilter($query, array $filters)
     {
@@ -18,9 +20,8 @@ class AccountReceivable extends Model
             return $query->where('no_ref', 'like', '%' . $search . '%')
                         ->orWhere('date', 'like', '%' . $search . '%')
                         ->orWhere('description', 'like', '%' . $search . '%')
-                        ->orWhere('value', 'like', '%' . $search . '%')
-                        ->orWhere('contact', 'like', '%' . $search . '%')
-                        ->orWhere('detail', 'like', '%' . $search . '%');
+                        ->orWhere('contact_name', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%');
         });
 
         //filter by date between
@@ -57,9 +58,24 @@ class AccountReceivable extends Model
         });
     }
 
+    public function overDue()
+    {
+        return $this->hasOne(OverDue::class);
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function debtSubmission()
+    {
+        return $this->belongsTo(DebtSubmission::class);
+    }
+
+    public function creditApplication()
+    {
+        return $this->belongsTo(CreditApplication::class);
     }
 
     public function accountReceivablePayment()

@@ -22,7 +22,13 @@ let formData = {
     email: '',
     type: '',
     phone: '',
-    address: ''
+    address: '',
+    village: '',
+    district: '',
+    regency: '',
+    province: '',
+    nkk:'',
+    nik:''
 }
 
 //component modal input
@@ -33,8 +39,6 @@ const noRefInput = document.querySelector('#no-ref-input');
 const emailInput = document.querySelector('#email-input');
 const phoneInput = document.querySelector('#phone-input');
 const addressInput = document.querySelector('#address-input');
-
-
 
 const btnSubmit = document.querySelector('#btn-submit');
 const btnSubmitLabel = document.querySelector('#btn-submit-label');
@@ -67,7 +71,13 @@ function setDefault(){
         email: '',
         type: '',
         phone: '',
-        address: ''
+        address: '',
+        village: '',
+        district: '',
+        regency: '',
+        province: '',
+        nkk:'',
+        nik:''
     }
     
     validateInputData();
@@ -94,6 +104,11 @@ function setDefaultComponentValue(){
     emailInput.value = formData.email;
     phoneInput.value = formData.phone;
     addressInput.value = formData.address;
+
+    document.querySelector('#village-input').value = formData.village;
+    document.querySelector('#district-input').value = formData.district;
+    document.querySelector('#regency-input').value = formData.regency;
+    document.querySelector('#province-input').value = formData.province;
 
     btnSubmit.classList.add('d-none');
 
@@ -302,7 +317,6 @@ async function showContact(){
             listData.innerHTML = list;
         }
 
-        
     } catch (error) {
          console.log(error);
     }
@@ -311,6 +325,8 @@ async function showContact(){
 
 const addData = () => {
     isUpdate = false;
+    setDefault();
+    setDefaultComponentValue();
 
     createModalLabel.innerHTML = "Tambah Data";
 }
@@ -321,13 +337,6 @@ const editData = async (id) => {
     let res = await getContact(url);
     isUpdate = true;
     updateId = id;
-    
-    nameInput.value = res.name;
-    typeInput.value = res.type;
-    noRefInput.value = res.no_ref;
-    emailInput.value = res.email;
-    phoneInput.value = res.phone;
-    addressInput.value = res.address;
 
     formData = {
         no_ref : res.no_ref,
@@ -335,8 +344,28 @@ const editData = async (id) => {
         email: res.email,
         type: res.type,
         phone: res.phone,
-        address: res.address
+        address: res.address,
+        village: res.detail?.village ?? '',
+        district: res.detail?.district ?? '',
+        regency: res.detail?.regency ?? '',
+        province: res.detail?.province ?? '',
+        nkk:res.detail?.nkk ?? '',
+        nik:res.detail?.nik ?? ''
     }
+
+    nameInput.value = formData.name;
+    typeInput.value = formData.type;
+    noRefInput.value = formData.no_ref;
+    emailInput.value = formData.email;
+    phoneInput.value = formData.phone;
+    addressInput.value = formData.address;
+
+    document.querySelector('#nkk-input').value = formData.nkk;
+    document.querySelector('#nik-input').value = formData.nik;
+    document.querySelector('#village-input').value = formData.village;
+    document.querySelector('#district-input').value = formData.district;
+    document.querySelector('#regency-input').value = formData.regency;
+    document.querySelector('#province-input').value = formData.province;
     validateInputData();
 
 }
@@ -371,10 +400,85 @@ async function showSingleContact(id){
         document.querySelector('#email-detail').innerHTML = res.email?? '-';
         document.querySelector('#phone-detail').innerHTML = res.phone?? '-';
         document.querySelector('#address-detail').innerHTML = res.address ?? '-';
+        document.querySelector('#nkk-detail').innerHTML = res.detail?.nkk ?? '-';
+        document.querySelector('#nik-detail').innerHTML = res.detail?.nik ?? '-';
+        document.querySelector('#village-detail').innerHTML = res.detail?.village ?? '-';
+        document.querySelector('#district-detail').innerHTML = res.detail?.district ?? '-';
+        document.querySelector('#regency-detail').innerHTML = res.detail?.regency ?? '-';
+        document.querySelector('#province-detail').innerHTML = res.detail?.province ?? '-';
 
     } catch (error) {
         console.log(error);
     }
+}
+
+function selectAddress(value)
+{
+    formData.village = value.dataset.village;
+    formData.district = value.dataset.district;
+    formData.regency = value.dataset.regency;
+    formData.province = value.dataset.province;
+
+    setDefaultComponentValue();
+    validateInputData();
+}
+
+const getAddress = async (search) => await axios.get(`/api/villages?village=${search}`);
+
+async function showAddressList(value){
+    const addressList = document.querySelector('#address-list');
+
+    let { data: result } = await getAddress(value);
+
+    let list = '';
+
+    result.data.map(village => {
+        list += `
+        <button type="button" class="list-group-item list-group-item-action" onclick="selectAddress(this)" data-village="${village.desa}" data-district="${village.kecamatan}" data-regency="${village.kabupaten}" data-province="${village.provinsi}">
+            <div>
+                <div class="fw-bold">${village.desa}</div>
+                <small>Kecamatan ${village.kecamatan}, Kabupaten ${village.kabupaten}, ${village.provinsi}</small>
+            </div>
+        </button>
+        `
+    })
+
+    addressList.innerHTML = list ? list : `
+        <button type="button" class="list-group-item list-group-item-action" data-name="General Customer" data-id="1" disabled>
+            No Data
+        </button>
+    `
+}
+
+async function showAddressDropdown(value){
+    const addressList = document.querySelector('#address-list');
+
+    addressList.classList.remove('d-none');
+    
+    showAddressList(value.value);
+}
+
+async function changeAddressDropdown(value){
+    setTimeout(() => {
+        showAddressList(value.value);        
+    }, 200);
+}
+
+function changeAddress(value){
+    value.value = formData.village;
+    validateInputData();
+}
+
+function nkkInputChange(value){
+    formData.nkk = value.value;
+    document.querySelector('#nkk-input').value = value.value;
+    validateInputData();
+}
+
+function nikInputChange(value){
+    formData.nik = value.value;
+    document.querySelector('#nik-input').value = value.value;
+    validateInputData();
 }
 
 window.addEventListener('load', async function(){

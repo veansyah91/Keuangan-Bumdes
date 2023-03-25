@@ -29,7 +29,7 @@
     <div class="p-4">
         <div class="row justify-content-center mb-3">
             <div class="col-8 text-center">
-                <h1 class="text-gray">Laporan Neraca Saldo</h1>
+                <h1 class="text-gray">Laporan Neraca</h1>
             </div>
         </div>
 

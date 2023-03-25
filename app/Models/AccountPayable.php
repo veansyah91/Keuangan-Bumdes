@@ -9,7 +9,7 @@ class AccountPayable extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['no_ref', 'business_id', 'purchase_goods_id', 'contact_id', 'contact_name', 'debit','credit', 'date', 'description'];
+    protected $fillable = ['no_ref', 'business_id', 'purchase_goods_id', 'contact_id', 'contact_name', 'debit','credit', 'date', 'description', 'saving_account_id'];
 
     public function scopeFilter($query, array $filters)
     {

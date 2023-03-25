@@ -135,15 +135,20 @@ const showLedger = async () => {
     }
 }
 
+function setPrintButtonAttribute()
+{
+    printButton.classList.remove('disabled');
+    printButton.removeAttribute('disabled');
+
+    printButton.setAttribute('href', `/${business}/ledger/print?account_id=${account_id}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`);
+}
+
 const selectAccount = async (value) => {
     accountName = value.dataset.name;
     searchInputDropdown.value = accountName;
     account_id = value.dataset.id;
 
-    printButton.classList.remove('disabled');
-    printButton.removeAttribute('disabled');
-
-    document.querySelector('#print-button').setAttribute('href', `/${business}/ledger/print?account_id=${account_id}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`);
+    setPrintButtonAttribute();
 
     await showLedger();
 }
@@ -236,6 +241,7 @@ function setQuery(){
 
 async function submitFilter(){
     setQuery();
+    setPrintButtonAttribute();
     await showLedger();
 
 }
@@ -243,6 +249,7 @@ async function submitFilter(){
 function goToPrintLedgers(){
     let url = `${business}/ledger/print?account_id=${account_id}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}&end_week=${thisWeek}&end_month=${thisMonth}&end_year=${thisYear}`;
     
+    console.log(url);
     window.open(url);
 }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Business;
 
 use Carbon\Carbon;
 use App\Models\Business;
+use App\Models\Identity;
 use Illuminate\Http\Request;
 use App\Models\Businessledger;
 use App\Models\Businessaccount;
@@ -155,7 +156,11 @@ class BusinessJournalController extends Controller
         // $data = Journal::find($id);
         $businessjournal['created_at_for_human'] = $businessjournal->updated_at->diffForHumans();
         $businessjournal['is_updated'] = $businessjournal->updated_at != $businessjournal->created_at ? true : false;
-        $businessjournal['ledgers'] = Businessledger::where('business_id', $business['id'])->where('no_ref', $businessjournal->no_ref)->orderBy('account_code')->orderBy('credit')->get();
+        $businessjournal['ledgers'] = Businessledger::where('business_id', $business['id'])
+                                                    ->where('no_ref', $businessjournal->no_ref)
+                                                    ->orderBy('credit')
+                                                    ->orderBy('account_code')
+                                                    ->get();
 
         return response()->json([
             'status' => 'success',
@@ -302,11 +307,27 @@ class BusinessJournalController extends Controller
     }
 
     public function print(Business $business){
+        $identity = Identity::first();
+
         $journals = Businessjournal::where('business_id', $business['id'])->filter(request(['search','date_from','date_to','this_week','this_month','this_year']))->orderBy('date', 'asc')->get();
+
+        $period = '';
+        if (request('date_from') && request('date_to')) {
+            $period = request('date_from') == request('date_to') ? Carbon::parse(request('date_from'))->isoformat('MMM, D Y') : Carbon::parse(request('date_from'))->isoformat('MMM, D Y') . ' - ' . Carbon::parse(request('date_to'))->isoformat('MMM, D Y');
+        } elseif (request('this_week')) {
+            $period = Carbon::parse(now()->startOfWeek())->isoformat('MMM, D Y') . ' - ' . Carbon::parse(now()->endOfWeek())->isoformat('MMM, D Y');
+            
+        } elseif (request('this_month'))
+        {
+            $period = Carbon::now()->isoformat('MMMM, Y');
+        } else{
+            $period = Carbon::now()->isoformat('Y');
+        }
        
         return view('business.journal.print', [
             'journals' => $journals,
             'business' => $business,
+            'period' => $period,
             'author' => request()->user()
         ]);
     }

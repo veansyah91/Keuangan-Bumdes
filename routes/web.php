@@ -49,34 +49,44 @@ use App\Http\Controllers\FixedAssetController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CashMutationController;
 use App\Http\Controllers\BalanceReportController;
+use App\Http\Controllers\Business\LendController;
 use App\Http\Controllers\Business\AssetController;
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\StockController;
 use App\Http\Controllers\CashflowReportController;
 use App\Http\Controllers\Business\CashierController;
+use App\Http\Controllers\Business\DepositController;
 use App\Http\Controllers\Business\InvoiceController;
+use App\Http\Controllers\Business\OverDueController;
 use App\Http\Controllers\Business\ProductController;
+use App\Http\Controllers\InvoiceSubscribeController;
 use App\Http\Controllers\LostProfitReportController;
 use App\Http\Controllers\Business\CategoryController;
 use App\Http\Controllers\Business\CustomerController;
 use App\Http\Controllers\Business\SupplierController;
 use App\Http\Controllers\Business\DashboardController;
 use App\Http\Controllers\TrialBalanceReportController;
+use App\Http\Controllers\Business\WithdrawalController;
 use App\Http\Controllers\Business\DailyIncomeController;
 use App\Http\Controllers\Business\StockOpnameController;
 use App\Http\Controllers\Business\DailyOutcomeController;
 use App\Http\Controllers\Business\IncomingItemController;
 use App\Http\Controllers\Business\PurchaseGoodsController;
+use App\Http\Controllers\Business\SavingAccountController;
 use App\Http\Controllers\Business\AccountPayableController;
 use App\Http\Controllers\Business\BusinessIncomeController;
 use App\Http\Controllers\Business\BusinessLedgerController;
+use App\Http\Controllers\Business\DebtSubmissionController;
 use App\Http\Controllers\Business\BusinessAccountController;
 use App\Http\Controllers\Business\BusinessContactController;
 use App\Http\Controllers\Business\BusinessExpenseController;
 use App\Http\Controllers\Business\BusinessJournalController;
 use App\Http\Controllers\Business\BusinessRevenueController;
+use App\Http\Controllers\Business\ChangesInEquityController;
 use App\Http\Controllers\Business\AccountReceivableController;
+use App\Http\Controllers\Business\CreditApplicationController;
 use App\Http\Controllers\Business\BusinessFixedAssetController;
+use App\Http\Controllers\Business\CreditSalesInvoiceController;
 use App\Http\Controllers\Business\InventoryAdjustmentController;
 use App\Http\Controllers\Business\BusinessCashMutationController;
 use App\Http\Controllers\Business\AccountPayablePaymentController;
@@ -94,8 +104,19 @@ Route::get('/', function () {
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login');
+Route::get('/over-due', [App\Http\Controllers\OverDueController::class, 'index'])->name('subscribe.overdue');
+Route::get('/{business}/over-due-subscribe', [App\Http\Controllers\OverDueController::class, 'business'])->name('over.due.business');
 
 Route::group(['middleware' => ['auth']], function(){
+    Route::get('/invoice-subscribe', [InvoiceSubscribeController::class, 'index'])->name('invoice.subscribe.index')->middleware('admin');
+    Route::post('/invoice-subscribe', [InvoiceSubscribeController::class, 'store'])->name('invoice.subscribe.store')->middleware('admin');
+    Route::get('/invoice-subscribe/create', [InvoiceSubscribeController::class, 'create'])->name('invoice.subscribe.create')->middleware('admin');
+    Route::get('/invoice-subscribe/{id}', [InvoiceSubscribeController::class, 'detail'])->name('invoice.subscribe.detail')->middleware('admin');
+    Route::get('/invoice-subscribe/{id}/print-invoice', [InvoiceSubscribeController::class, 'print'])->name('invoice.subscribe.print')->middleware('admin');
+    Route::put('/invoice-subscribe/{id}/confirm', [InvoiceSubscribeController::class, 'confirm'])->name('invoice.subscribe.confirm')->middleware('dev');
+});
+
+Route::group(['middleware' => ['auth', 'subscribe']], function(){
     Route::post('/logout', LogoutController::class)->name('logout');
     
     Route::group(['middleware' => ['admin']], function(){
@@ -141,6 +162,10 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/report/print-lost-profit', [LostProfitReportController::class, 'print'])->name('report.lost-profit.print');
         Route::get('/report/lost-profit-year', [LostProfitReportController::class, 'year'])->name('report.lost-profit-year.index');
         Route::get('/report/lost-profit-year-print', [LostProfitReportController::class, 'printYear'])->name('report.lost-profit-year.print');
+
+        Route::get('/report/changes-in-equity', [App\Http\Controllers\ChangesInEquityController::class, 'index'])->name('report.changes-in-equity.index');
+        Route::get('/report/changes-in-equity-print', [App\Http\Controllers\ChangesInEquityController::class, 'print'])->name('report.changes-in-equity.print');
+
 
         Route::get('/report/trial-balance', [TrialBalanceReportController::class, 'index'])->name('report.trial-balance.index');
         Route::get('/report/trial-balance-print', [TrialBalanceReportController::class, 'print'])->name('report.trial-balance.print');
@@ -335,7 +360,42 @@ Route::group(['middleware' => ['auth']], function(){
             // fixed-asset
                 Route::get('/{business}/fixed-asset', [BusinessFixedAssetController::class, 'index'])->name('business.fixed-asset.index');
             //
+        //
 
+        //saving
+            Route::get('/{business}/saving-account', [SavingAccountController::class, 'index'])->name('business.saving-account.index');
+            Route::get('/{business}/saving-account/print', [SavingAccountController::class, 'print'])->name('business.saving-account.print');
+            Route::get('/{business}/saving-account/{id}/book', [SavingAccountController::class, 'book'])->name('business.saving-account.book');
+        //
+
+        //deposit
+            Route::get('/{business}/deposit', [DepositController::class, 'index'])->name('business.deposit.index');
+            Route::get('/{business}/deposit/{id}/print-detail', [DepositController::class, 'printDetail']);
+        //
+
+        //debt submission
+            Route::get('/{business}/debt-submission', [DebtSubmissionController::class, 'index'])->name('business.debt-submission.index');
+        //
+
+        //lend
+            Route::get('/{business}/lend', [LendController::class, 'index'])->name('business.lend.index');
+            Route::get('/{business}/lend/{id}/card', [LendController::class, 'card'])->name('business.lend.card');
+        //
+
+        //credit application
+            Route::get('/{business}/credit-application', [CreditApplicationController::class, 'index'])->name('business.credit-application.index');
+        //
+
+        //credit sales
+            Route::get('/{business}/credit-sales', [CreditSalesInvoiceController::class, 'index'])->name('business.credit-sales.index');
+            Route::get('/{business}/credit-sales/{id}/print-detail', [CreditSalesInvoiceController::class, 'printDetail'])->name('business.credit-sales.print-detail');
+            Route::get('/{business}/credit-sales/{id}/card', [CreditSalesInvoiceController::class, 'card'])->name('business.credit-sales.card');
+        //
+
+        //deposit
+            Route::get('/{business}/withdrawal', [WithdrawalController::class, 'index'])->name('business.withdrawal.index');
+            Route::get('/{business}/withdrawal/{id}/print-detail', [WithdrawalController::class, 'printDetail']);
+        //
 
         //ledgers
             //Account Page
@@ -392,9 +452,14 @@ Route::group(['middleware' => ['auth']], function(){
                 Route::get('/{business}/report/lost-profit-year-print', [BusinessLostProfitReportController::class, 'printYear'])->name('report.business.balance.print.year');
             //
 
+            //Changes in equity
+                Route::get('/{business}/report/changes-in-equity', [ChangesInEquityController::class, 'index'])->name('report.business.changes-in-equity.index');
+                Route::get('/{business}/report/changes-in-equity-print', [ChangesInEquityController::class, 'print'])->name('report.business.balance.print.year');
+            //
+
             //Trial Balance
                 Route::get('/{business}/report/trial-balance', [BusinessTrialBalanceReportController::class, 'index'])->name('report.business.trial-balance.index');
-                Route::get('/{business}/report/trial-balance-print', [BusinessTrialBalanceReportController::class, 'print'])->name('report.business.balance.print.year');
+                Route::get('/{business}/report/trial-balance-print', [BusinessTrialBalanceReportController::class, 'print'])->name('report.business.trial-balance.print.year');
             //
         //
 
@@ -580,6 +645,7 @@ Route::group(['middleware' => ['auth']], function(){
             Route::get('/{business}/invoice/{id}/edit', [InvoiceController::class, 'edit']);
             Route::delete('/{business}/invoice/{id}/print-detail', [InvoiceController::class, 'destroy']);
             Route::get('/{business}/invoice/{id}/print-detail', [InvoiceController::class, 'printDetail']);
+            Route::get('/{business}/invoice/print', [InvoiceController::class, 'print']);
         //
 
         //Purchase Goods Page
@@ -753,17 +819,21 @@ Route::group(['middleware' => ['auth']], function(){
                 Route::get('/{business}/pay-later', [AccountReceivableController::class, 'payLater'])->name('business.account-receivable.pay-later');
             //
 
+            //over due
+                Route::get('/{business}/over-due', [OverDueController::class, 'index'])->name('business.over-due.index');
+            //
+
             //account payable
-            Route::get('/{business}/account-payable', [AccountPayableController::class, 'index'])->name('business.account-payable.index');
-            Route::post('/{business}/account-payable', [AccountPayableController::class, 'store'])->name('business.account-payable.store');
-            Route::get('/{business}/pay-later', [AccountPayableController::class, 'payLater'])->name('business.account-payable.pay-later');
-        //
-        //account payable payment
-            Route::get('/{business}/account-payable-payment', [AccountPayablePaymentController::class, 'index'])->name('business.account-payable-payment.index');
-            Route::get('/{business}/account-payable-payment/create', [AccountPayablePaymentController::class, 'store'])->name('business.account-payable-payment.create');
-            Route::get('/{business}/account-payable-payment/{id}/print-detail', [AccountPayablePaymentController::class, 'printDetail']);
-            Route::get('/{business}/pay-later', [AccountPayableController::class, 'payLater'])->name('business.account-payable.pay-later');
-        //
+                Route::get('/{business}/account-payable', [AccountPayableController::class, 'index'])->name('business.account-payable.index');
+                Route::post('/{business}/account-payable', [AccountPayableController::class, 'store'])->name('business.account-payable.store');
+                Route::get('/{business}/pay-later', [AccountPayableController::class, 'payLater'])->name('business.account-payable.pay-later');
+            //
+            //account payable payment
+                Route::get('/{business}/account-payable-payment', [AccountPayablePaymentController::class, 'index'])->name('business.account-payable-payment.index');
+                Route::get('/{business}/account-payable-payment/create', [AccountPayablePaymentController::class, 'store'])->name('business.account-payable-payment.create');
+                Route::get('/{business}/account-payable-payment/{id}/print-detail', [AccountPayablePaymentController::class, 'printDetail']);
+                Route::get('/{business}/pay-later', [AccountPayableController::class, 'payLater'])->name('business.account-payable.pay-later');
+            //
         // 
     //
     

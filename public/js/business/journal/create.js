@@ -30,7 +30,7 @@ let formData = {
     listInput:[{},{}]
 }
 
-const setDefaultValue = () => {
+const setDefaultValue = async () => {
     totalInputList = 2;
     differenceDebitCredit = 0;
     totalDebitInput = 0;
@@ -38,7 +38,7 @@ const setDefaultValue = () => {
 
     formData = {
         date: dateNow(),
-        desc: '',
+        desc: 'Jurnal Umum',
         no_ref: '',
         detail: '',
         listInput:[
@@ -56,6 +56,8 @@ const setDefaultValue = () => {
             }
         ]
     }
+    
+    await setNewRef(formData.desc);
 }
 
 const validationInput = () => {
@@ -101,7 +103,7 @@ const setValueInputComponent = () => {
 
 const changeDataInput = (value) => {
     formData.date = value.value;
-}
+}   
 
 const componentListInput = (index) => {
     return `<div class="list-input-journal">
@@ -130,16 +132,20 @@ const componentListInput = (index) => {
     </div>`
 }
 
-async function getNoRefAccountAuto (value) {
-    formData.desc = capital(value.value);
-    descriptionInput.value = formData.desc;
-
-    let referenceNo = `${abbreviation(value.value)}-`;
+async function setNewRef(value)
+{
+    let referenceNo = `${abbreviation(value)}-`;
     let result = await newRef(referenceNo);
-
 
     formData.no_ref = result.data.data;
     noRefInput.value = formData.no_ref;
+}
+
+async function getNoRefAccountAuto(value) {
+    formData.desc = capital(value.value);
+    descriptionInput.value = formData.desc;
+
+    await setNewRef(descriptionInput.value);
 
     validationInput();
 }

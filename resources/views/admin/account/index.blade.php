@@ -62,7 +62,7 @@
                     <div class="modal-body">
                         <div class="position-relative mb-3">
                             <div class="">
-                                <label for="sub-category" class="form-label">Kategori Akun</label>
+                                <label for="sub-category" class="form-label fw-bold">Kategori Akun</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control search-input-dropdown" placeholder="Kategori Akun" aria-label="Kategori Akun" aria-describedby="create-sub-category-account" list="dataSubClassificationAccount" onclick="showSubCategoryDropdown()" onkeyup="changeSubCategoryDropdown(this)" id="sub-category" autocomplete="off">
                                     <button class="btn " type="button" id="create-sub-category-account" onclick="showSubCategory()" data-bs-toggle="modal" data-bs-target="#createSubCategoryModal" data-bs-dismiss="modal">
@@ -79,12 +79,12 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="code" class="form-label">Kode Akun </label>
+                            <label for="code" class="form-label fw-bold">Kode Akun </label>
                             <input type="text" class="form-control" id="code" placeholder="Kode Akun">
                             
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nama Akun</label>
+                            <label for="name" class="form-label fw-bold">Nama Akun</label>
                             <input type="text" class="form-control" id="name" placeholder="Nama Akun">
                         </div>
                         <div class="form-check form-switch">
@@ -119,12 +119,12 @@
                     <form onsubmit="storeSubClassificationAccount(event)">
                         <div class="row mb-3">
                             <div class="col-6">
-                                <label for="sub-classification-input" class="form-label">Sub Klasifikasi</label>
+                                <label for="sub-classification-input" class="form-label fw-bold">Sub Klasifikasi</label>
                                 <input type="text" class="form-control" id="sub-classification-input" placeholder="Nama Akun">
                                 <small class="text-danger d-none" id="validation-name-input"></small>
                             </div>
                             <div class="col-6">
-                                <label for="sub-classification-code" class="form-label">Kode</label>
+                                <label for="sub-classification-code" class="form-label fw-bold">Kode</label>
                                 <input type="text" class="form-control" id="sub-classification-code" placeholder="Kode Akun">
                                 <small class="text-danger d-none" id="validation-name-code"></small>
 

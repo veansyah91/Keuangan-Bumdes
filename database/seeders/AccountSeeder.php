@@ -45,6 +45,13 @@ class AccountSeeder extends Seeder
                 'sub_category' => 'Piutang Usaha'
             ],
             [
+                'code' => '1310001',
+                'name' => 'Piutang Nasabah Simpan Pinjam',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Piutang Nasabah'
+            ],
+            [
                 'code' => '1399001',
                 'name' => 'Piutang Lain',
                 'is_cash' => false,
@@ -184,6 +191,13 @@ class AccountSeeder extends Seeder
                 'sub_category' => 'Utang Usaha'
             ],
             [
+                'code' => '2180001',
+                'name' => 'Tabungan Nasabah',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Tabungan Nasabah'
+            ],
+            [
                 'code' => '2190001',
                 'name' => 'Utang Belum Ditagih',
                 'is_cash' => false,
@@ -227,34 +241,48 @@ class AccountSeeder extends Seeder
             ],
             [
                 'code' => '3100001',
-                'name' => 'Modal Disetor',
+                'name' => 'Penyertaan Modal Desa',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Modal'
+                'sub_category' => 'Penyertaan Modal Desa'
             ],
             [
-                'code' => '3100001',
-                'name' => 'Modal Penyertaan Desa',
+                'code' => '3110001',
+                'name' => 'Penyertaan Modal Masyarakat',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Modal'
+                'sub_category' => 'Penyertaan Modal Masyarakat'
             ],
             [
-                'code' => '3200001',
+                'code' => '3400001',
+                'name' => 'Bagi Hasil Penyertaan Modal Desa',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Bagi Hasil Penyertaan Modal Desa'
+            ],
+            [
+                'code' => '3410001',
+                'name' => 'Bagi Hasil Penyertaan Modal Masyarakat',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Bagi Hasil Penyertaan Modal Masyarakat'
+            ],
+            [
+                'code' => '3600001',
                 'name' => 'Laba Ditahan',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Laba'
+                'sub_category' => 'Laba Ditahan'
             ],
             [
-                'code' => '3300000',
+                'code' => '3700001',
                 'name' => 'Laba Tahun Berjalan',
                 'is_cash' => false,
                 'is_active' => true,
-                'sub_category' => 'Laba'
+                'sub_category' => 'Laba Tahun Berjalan'
             ],   
             [
-                'code' => '3900000',
+                'code' => '3200001',
                 'name' => 'Modal Unit Usaha',
                 'is_cash' => false,
                 'is_active' => true,
@@ -331,11 +359,18 @@ class AccountSeeder extends Seeder
                 'sub_category' => 'Retur Pembelian'
             ],
             [
-                'code' => '5200000',
+                'code' => '5200001',
                 'name' => 'Potongan Pembelian',
                 'is_cash' => false,
                 'is_active' => true,
                 'sub_category' => 'Potongan Pembelian'
+            ],
+            [
+                'code' => '5400001',
+                'name' => 'Beban Piutang',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Beban Piutang'
             ],
             [
                 'code' => '5800001',
@@ -364,6 +399,13 @@ class AccountSeeder extends Seeder
                 'is_cash' => false,
                 'is_active' => true,
                 'sub_category' => 'Beban Operasional'
+            ],
+            [
+                'code' => '5400001',
+                'name' => 'Beban Piutang',
+                'is_cash' => false,
+                'is_active' => true,
+                'sub_category' => 'Beban Piutang'
             ],
             [
                 'code' => '5600001',

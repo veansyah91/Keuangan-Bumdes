@@ -68,7 +68,7 @@ class BalanceReportController extends Controller
         if (!$is_there_current_year_earnings) {
             $data[count($data)] = [
                 "name" => "Laba Tahun Berjalan",
-                "code" => "3299999",
+                "code" => "3700001",
                 "total" => -1 * $lost_profit
             ];
         }
@@ -106,7 +106,7 @@ class BalanceReportController extends Controller
                                                                 $query->whereYear('date','<=', request('year'));
                                                         });
                                             })
-                                            ->get();
+                                            ->get();                                            
                                                      
                                         
         $reportYear = [];
@@ -158,15 +158,15 @@ class BalanceReportController extends Controller
                                         $is_there_current_year_earnings_before = false;
                             $totalBefore += $ledger->debit - $ledger->credit;
                         }
+                        $totalNow += $ledger->debit - $ledger->credit;
 
                         $report['name'] == 'Laba Tahun Berjalan' ? 
                                         $is_there_current_year_earnings_now = true :
-                                        $is_there_current_year_earnings_now = false;
-                        
-                        $totalNow += $ledger->debit - $ledger->credit;
+                                        $is_there_current_year_earnings_now = false;                        
                     }
                 }
-                if ($report['name'] == 'Laba') {
+
+                if ($report['name'] == 'Laba Tahun Berjalan') {
                     $report['total_now'] = $totalNow + $lost_profit_now;
                     $report['total_before'] = $totalBefore + $lost_profit_before;
                 } else {
@@ -181,19 +181,20 @@ class BalanceReportController extends Controller
         if (!$is_there_current_year_earnings_now || !$is_there_current_year_earnings_before) {
             array_push($reportYear, [
                     "name" => "Laba Tahun Berjalan",
-                    "code" => "3299999",
+                    "code" => "3700001",
                     "total_now" => -1 * ($lost_profit_now),
                     "total_before" => -1 * ($lost_profit_before),
             ]);
         }
 
-       $period = Carbon::now()->isoformat(request('year'));
+        $period = Carbon::now()->isoformat(request('year'));
     
         return response()->json([
             'status' => 'success',
             'data' => [
                 'balance' => $reportYear,
                 'period' => $period,
+                'balances' => $balanceNow,
             ],
         ]); 
     }

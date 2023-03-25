@@ -2,7 +2,7 @@
 
 @section('admin')
     <div class="page-heading d-flex justify-content-between my-auto">
-        <h3>Laporan Neraca Saldo</h3>
+        <h3>Laporan Neraca</h3>
 
         <div class="d-flex">
             <div class="mx-1">

@@ -9,7 +9,7 @@ class AccountReceivablePayment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['value', 'author', 'no_ref', 'business_id', 'contact_id', 'date', 'contact_name'];
+    protected $fillable = ['value', 'author', 'no_ref', 'business_id', 'contact_id', 'date', 'contact_name', 'account_receivable_id', 'is_write_off'];
 
     public function scopeFilter($query, array $filters)
     {

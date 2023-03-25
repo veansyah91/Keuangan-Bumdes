@@ -46,7 +46,6 @@ class Businessaccount extends Model
         });
     }
     
-
     public function cashflows()
     {
         return $this->hasMany(Businesscashflow::class, 'account_id');

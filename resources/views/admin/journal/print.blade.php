@@ -69,10 +69,10 @@
                                 <td>
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            {{ $ledger->account_name }}
+                                            {{ $ledger->account_code }}
                                         </div>
                                         <div>
-                                            {{ $ledger->account_code }}
+                                            {{ $ledger->account_name }}
                                         </div>
                                     </div>
                                     

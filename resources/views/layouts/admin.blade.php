@@ -24,6 +24,7 @@
     <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
 
     <link href="{{ asset('css/admin/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('images/logo/icon.ico') }}" rel="icon">
     
 
 </head>
@@ -31,8 +32,20 @@
 <body>
     <div id="app">
         <div id="sidebar" class="active">
+            
             <div class="sidebar-wrapper active">
                 <div class="sidebar-header">
+                    @if (OverDueSubscribeHelper::overDue()['is_over_due'])
+                        <div class="bg-danger p-2 text-white" style="font-size: 14px;border-radius: 10px;">
+                            Jatuh Tempo : {{OverDueSubscribeHelper::overDue()['different']}} Hari
+                        </div>
+                    @endif
+                    @if (!OverDueSubscribeHelper::overDue()['is_over_due'] && OverDueSubscribeHelper::overDue()['different'] < 8)
+                        <div class="bg-warning p-2 text-white" style="font-size: 14px;border-radius: 10px;">
+                            Jatuh Tempo : {{OverDueSubscribeHelper::overDue()['different']}} Hari
+                        </div>
+                    @endif
+                    
                     <div class="d-flex justify-content-between">
                         <div class="logo">
                             <a href="/">Admin</a>
@@ -45,12 +58,14 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
 
-                        <li class="sidebar-item{{ Request::is('admin') ? ' active' :'' }}">
-                            <a href="{{ route('admin.dashboard') }}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
+                        @role('ADMIN')
+                            <li class="sidebar-item{{ Request::is('admin') ? ' active' :'' }}">
+                                <a href="{{ route('admin.dashboard') }}" class='sidebar-link'>
+                                    <i class="bi bi-grid-fill"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                        @endrole
 
                         <li class="sidebar-item{{ Request::is('identity')? ' active' :'' }}">
                             <a href="{{ route('identity.index') }}" class='sidebar-link'>
@@ -89,7 +104,7 @@
                         <li class="sidebar-item has-sub{{ Request::is('account') || Request::is('ledger') || Request::is('journal/*') || Request::is('journal') ? ' active' :'' }}">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-journals"></i>
-                                <span>Buku Besar</span>
+                                <span>Akuntansi</span>
                             </a>
                             <ul class="submenu ">
                                 <li class="submenu-item{{ Request::is('account')? ' active' :'' }}">
@@ -111,7 +126,7 @@
                                     <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z"/>
                                     <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"/>
                                 </svg>
-                                <span>Kas Dan Bank</span>
+                                <span>Arus Kas</span>
                             </a>
                             <ul class="submenu ">
                                 <li class="submenu-item{{ Request::is('revenue') || Request::is('revenue/*')? ' active' :'' }}">
@@ -152,6 +167,9 @@
                                     <a href="{{ route('report.lost-profit-year.index') }}">Laba Rugi Tahunan</a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+                                <li class="submenu-item{{ Request::is('report/changes-in-equity')? ' active' :'' }}">
+                                    <a href="{{ route('report.changes-in-equity.index') }}">Perubahan Modal</a>
+                                </li>
                                 <li class="submenu-item{{ Request::is('report/trial-balance')? ' active' :'' }}">
                                     <a href="{{ route('report.trial-balance.index') }}">Neraca Saldo</a>
                                 </li>
@@ -168,13 +186,31 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-title border-top pt-3">Layanan</li>
+
+                        <li class="sidebar-item{{ Request::is('over-due') ? ' active' :'' }}">
+                            <a href="{{ route('subscribe.overdue') }}" class='sidebar-link'>
+                                <i class="bi bi-calendar3"></i>
+                                <span>Status</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item{{ Request::is('invoice-subscribe*') ? ' active' :'' }}">
+                            <a href="{{ route('invoice.subscribe.index') }}" class='sidebar-link'>
+                                <i class="bi bi-clock-history"></i>
+                                <span>Pembayaran</span>
+                            </a>
+                        </li>
+
                         @role('DEV')
+                        <li class="sidebar-title border-top pt-3">Lainnya</li>
                             <li class="sidebar-item{{ Request::is('roles') ? ' active' :'' }}">
                                 <a href="{{ route('roles.index') }}" class='sidebar-link'>
                                     <i class="bi bi-sliders"></i>
                                     <span>Roles</span>
                                 </a>
                             </li>
+
 
                             <li class="sidebar-item{{ Request::is('import-asset') ? ' active' :'' }}">
                                 <a href="{{ route('import-asset') }}" class='sidebar-link'>

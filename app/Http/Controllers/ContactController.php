@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Expense;
 use App\Models\Revenue;
 use Illuminate\Http\Request;
+use App\Models\ContactDetail;
 use Illuminate\Validation\ValidationException;
 
 class ContactController extends Controller
@@ -61,17 +62,33 @@ class ContactController extends Controller
 
         $contact = Contact::create($attributes);
 
+        if ($request->nkk && $request->nik) {
+
+            $attributes = [...$attributes, 
+                'nkk' => $request->nkk,
+                'nik' => $request->nik,
+                'village' => $request->village,
+                'district' => $request->district,
+                'regency' => $request->regency,
+                'province' => $request->province,
+                'address_detail' => $request->address,
+                'contact_id' => $contact['id'],
+            ];
+
+            ContactDetail::create($attributes);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => $attributes,
         ]); 
     }
 
-    public function show(Contact $contact)
+    public function show($contact)
     {
         return response()->json([
             'status' => 'success',
-            'data' => $contact,
+            'data' => Contact::where('id', $contact)->with('detail')->first(),
         ]); 
     }
 
@@ -88,6 +105,27 @@ class ContactController extends Controller
         ]);
 
         $contact->update($attributes);
+
+        if ($request->nkk && $request->nik) {
+            $attributes = [...$attributes, 
+                'nkk' => $request->nkk,
+                'nik' => $request->nik,
+                'village' => $request->village,
+                'district' => $request->district,
+                'regency' => $request->regency,
+                'province' => $request->province,
+                'address_detail' => $request->address,
+                'contact_id' => $contact['id'],
+            ];
+
+            $contact_detail = ContactDetail::where('contact_id', $contact['id'])->first();
+
+            if ($contact_detail) {
+                $contact_detail->update($attributes);
+            } else {
+                ContactDetail::create($attributes);
+            }
+        }
 
         return response()->json([
             'status' => 'success',
@@ -123,11 +161,28 @@ class ContactController extends Controller
         ]); 
     }
 
-    public function getApiData(){
+    public function getApiData(Request $request){
 
         return response()->json([
             'status' => 'success',
-                'data' =>Contact::filter(request(['search']))->type(request(['type']))->get(),
+                'data' => Contact::filter(request(['search']))
+                                    ->type(request(['type']))
+                                    ->with('detail')
+                                    ->get(),
+        ]); 
+    }
+
+    public function detail(Request $request)
+    {
+        $type = request('type');
+
+        return response()->json([
+            'status' => 'success',
+                'data' => ContactDetail::filter(request(['search']))
+                                    ->whereHas('contact', fn($query) => 
+                                        $query->type(request(['type'])))
+                                    ->with('contact')
+                                    ->get(),
         ]); 
     }
 }

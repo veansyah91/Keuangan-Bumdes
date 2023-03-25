@@ -115,7 +115,7 @@ const showData = async () =>{
     return result.data.data;
 }
 
-function goToPintInvoice(id)
+function goToPrintInvoice(id)
 {
     window.open(`/${business}/invoice/${id}/print-detail`)
 }

@@ -103,18 +103,57 @@
                         <p id="type-detail"></p>
                     </div>
                     <div>
-                        <div class="font-bold">Email</div>
-                        <div id="email-detail"></div>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-detail" type="button" role="tab" aria-controls="home-detail" aria-selected="true">General</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail-detail" type="button" role="tab" aria-controls="detail-detail" aria-selected="false">Detail</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home-detail" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="mt-3">
+                                    <div class="fw-bold">Email</div>
+                                    <div id="email-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">Telepon</div>
+                                    <div id="phone-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">Alamat</div>
+                                    <div id="address-detail"></div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="detail-detail" role="tabpanel" aria-labelledby="detail-tab">
+                                <div class="mt-3">
+                                    <div class="fw-bold">No KK</div>
+                                    <div id="nkk-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">NIK</div>
+                                    <div id="nik-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">Desa</div>
+                                    <div id="village-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">Kecamatan</div>
+                                    <div id="district-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">Kabupaten</div>
+                                    <div id="regency-detail"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="fw-bold">Provinsi</div>
+                                    <div id="province-detail"></div>
+                                </div>
+                            </div>
+                        </div>  
                     </div>
-                    <div class="mt-3">
-                        <div class="font-bold">Telepon</div>
-                        <div id="phone-detail"></div>
-                    </div>
-                    <div class="mt-3">
-                        <div class="font-bold">Alamat</div>
-                        <div id="address-detail"></div>
-                    </div>
-                    
                     
                 </div>
                 <div class="modal-footer">
@@ -134,34 +173,80 @@
                         <h5 class="modal-title" id="createModalLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="setDefault()"></button>
                     </div>
-                    <div class="modal-body overflow-auto custom-scroll" style="height: 400px;">                        
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="name-input" placeholder="Nama" required onchange="nameInputChange(this)">
-                        </div>
-                        <div class="mb-3">
-                            <label for="type" class="form-label">Tipe</label>
-                            <select class="form-select" aria-label="Default select example" id="type-input" required onchange="typeInputChange(this)">
-                                <option value="Customer">Customer</option>
-                                <option value="Supplier">Supplier</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="no-ref" class="form-label">No Ref</label>
-                            <input type="text" class="form-control" id="no-ref-input" placeholder="CUST-001" onchange="noRefInputChange(this)">
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email-input" placeholder="email@email.com" onchange="emailInputChange(this)">
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Telepon/HP</label>
-                            <input type="tel" class="form-control" id="phone-input" placeholder="Telepon/HP" onchange="phoneInputChange(this)">
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Alamat</label>
-                            <textarea class="form-control" name="address" id="address-input" cols="30" rows="3" placeholder="Alamat" onchange="addressInputChange(this)"></textarea>
-                        </div>
+                    <div class="modal-body overflow-auto custom-scroll" style="height: 400px;">   
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">General</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button class="nav-link" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail" type="button" role="tab" aria-controls="detail" aria-selected="false">Detail</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="mb-3 mt-2">
+                                    <label for="name" class="form-label fw-bold">Nama</label>
+                                    <input type="text" class="form-control" id="name-input" placeholder="Nama" required onchange="nameInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="type" class="form-label fw-bold">Tipe</label>
+                                    <select class="form-select" aria-label="Default select example" id="type-input" required onchange="typeInputChange(this)">
+                                        <option value="Customer">Customer</option>
+                                        <option value="Supplier">Supplier</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="no-ref" class="form-label fw-bold">No Ref</label>
+                                    <input type="text" class="form-control" id="no-ref-input" placeholder="CUST-001" onchange="noRefInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-bold">Email</label>
+                                    <input type="email" class="form-control" id="email-input" placeholder="email@email.com" onchange="emailInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label fw-bold">Telepon/HP</label>
+                                    <input type="tel" class="form-control" id="phone-input" placeholder="Telepon/HP" onchange="phoneInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label fw-bold">Alamat</label>
+                                    <textarea class="form-control" name="address" id="address-input" cols="30" rows="3" placeholder="Alamat" onchange="addressInputChange(this)"></textarea>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
+                                <div class="mb-3">
+                                    <label for="nkk" class="form-label fw-bold">No KK</label>
+                                    <input type="text" class="form-control" id="nkk-input" placeholder="No KK" onchange="nkkInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nik" class="form-label fw-bold">NIK</label>
+                                    <input type="text" class="form-control" id="nik-input" placeholder="NIK" onchange="nikInputChange(this)">
+                                </div>
+                                <div class="position-relative mb-3 z-index-1">
+                                    <div class="">
+                                        <label for="village-input" class="form-label fw-bold">Desa</label>
+                                        <div class="mb-1">
+                                            <input type="text" class="form-control search-input-dropdown" placeholder="Alamat KTP" aria-label="Alamat KTP" aria-describedby="create-address" onclick="showAddressDropdown(this)" onkeyup="changeAddressDropdown(this)" onchange="changeAddress(this)" id="village-input" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="bg-light position-absolute list-group w-100 search-select overflow-auto custom-scroll border border-2 border-secondary d-none" id="address-list" style="max-height: 130px">
+                                        
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="district-input" class="form-label fw-bold">Kecamatan</label>
+                                    <input type="text" class="form-control" id="district-input" placeholder="Kecamatan" onchange="districtInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="regency-input" class="form-label fw-bold">Kabupaten</label>
+                                    <input type="text" class="form-control" id="regency-input" placeholder="Kabupaten" onchange="regencyInputChange(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="province-input" class="form-label fw-bold">Provinsi</label>
+                                    <input type="text" class="form-control" id="province-input" placeholder="Provinsi" onchange="provinceInputChange(this)">
+                                </div>
+                            </div>
+                        </div>                     
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="setDefault()">Tutup</button>

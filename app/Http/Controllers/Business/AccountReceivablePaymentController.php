@@ -16,6 +16,7 @@ use App\Helpers\BusinessUserHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccountReceivablePayment;
+use App\Http\Controllers\Business\OverDueController;
 
 class AccountReceivablePaymentController extends Controller
 {
@@ -72,7 +73,7 @@ class AccountReceivablePaymentController extends Controller
             'date' => 'required',
             'description' => 'string|nullable',
         ]);
-        
+
         $attributes['author'] = $request->user()->name;
         $attributes['contact_id'] = $request->contact['id'];
         $attributes['contact_name'] = $request->contact['name'];
@@ -84,47 +85,119 @@ class AccountReceivablePaymentController extends Controller
         $attributes['type'] = 'Pembayaran Piutang';
         $attributes['source'] = 'Dari Faktur Pembayaran Piutang';
 
-        $payment = AccountReceivablePayment::create($attributes);
-        $accountReceivable = AccountReceivable::create($attributes);
-        $journal = Businessjournal::create($attributes);
+        //cek jenis piutang
+        $checkAccountReceivable = AccountReceivable::whereInvoiceId($attributes['invoice_id'])
+                                                    ->where('business_id', $business['id'])
+                                                    ->where('debit', '>', 0)
+                                                    ->first();
         
+        if ($checkAccountReceivable['category'] == 'lend') {
+            $attributes['category'] = 'lend';
+        }
+
+        if ($checkAccountReceivable['category'] == 'credit') {
+            $attributes['category'] = 'credit';
+        }
+
         //buku besar pada credit
-        $account = Businessaccount::where('business_id', $business['id'])->where('name', 'Piutang Dagang')->first();
+        $account_name = 'Piutang Dagang';
+        
+        if ($checkAccountReceivable['category'] == 'lend') {
+            $account_name = 'Piutang Nasabah Simpan Pinjam';
+        }
+
+        $accountReceivable = AccountReceivable::create($attributes);
+
+        $attributes['account_receivable_id'] = $accountReceivable['id'];
+
+        $accountReceivablePayment = AccountReceivablePayment::create($attributes);
+        $journal = Businessjournal::create($attributes);
+
+        $account = Businessaccount::where('business_id', $business['id'])->where('name', $account_name)->first();
+
         $attributes['account_id'] = $account['id'];
         $attributes['account_code'] = $account['code'];
         $attributes['account_name'] = $account['name'];
         Businessledger::create($attributes);
+        $attributes['type'] = 'operation';
+        $attributes['debit'] = $attributes['value'];
+        $attributes['credit'] = 0;
+        $cashFlow = Businesscashflow::create($attributes);
 
         //debit
         $account = Businessaccount::where('business_id', $business['id'])->where('id', $request->debit['id'])->first();
         $attributes['account_id'] = $account['id'];
         $attributes['account_code'] = $account['code'];
         $attributes['account_name'] = $account['name'];
-        $attributes['type'] = 'operation';
-        $attributes['debit'] = $attributes['value'];
-        $attributes['credit'] = 0;
-        $cashFlow = Businesscashflow::create($attributes);
+        
         $journal = Businessledger::create($attributes);
+
+        //update status piutang jika lunas
+        $accountReceivables = AccountReceivable::whereBusinessId($business['id'])
+                                                ->whereInvoiceId($attributes['invoice_id'])
+                                                ->get();
+
+        //dapatkan total debit dan kredit
+        $total_debit = $accountReceivables->sum('debit');
+        $total_credit = $accountReceivables->sum('credit');
+
+        if ($total_debit - $total_credit == 0) {
+            foreach ($accountReceivables as $accountReceivable) {
+                $accountReceivable->update([
+                    'is_paid_off' => true,
+                    'due_date_temp' => ''
+                ]);
+            }
+        } else {
+            foreach ($accountReceivables as $accountReceivable) {
+                $accountReceivable->update([
+                    'is_paid_off' => false
+                ]);
+            }
+        }
+                                
+        //hitung berapa bulan terbayar berdasarkan jumlah pembayaran
+        $month = floor($total_credit / round($total_debit / $checkAccountReceivable['tenor'])) + 1;
+        $next_month = '+' . $month . 'month';
+        $attributes['due_date_temp'] = date('Y-m-d', strtotime($next_month, strtotime($checkAccountReceivable['date'])));
+
+        $checkAccountReceivable->update([
+            'due_date_temp' => $attributes['due_date_temp']
+        ]);
+
+         // jika piutang lunas, maka hapus data piutang 
+         if ($checkAccountReceivable['is_paid_off']) {
+            $overDue = OverDue::whereBusinessId($business['id'])
+                                ->whereAccountReceivableId($checkAccountReceivable['id'])
+                                ->first();
+            if ($overDue) {
+                $overDue->delete();
+            }
+        } else {
+            OverDueController::updateOrCreate($business['id'], $checkAccountReceivable);
+        }
 
         return response()->json([
             'status' => 'success',
-            'data' => $attributes,
+            'data' => $accountReceivablePayment,
         ]);
     }
 
     public function show(Business $business, $id)
     {
         $accountReceivablePayment = AccountReceivablePayment::find($id);
-        $accountReceivable = AccountReceivable::where('business_id', $business['id'])->where('no_ref', $accountReceivablePayment['no_ref'])->with('invoice')->with('contact')->first();
-        $accountReceivablePayment['invoice'] = [
-            "id" => $accountReceivable['invoice']['id'],
-            "no_ref" => $accountReceivable['invoice']['no_ref'],
-            "date" => $accountReceivable['invoice']['date'],
-        ];
-        $accountReceivablePayment['contact'] = [
-            "id" => $accountReceivable['contact']['id'],
-            "name" => $accountReceivable['contact']['name'],
-        ];
+        $accountReceivable = AccountReceivable::where('business_id', $business['id'])
+                                            ->where('no_ref', $accountReceivablePayment['no_ref'])
+                                            ->with('invoice', fn($query) => 
+                                                $query->with('accountReceivables')
+                                                        ->with('products')
+                                                        ->withSum('accountReceivables', 'debit')
+                                                        ->withSum('accountReceivables', 'credit')
+                                            )
+                                            ->with('contact')
+                                            ->first();
+
+        $accountReceivablePayment['accountReceivable'] = $accountReceivable;
 
         $ledger = Businessledger::where('no_ref', $accountReceivablePayment['no_ref'])
                                 ->where('business_id', $business['id'])
@@ -174,8 +247,26 @@ class AccountReceivablePaymentController extends Controller
         $journal->update($attributes);
 
         //buku besar pada credit
+        $account_name = 'Piutang Dagang';
+        
+        if ($accountReceivable['category'] == 'lend') {
+            $account_name = 'Piutang Nasabah Simpan Pinjam';
+        }
+
+        //buku besar pada credit
+        $account = Businessaccount::where('business_id', $business['id'])->where('name', $account_name)->first();
+        $attributes['account_id'] = $account['id'];
+        $attributes['account_code'] = $account['code'];
+        $attributes['account_name'] = $account['name'];
         $ledgers = Businessledger::where('business_id', $business['id'])->where('no_ref', $accountReceivablePayment['no_ref'])->where('credit', '>', 0)->first();
         $ledgers->update($attributes);
+
+        $attributes['type'] = 'operation';
+        $attributes['debit'] = $attributes['value'];
+        $attributes['credit'] = 0;
+        //cashflow
+        $cashFlow = Businesscashflow::where('business_id', $business['id'])->where('no_ref', $accountReceivablePayment['no_ref'])->first();
+        $cashFlow->update($attributes);
 
         //buku besar pada debit
         $ledgers = Businessledger::where('business_id', $business['id'])->where('no_ref', $accountReceivablePayment['no_ref'])->where('debit', '>', 0)->first();
@@ -183,17 +274,61 @@ class AccountReceivablePaymentController extends Controller
         $attributes['account_id'] = $account['id'];
         $attributes['account_code'] = $account['code'];
         $attributes['account_name'] = $account['name'];
-        $attributes['type'] = 'operation';
-        $attributes['debit'] = $attributes['value'];
-        $attributes['credit'] = 0;
+        
         $ledgers->update($attributes);
-
-        //cashflow
-        $cashFlow = Businesscashflow::where('business_id', $business['id'])->where('no_ref', $accountReceivablePayment['no_ref'])->first();
-        $cashFlow->update($attributes);
 
         //ubah account receivable payment table
         $accountReceivablePayment->update($attributes);
+
+        //update status piutang jika lunas
+        $accountReceivables = AccountReceivable::whereBusinessId($business['id'])
+                                                ->whereInvoiceId($attributes['invoice_id'])
+                                                ->get();
+
+        //dapatkan total debit dan kredit
+        $total_debit = $accountReceivables->sum('debit');
+        $total_credit = $accountReceivables->sum('credit');
+
+        if ($total_debit - $total_credit == 0) {
+            foreach ($accountReceivables as $accountReceivable) {
+                $accountReceivable->update([
+                    'is_paid_off' => true
+                ]);
+            }
+        } else {
+            foreach ($accountReceivables as $accountReceivable) {
+                $accountReceivable->update([
+                    'is_paid_off' => false
+                ]);
+            }
+        }
+
+        //cek jenis piutang
+        $checkAccountReceivable = AccountReceivable::whereInvoiceId($attributes['invoice_id'])
+                                                    ->where('business_id', $business['id'])
+                                                    ->where('debit', '>', 0)
+                                                    ->first();
+
+        //hitung berapa bulan terbayar berdasarkan jumlah pembayaran
+        $month = floor($total_credit / round($total_debit / $checkAccountReceivable['tenor'])) + 1;
+        $next_month = '+' . $month . 'month';
+        $attributes['due_date_temp'] = date('Y-m-d', strtotime($next_month, strtotime($checkAccountReceivable['date'])));
+
+        $checkAccountReceivable->update([
+            'due_date_temp' => $attributes['due_date_temp']
+        ]);
+
+        // jika piutang lunas, maka hapus data piutang 
+        if ($checkAccountReceivable['is_paid_off']) {
+            $overDue = OverDue::whereBusinessId($business['id'])
+                                ->whereAccountReceivableId($checkAccountReceivable['id'])
+                                ->first();
+            if ($overDue) {
+                $overDue->delete();
+            }
+        } else {
+            OverDueController::updateOrCreate($business['id'], $checkAccountReceivable);
+        }
 
         return response()->json([
             'status' => 'success',
@@ -212,13 +347,47 @@ class AccountReceivablePaymentController extends Controller
         $accountReceivable = AccountReceivable::where('business_id', $business['id'])->where('no_ref', $no_ref)->first();
         $accountReceivable->delete();
 
+        $accountReceivables = AccountReceivable::where('business_id', $business['id'])
+                                                ->whereInvoiceId($accountReceivable['invoice_id'])
+                                                ->get();
+
+        if (count($accountReceivables) > 0) {
+            foreach ($accountReceivables as $accountReceivable) {
+                $accountReceivable->update([
+                    'is_paid_off' => false
+                ]);
+            }
+        }
+
+        //dapatkan total debit dan kredit
+        $total_debit = $accountReceivables->sum('debit');
+        $total_credit = $accountReceivables->sum('credit');
+
+        //cek jenis piutang
+        $checkAccountReceivable = AccountReceivable::whereInvoiceId($accountReceivable['invoice_id'])
+                                                    ->where('business_id', $business['id'])
+                                                    ->where('debit', '>', 0)
+                                                    ->first();
+
+        //hitung berapa bulan terbayar berdasarkan jumlah pembayaran
+        $month = floor($total_credit / round($total_debit / $checkAccountReceivable['tenor'])) + 1;
+        $next_month = '+' . $month . 'month';
+        $attributes['due_date_temp'] = date('Y-m-d', strtotime($next_month, strtotime($checkAccountReceivable['date'])));
+
+        $checkAccountReceivable->update([
+            'due_date_temp' => $attributes['due_date_temp']
+        ]);
+
         //hapus data pada journal
         $journal = Businessjournal::where('business_id', $business['id'])->where('no_ref', $no_ref)->first();
         $journal->delete();
 
         //hapus data pada cashflow
         $cashflow = Businesscashflow::where('business_id', $business['id'])->where('no_ref', $no_ref)->first();
-        $cashflow->delete();
+
+        if ($cashflow) {
+            $cashflow->delete();
+        }
 
         //hapus data pada buku besar
         $ledgers = Businessledger::where('business_id', $business['id'])->where('no_ref', $no_ref)->get();
@@ -251,18 +420,25 @@ class AccountReceivablePaymentController extends Controller
 
     public function printDetail(Business $business, $id, Request $request)
     {
-        $identity = Identity::first();
-        $accountReceivablePayment = AccountReceivablePayment::where('id', $id)
-                    ->first();
-        $accountReceivable = AccountReceivable::where('business_id', $business['id'])
-                                                ->with('invoice')
-                                                ->where('no_ref', $accountReceivablePayment['no_ref'])
-                                                ->first();
+        try {
+            $identity = Identity::first();
+            $accountReceivablePayment = AccountReceivablePayment::where('id', $id)
+                        ->first();
 
-        $accountReceivables = AccountReceivable::where('business_id', $business['id'])
-                                            ->where('invoice_id', $accountReceivable['invoice_id'])
-                                            ->get();
+            $accountReceivable = AccountReceivable::where('business_id', $business['id'])
+                                                    ->with('invoice')
+                                                    ->where('no_ref', $accountReceivablePayment['no_ref'])
+                                                    ->first();
 
-        return view('business.account-receivable-payment.print-detail', compact('business', 'accountReceivablePayment', 'accountReceivable', 'accountReceivables', 'identity'));
+            $accountReceivables = AccountReceivable::where('business_id', $business['id'])
+                                                ->where('invoice_id', $accountReceivable['invoice_id'])
+                                                ->get();
+
+            return view('business.account-receivable-payment.print-detail', compact('business', 'accountReceivablePayment', 'accountReceivable', 'accountReceivables', 'identity'));
+    
+        } catch (\Throwable $th) {
+            return abort(402);
+        }
+         
     }
 }

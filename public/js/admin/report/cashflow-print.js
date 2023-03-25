@@ -179,7 +179,6 @@ const showReport = async () => {
     try {
         let res = await getData(url);
 
-        console.log(res);
         period.innerHTML = res.period;
         res.cashFlows.map(cashflows => {
             if (parseInt(cashflows.code) > 1500000 && parseInt(cashflows.code) < 2000000) {
