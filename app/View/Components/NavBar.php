@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class NavBar extends Component
+class Navbar extends Component
 {
 
     public $kategori;
@@ -23,6 +23,6 @@ class NavBar extends Component
      */
     public function render()
     {
-        return view('components.nav-bar');
+        return view('components.navbar');
     }
 }
