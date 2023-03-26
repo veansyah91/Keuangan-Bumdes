@@ -15,6 +15,9 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/signin.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('images/logo/icon.ico') }}" rel="icon">
+
+
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
