@@ -9,7 +9,7 @@
             <div class="card-header">
                 <div class="row justify-content-between">
                     <div class="col-md-6 col-12 h3 my-auto">
-                        Dasbor
+                        Dashboard
                     </div>
                     <div class="col-md-6 d-flex justify-content-end">
                         <div>
