@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ContactSeeder::class,
             SubClassificationAccountSeeder::class,
             AccountSeeder::class,
+            SubscribeSeeder::class,
         ]);
     }
 }
