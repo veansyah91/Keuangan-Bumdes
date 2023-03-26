@@ -511,11 +511,16 @@ class BusinessController extends Controller
 
             //find single data sub classification account by finding the sub_category
             $subClassification = SubClassificationAccount::where('name', $account['sub_category'])->first();
-            $account['sub_classification_account_id'] = $subClassification->id;
-            
+
             if ($subClassification) {
-                Businessaccount::create($account);
+                $account['sub_classification_account_id'] = $subClassification->id;
+            
+                if ($subClassification) {
+                    Businessaccount::create($account);
+                }
             }
+
+            
         }
 
         return redirect('/business');
