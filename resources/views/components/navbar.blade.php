@@ -10,7 +10,7 @@
             $master = ['contact', 'fixed-asset', 'supplier', 'product', 'brand', 'credit-customer'];
         @endphp
         <li class="nav-item ">
-            <a href="{{ route('business.dashboard', $business_id) }}" class="nav-link @if($pageMaster[1] == 'dashboard') active @endif">Dashboard</a> 
+            <a href="{{ route('business.dashboard', $id) }}" class="nav-link @if($pageMaster[1] == 'dashboard') active @endif">Dashboard</a> 
         </li>  
 
         @if (in_array($kategori, $kategori_master))
@@ -28,17 +28,17 @@
                     @endphp       
                     @if (in_array($kategori, $kategori_kategori))
                         <div>
-                            <a class="dropdown-item @if($pageMaster[1] == 'contact') active @endif" href="{{ route('business.contact.index', $business_id) }}">
+                            <a class="dropdown-item @if($pageMaster[1] == 'contact') active @endif" href="{{ route('business.contact.index', $id) }}">
                                 Kontak
                             </a>
                         </div> 
                         <div>
-                            <a class="dropdown-item @if($pageMaster[1] == 'fixed-asset') active @endif" href="{{ route('business.fixed-asset.index', $business_id) }}">
+                            <a class="dropdown-item @if($pageMaster[1] == 'fixed-asset') active @endif" href="{{ route('business.fixed-asset.index', $id) }}">
                                 Harta Tetap
                             </a>
                         </div> 
                         <div>
-                            <a class="dropdown-item @if($pageMaster[1] == 'product') active @endif" href="{{ route('business.product.index', $business_id) }}">
+                            <a class="dropdown-item @if($pageMaster[1] == 'product') active @endif" href="{{ route('business.product.index', $id) }}">
                                 Produk
                             </a>
                         </div> 
@@ -72,13 +72,13 @@
 
             <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">     
                 <div>
-                    <a class="dropdown-item @if($pageMaster[1] == 'account') active @endif" href="{{ route('business.account.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'account') active @endif" href="{{ route('business.account.index', $id) }}">
                         Akun
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'journal') active @endif" href="{{ route('business.journal.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'journal') active @endif" href="{{ route('business.journal.index', $id) }}">
                         Jurnal
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'ledger') active @endif" href="{{ route('business.ledger.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'ledger') active @endif" href="{{ route('business.ledger.index', $id) }}">
                         Buku Besar
                     </a>
                 </div> 
@@ -99,12 +99,12 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
                     <li>
-                        <a class="dropdown-item @if($pageMaster[1] == 'inventory-adjustment') active @endif" href="{{ route('business.inventory-adjustment.index', $business_id) }}">
+                        <a class="dropdown-item @if($pageMaster[1] == 'inventory-adjustment') active @endif" href="{{ route('business.inventory-adjustment.index', $id) }}">
                             Penyesuaian Barang
                         </a>
                     </li> 
                     <li>
-                        <a class="dropdown-item @if($pageMaster[1] == 'stock-opname') active @endif" href="{{ route('business.stock-opname.index', $business_id) }}">
+                        <a class="dropdown-item @if($pageMaster[1] == 'stock-opname') active @endif" href="{{ route('business.stock-opname.index', $id) }}">
                             Stok Opname
                         </a>
                     </li> 
@@ -132,7 +132,7 @@
                                 active 
                             @endif" 
                             
-                            href="{{ route('business.saving-account.index', $business_id) }}">
+                            href="{{ route('business.saving-account.index', $id) }}">
                             Nasabah
                         </a>
                     </li>                     
@@ -143,7 +143,7 @@
                                 active 
                             @endif" 
                             
-                            href="{{ route('business.deposit.index', $business_id) }}">
+                            href="{{ route('business.deposit.index', $id) }}">
                             Setor Tunai
                         </a>
                     </li>  
@@ -154,7 +154,7 @@
                                 active 
                             @endif" 
                             
-                            href="{{ route('business.withdrawal.index', $business_id) }}">
+                            href="{{ route('business.withdrawal.index', $id) }}">
                             Tarik Tunai
                         </a>
                     </li>  
@@ -186,7 +186,7 @@
                                                 active 
                                             @endif" 
                                             
-                                            href="{{ route('business.invoice.index', $business_id) }}">
+                                            href="{{ route('business.invoice.index', $id) }}">
                                     Faktur Penjualan
                                 </a>
                             </li> 
@@ -200,7 +200,7 @@
                                                 active 
                                             @endif" 
                                             
-                                            href="{{ route('business.debt-submission.index', $business_id) }}">
+                                            href="{{ route('business.debt-submission.index', $id) }}">
                                     Pengajuan Pinjaman
                                 </a>
                             </li> 
@@ -211,7 +211,7 @@
                                                 active 
                                             @endif" 
                                             
-                                            href="{{ route('business.lend.index', $business_id) }}">
+                                            href="{{ route('business.lend.index', $id) }}">
                                     Pemberian Pinjaman
                                 </a>
                             </li> 
@@ -223,7 +223,7 @@
                                                 active 
                                             @endif" 
                                             
-                                            href="{{ route('business.credit-application.index', $business_id) }}">
+                                            href="{{ route('business.credit-application.index', $id) }}">
                                     Pengajuan Kredit
                                 </a>
                             </li> 
@@ -234,7 +234,7 @@
                                                 active 
                                             @endif" 
                                             
-                                            href="{{ route('business.credit-sales.index', $business_id) }}">
+                                            href="{{ route('business.credit-sales.index', $id) }}">
                                     Pemberian Kredit
                                 </a>
                             </li> 
@@ -247,7 +247,7 @@
                                         @if($pageMaster[1] == 'account-receivable') 
                                             active 
                                         @endif" 
-                                        href="{{ route('business.account-receivable.index', $business_id) }}">
+                                        href="{{ route('business.account-receivable.index', $id) }}">
                                 Daftar Piutang
                             </a>
                         </li>                    
@@ -257,7 +257,7 @@
                                         @if($pageMaster[1] == 'account-receivable-payment') 
                                             active 
                                         @endif" 
-                                        href="{{ route('business.account-receivable-payment.index', $business_id) }}">
+                                        href="{{ route('business.account-receivable-payment.index', $id) }}">
                                 Pembayaran Piutang
                             </a>
                         </li>      
@@ -267,7 +267,7 @@
                                     @if($pageMaster[1] == 'over-due') 
                                         active 
                                     @endif" 
-                                    href="{{ route('business.over-due.index', $business_id) }}">
+                                    href="{{ route('business.over-due.index', $id) }}">
                                 Jatuh Tempo
                             </a>
                         </li>                   
@@ -294,7 +294,7 @@
                                             active 
                                         @endif" 
                                         
-                                        href="{{ route('business.purchase-goods.index', $business_id) }}">
+                                        href="{{ route('business.purchase-goods.index', $id) }}">
                                 Faktur Pembelian
                             </a>
                         </li> 
@@ -304,7 +304,7 @@
                                         @if($pageMaster[1] == 'account-payable') 
                                             active 
                                         @endif" 
-                                        href="{{ route('business.account-payable.index', $business_id) }}">
+                                        href="{{ route('business.account-payable.index', $id) }}">
                                 Daftar Utang
                             </a>
                         </li> 
@@ -315,7 +315,7 @@
                                         @if($pageMaster[1] == 'account-payable-payment') 
                                             active 
                                         @endif" 
-                                        href="{{ route('business.account-payable-payment.index', $business_id) }}">
+                                        href="{{ route('business.account-payable-payment.index', $id) }}">
                                 Pembayaran Utang
                             </a>
                         </li>                     
@@ -343,7 +343,7 @@
                                     active 
                                 @endif" 
                                 
-                                href="{{ route('business.revenue.index', $business_id) }}">
+                                href="{{ route('business.revenue.index', $id) }}">
                                 Pendapatan
                             </a>
                         </li> 
@@ -353,7 +353,7 @@
                                 @if($pageMaster[1] == 'expense') 
                                     active 
                                 @endif" 
-                                href="{{ route('business.expense.index', $business_id) }}">
+                                href="{{ route('business.expense.index', $id) }}">
                                 Pengeluaran
                             </a>
                         </li> 
@@ -363,7 +363,7 @@
                                 @if($pageMaster[1] == 'cash-mutation') 
                                     active 
                                 @endif" 
-                                href="{{ route('business.cash-mutation.index', $business_id) }}">
+                                href="{{ route('business.cash-mutation.index', $id) }}">
                                 Mutasi Kas
                             </a>
                         </li> 
@@ -384,31 +384,31 @@
 
             <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">     
                 <div>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'cashflow') active @endif @endif" href="{{ route('report.business.cashflow.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'cashflow') active @endif @endif" href="{{ route('report.business.cashflow.index', $id) }}">
                         Arus Kas
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'cashflow-year') active @endif @endif" href="{{ route('report.business.cashflow.year', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'cashflow-year') active @endif @endif" href="{{ route('report.business.cashflow.year', $id) }}">
                         Arus Kas Tahunan
                     </a>
                     <a><hr class="dropdown-divider"></a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'balance') active @endif @endif" href="{{ route('report.business.balance.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'balance') active @endif @endif" href="{{ route('report.business.balance.index', $id) }}">
                         Neraca
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'balance-year') active @endif @endif" href="{{ route('report.business.balance.year', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report') @if($pageMaster[2] == 'balance-year') active @endif @endif" href="{{ route('report.business.balance.year', $id) }}">
                         Neraca Tahunan
                     </a>
                     <a><hr class="dropdown-divider"></a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'lost-profit') active @endif @endif" href="{{ route('report.business.lost-profit.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'lost-profit') active @endif @endif" href="{{ route('report.business.lost-profit.index', $id) }}">
                         Laba Rugi
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'lost-profit-year') active @endif @endif" href="{{ route('report.business.lost-profit.year', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'lost-profit-year') active @endif @endif" href="{{ route('report.business.lost-profit.year', $id) }}">
                         Laba Rugi Tahunan
                     </a>
                     <a><hr class="dropdown-divider"></a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'changes-in-equity') active @endif @endif" href="{{ route('report.business.changes-in-equity.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'changes-in-equity') active @endif @endif" href="{{ route('report.business.changes-in-equity.index', $id) }}">
                         Perubahan Modal
                     </a>
-                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'trial-balance') active @endif @endif" href="{{ route('report.business.trial-balance.index', $business_id) }}">
+                    <a class="dropdown-item @if($pageMaster[1] == 'report')  @if($pageMaster[2] == 'trial-balance') active @endif @endif" href="{{ route('report.business.trial-balance.index', $id) }}">
                         Neraca Saldo
                     </a>
                 </div> 
