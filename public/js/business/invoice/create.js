@@ -403,6 +403,7 @@ const deleteRowInput = (value) => {
         document.getElementsByClassName('btn-remove-row')[index].setAttribute('data-order', index);
     }
 
+    grandTotal();
     validationInput();
 }
 
