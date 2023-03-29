@@ -104,16 +104,14 @@ class ContactController extends Controller
         $contact->update($attributes);
 
         if ($request->nkk && $request->nik) {
-            $attributes = [...$attributes, 
-                'nkk' => $request->nkk,
-                'nik' => $request->nik,
-                'village' => $request->village,
-                'district' => $request->district,
-                'regency' => $request->regency,
-                'province' => $request->province,
-                'address_detail' => $request->address,
-                'contact_id' => $contact['id'],
-            ];
+            $attributes['nkk'] = $request->nkk;
+            $attributes['nik'] = $request->nik;
+            $attributes['village'] = $request->village;
+            $attributes['district'] = $request->district;
+            $attributes['regency'] = $request->regency;
+            $attributes['province'] = $request->province;
+            $attributes['address_detail'] = $request->address;
+            $attributes['contact_id'] = $contact['id'];
 
             $contact_detail = ContactDetail::where('contact_id', $contact['id'])->first();
 
