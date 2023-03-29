@@ -64,7 +64,7 @@
                                 <tr>
                                     <th>Tanggal</th>
                                     <th>Pelanggan</th>
-                                    <th colspan="5">Ref</th>
+                                    <th colspan="5">Deskripsi</th>
                                     <th class="text-end">Nilai (IDR)</th>
                                 </tr>
                             </thead>

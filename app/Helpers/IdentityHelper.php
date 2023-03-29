@@ -9,6 +9,6 @@ class IdentityHelper {
     {
         $identity = Identity::first();
 
-        return $identity ? $identity['nama_desa'] : 'BUMDes';
+        return $identity ? $identity['nama_bumdes'] : 'BUMDes';
     }
 }
