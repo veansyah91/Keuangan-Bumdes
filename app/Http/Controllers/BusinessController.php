@@ -53,16 +53,9 @@ class BusinessController extends Controller
             $fix_ref_no = $ref . '-001';
         }
 
-        // buat data contact
-        Contact::create([
-            'no_ref' => $fix_ref_no,
-            'name' => $validatedData['nama'],
-            'type' => 'Business'
-        ]);
-
         // buat akun 
         //kategori asset
-        $account = Account::where('name', 'like', 'Harta Unit Usaha%')->first();
+        $account = Account::where('name', 'like', 'Harta Unit Usaha%')->orderBy('code', 'desc')->first();
 
         if ($account) {
             //create account based on business name
@@ -75,6 +68,14 @@ class BusinessController extends Controller
                 'sub_category' => $account['sub_category'],
             ]);
         }
+
+
+        // buat data contact
+        Contact::create([
+            'no_ref' => $fix_ref_no,
+            'name' => $validatedData['nama'],
+            'type' => 'Business'
+        ]);
 
         //kategori modal
         $account = Account::where('name', 'like', 'Modal Unit Usaha%')->first();
