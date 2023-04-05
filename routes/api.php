@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\AccountController;
@@ -107,7 +108,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
 
     Route::group(['middleware' => ['auth']], function(){
         Route::get('/invoice-subscribe/{id}/payment-confirmation', [InvoiceSubscribeController::class, 'paymentConfirmation'])->name('invoice.subscribe.payment-confirmation')->middleware('admin');
-
+        Route::get('/me', MeController::class);
     });
 
     Route::group(['middleware' => ['role:ADMIN']], function(){

@@ -26,7 +26,7 @@
 
     <link href="{{ asset('images/logo/icon.ico') }}" rel="icon">
 
-
+    <script src="{{ asset('js/public.js') }}" defer></script> 
     @yield('style')
 </head>
 
@@ -85,14 +85,15 @@
                                         </li>
                                         
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <a class="dropdown-item"
+                                                onclick="logout()">
                                                 {{ __('Logout') }}
                                             </a>
                                         </li>                                        
     
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
+                                            <input type="hidden" name="token" id="token-id">
                                         </form>
                                     </ul>
                                 </li>
@@ -103,6 +104,17 @@
             </nav>
 
             <main class="py-4">
+                @if(Auth::user()['is_default'])
+                    <div class="alert alert-warning row" role="alert">
+                        <div class="col-6 my-auto">
+                            Silakan Ganti Password Anda 
+                        </div>
+                        <div class="col-6 text-end">
+                            <a href="{{ route('users.change-password') }}" class="btn btn-warning btn-sm">Ganti Password</a>
+                        </div>
+                        
+                    </div>
+                @endif
                 @yield('content')
             </main>
 
@@ -133,7 +145,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="{{ asset('js/business/main.js') }}" defer></script> 
-    <script src="{{ asset('js/public.js') }}" defer></script> 
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z9B8M2Y1DJ"></script>
     <script>

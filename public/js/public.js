@@ -1,3 +1,28 @@
+const tokenAccess = `Bearer ${localStorage.getItem('token')}`;
+
+async function getMe(){
+
+    let response = await axios.get('/api/me', {
+        headers:{
+            Authorization : tokenAccess
+        }
+    })
+
+    return response.data.data;
+}
+
+function logout()
+{
+    let splitTokenBySpace = tokenAccess.split(' ');
+    let splitToken = splitTokenBySpace[1].split('|');
+
+    console.log(splitToken);
+
+    document.querySelector('#token-id').value = splitToken[0];
+    localStorage.removeItem('token');
+    event.preventDefault(); document.getElementById('logout-form').submit();
+}
+
 const setCurrencyFormat = (value) => {
     if (!value.value) {
         value.value = 0;

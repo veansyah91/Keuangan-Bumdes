@@ -28,7 +28,7 @@
                                         Bulanan
                                     </div>
                                     <div class="text-end">
-                                        Rp. 250.000 <small class="text-decoration-line-through" style="font-size: 12px">Rp. 300.000</small>
+                                        Rp. 250.000 <small class="text-decoration-line-through" style="font-size: 12px">Rp. 350.000</small>
                                     </div>
                                 </label>
                             </div>
@@ -39,7 +39,7 @@
                                         Tahunan
                                     </div>
                                     <div class="text-end">
-                                        Rp. 2.500.000 <small class="text-decoration-line-through" style="font-size: 12px">Rp. 3.600.000</small>
+                                        Rp. 2.500.000 <small class="text-decoration-line-through" style="font-size: 12px">Rp. 4.200.000</small>
                                     </div>
                                 </label>
                             </div>

@@ -70,6 +70,7 @@ class UserController extends Controller
 
         $user->update([
             'password' => Hash::make($request->password),
+            'is_default' => false
         ]);
 
         return redirect('/users')->with('success', 'Password Berhasil Diubah');
@@ -119,9 +120,10 @@ class UserController extends Controller
         $validated = $request->validate([
             'password' => ['required', 'string', 'min:8'],
         ]);
-
+        
         $update = $user->update([
             'password' => Hash::make($request->password),
+            'is_default' => false
         ]);
 
         if ($user->getRoleNames()[0] == "ADMIN") {

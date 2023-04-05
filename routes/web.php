@@ -15,17 +15,19 @@ use App\Models\Province;
 use App\Exports\AssetExport;
 use App\Exports\StockExport;
 use App\Helpers\MonthHelper;
+use App\Models\BusinessUser;
 use Illuminate\Http\Request;
-use App\Exports\IncomeExport;
 
+use App\Exports\IncomeExport;
 use App\Exports\OutcomeExport;
 use App\Imports\RegencyImport;
 use App\Imports\VillageImport;
 use App\Imports\DistrictImport;
 use App\Imports\ProvinceImport;
 use App\Models\BusinessExpense;
-use App\Helpers\BusinessUserHelper;
 // use Illuminate\Support\Facades\Auth;
+use App\Helpers\BusinessUserHelper;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BusinessIncomeExport;
 use Illuminate\Support\Facades\Route;
@@ -99,7 +101,21 @@ use App\Http\Controllers\Business\BusinessTrialBalanceReportController;
 use App\Http\Controllers\Business\BusinessBalanceElectricActivityController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $user = Auth::user();
+    if (!$user) {
+        return redirect('login');
+    }
+    if (Auth::user()->hasRole('DEV') || Auth::user()->hasRole('ADMIN')) {
+        if (Auth::user()->hasRole('DEV')) {
+            return redirect()->route('users.index');
+        }
+        return redirect()->route('admin.dashboard');
+    }
+    $businessUser = BusinessUser::where('user_id', Auth::user()->id)->first();
+
+    return redirect()->route('business.dashboard', [
+        'business' => $businessUser['business_id']
+    ]);
 });
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -108,6 +124,7 @@ Route::get('/over-due', [App\Http\Controllers\OverDueController::class, 'index']
 Route::get('/{business}/over-due-subscribe', [App\Http\Controllers\OverDueController::class, 'business'])->name('over.due.business');
 
 Route::group(['middleware' => ['auth']], function(){
+    
     Route::get('/invoice-subscribe', [InvoiceSubscribeController::class, 'index'])->name('invoice.subscribe.index')->middleware('admin');
     Route::post('/invoice-subscribe', [InvoiceSubscribeController::class, 'store'])->name('invoice.subscribe.store')->middleware('admin');
     Route::get('/invoice-subscribe/create', [InvoiceSubscribeController::class, 'create'])->name('invoice.subscribe.create')->middleware('admin');

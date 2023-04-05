@@ -32,8 +32,8 @@
 <body>
     <div id="app">
         <div id="sidebar" class="active">
-            
             <div class="sidebar-wrapper active">
+                
                 <div class="sidebar-header">
                     @if (OverDueSubscribeHelper::overDue()['is_over_due'])
                         <div class="bg-danger p-2 text-white" style="font-size: 14px;border-radius: 10px;">
@@ -229,12 +229,13 @@
                                     <span>Ubah Sandi</span>
                                 </a>
                             </li>
-                            <a href="#" class='sidebar-link' onclick="logoutSubmit()">
+                            <a href="#" class='sidebar-link' onclick="logout()">
                                 <i class="bi bi-box-arrow-left"></i>
                                 <span>Log Out</span>
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
+                                <input type="hidden" name="token" id="token-id">
                             </form>
                         </li>
                     </ul>
@@ -249,9 +250,21 @@
                 </a>
             </header>
 
-            @yield('admin')
+            @if(Auth::user()['is_default'])
+                <div class="alert alert-warning row" role="alert">
+                    <div class="col-6 my-auto">
+                        Silakan Ganti Password Anda 
+                    </div>
+                    <div class="col-6 text-end">
+                        <a href="{{ route('users.change-password') }}" class="btn btn-secondary btn-sm">Ganti Password</a>
+                    </div>
+                    
+                </div>
+            @endif
 
-            <div id="tost-message">Some text some message..</div>
+            
+
+            @yield('admin')
         </div>
     </div>
 

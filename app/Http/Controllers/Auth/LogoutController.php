@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,8 +17,11 @@ class LogoutController extends Controller
      */
     public function __invoke(Request $request)
     {
-        // dd(Auth::user()->tokens());
-        // Auth::user()->tokens()->where('id', Auth::user()->currentAccessToken()->id)->delete();
+        $token = Auth::user()->tokens()->where('id', $request->token)->first();
+        
+        if ($token) {
+            $token->delete();
+        }
 
         Auth::logout();
  
