@@ -265,6 +265,8 @@
             
 
             @yield('admin')
+            <div id="tost-message">Some text some message..</div>
+
         </div>
     </div>
 
