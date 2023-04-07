@@ -135,7 +135,7 @@
                                 
                                 $totalQty += $stock->qty ;
                                 $grandTotal += $stock->debit - $stock->credit;
-                                $totalCogs = $grandTotal /  $totalQty;
+                                $totalCogs = $totalQty > 0 ? $grandTotal /  $totalQty : 0;
                                 
                                 $totalDebitQty += $stock->debit > 0 ? $stock->qty : 0;
                                 $totalDebitTotal += $stock->debit > 0 ? $stock->debit : 0;
