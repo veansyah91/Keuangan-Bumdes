@@ -124,20 +124,19 @@ Route::get('/over-due', [App\Http\Controllers\OverDueController::class, 'index']
 Route::get('/{business}/over-due-subscribe', [App\Http\Controllers\OverDueController::class, 'business'])->name('over.due.business');
 
 Route::group(['middleware' => ['auth']], function(){
-    
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard')->middleware('admin');
+
     Route::get('/invoice-subscribe', [InvoiceSubscribeController::class, 'index'])->name('invoice.subscribe.index')->middleware('admin');
     Route::post('/invoice-subscribe', [InvoiceSubscribeController::class, 'store'])->name('invoice.subscribe.store')->middleware('admin');
     Route::get('/invoice-subscribe/create', [InvoiceSubscribeController::class, 'create'])->name('invoice.subscribe.create')->middleware('admin');
     Route::get('/invoice-subscribe/{id}', [InvoiceSubscribeController::class, 'detail'])->name('invoice.subscribe.detail')->middleware('admin');
     Route::get('/invoice-subscribe/{id}/print-invoice', [InvoiceSubscribeController::class, 'print'])->name('invoice.subscribe.print')->middleware('admin');
     Route::put('/invoice-subscribe/{id}/confirm', [InvoiceSubscribeController::class, 'confirm'])->name('invoice.subscribe.confirm')->middleware('dev');
+    Route::post('/logout', LogoutController::class)->name('logout');
 });
 
 Route::group(['middleware' => ['auth', 'subscribe']], function(){
-    Route::post('/logout', LogoutController::class)->name('logout');
-    
     Route::group(['middleware' => ['admin']], function(){
-        Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
         
         Route::resource('/identity', IdentityController::class)->middleware('admin');
 

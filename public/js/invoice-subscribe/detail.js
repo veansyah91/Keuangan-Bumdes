@@ -6,6 +6,7 @@ async function confirmationReqest(value)
                         </div>`
     try {
         let res = await paymentConfirmation(value.dataset.id);
+        
 
         let message = `Pembayaran INV${res.no_ref} Berhasil Konfirmasikan, Mohon Tunggu`;
         
