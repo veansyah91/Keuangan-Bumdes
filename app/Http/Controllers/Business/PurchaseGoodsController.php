@@ -161,17 +161,33 @@ class PurchaseGoodsController extends Controller
             //tambahkan data pada tabel arus kas pada credit (operation)
             //cashflow  
             $attributes['type'] = 'operation';
-            $product = Product::find($listInput['productId']);
-            $account_name = 'Persediaan Barang Dagang';
-            $account = Businessaccount::where('business_id', $business['id'])           
-                                        ->where('name', $account_name)
-                                        ->first();
 
-            $attributes['account_id'] = $account['id'];
-            $attributes['account_code'] = $account['code'];
-            $attributes['account_name'] = $account['name'];
-        
-            Businesscashflow::create($attributes);
+            $total = $request->credit['value'];
+
+            foreach ($request->listInput as $listInput) {
+                $product = Product::find($listInput['productId']);
+                $account_name = 'Persediaan ' . $product['category'];
+                $account = Businessaccount::where('business_id', $business['id'])           
+                                            ->where('name', $account_name)
+                                            ->first();
+
+                if ($listInput['total'] < $total) {
+                    $attributes['credit'] = $listInput['total'];
+                } else {
+                    $attributes['credit'] = $total;
+                }
+
+                $attributes['account_id'] = $account['id'];
+                $attributes['account_code'] = $account['code'];
+                $attributes['account_name'] = $account['name'];
+            
+                if ($total > 0) {
+                    Businesscashflow::create($attributes);
+                }
+
+                $total -= $listInput['total'];
+            }
+            
         }
 
         //akun piutang datang jika balance <= 0
@@ -319,17 +335,32 @@ class PurchaseGoodsController extends Controller
             //tambahkan data pada tabel arus kas pada credit (operation)
             //cashflow  
             $attributes['type'] = 'operation';
-            $product = Product::find($listInput['productId']);
-            $account_name = 'Persediaan Barang Dagang';
-            $account = Businessaccount::where('business_id', $business['id'])           
-                                        ->where('name', $account_name)
-                                        ->first();
 
-            $attributes['account_id'] = $account['id'];
-            $attributes['account_code'] = $account['code'];
-            $attributes['account_name'] = $account['name'];
-        
-            Businesscashflow::create($attributes);
+            $total = $request->credit['value'];
+
+            foreach ($request->listInput as $listInput) {
+                $product = Product::find($listInput['productId']);
+                $account_name = 'Persediaan ' . $product['category'];
+                $account = Businessaccount::where('business_id', $business['id'])           
+                                            ->where('name', $account_name)
+                                            ->first();
+
+                if ($listInput['total'] < $total) {
+                    $attributes['credit'] = $listInput['total'];
+                } else {
+                    $attributes['credit'] = $total;
+                }
+
+                $attributes['account_id'] = $account['id'];
+                $attributes['account_code'] = $account['code'];
+                $attributes['account_name'] = $account['name'];
+            
+                if ($total > 0) {
+                    Businesscashflow::create($attributes);
+                }
+
+                $total -= $listInput['total'];
+            }
         }
 
         //akun piutang datang jika balance <= 0
@@ -413,17 +444,23 @@ class PurchaseGoodsController extends Controller
                 $stock->delete();
             }
         }
-
-        //cek apakah ada data pada table account receivable
-
-
-        // 
         
         $journal = Businessjournal::where('business_id', $business['id'])
                             ->where('no_ref', $purchaseGoods['no_ref'])
                             ->first();
 
         $journal ? $journal->delete() : '';
+
+        //hapus data pada table cashflow
+        $cashflows = Businesscashflow::whereBusinessId($business['id'])
+                                        ->whereNoRef($purchaseGoods['no_ref'])
+                                        ->get();
+
+        if (count($cashflows) > 0) {
+            foreach ($cashflows as $cashflow) {
+                $cashflow->delete();
+            }
+        }
 
         return response()->json([
             'status' => 'success',

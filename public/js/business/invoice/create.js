@@ -47,7 +47,6 @@ const setDefaultValue = async () => {
 
     let newRefValue = await newRef();
 
-
     formData = {
         date: dateNow(),
         description: '',

@@ -57,7 +57,7 @@
 
                 {{-- list input jurnal  --}}
                 {{-- Header --}}
-                <div class="row justify-content-between border-top pt-2 border-bottom pb-2 font-bold">
+                <div class="row justify-content-between border-top pt-2 border-bottom pb-2 fw-bold">
                     <div class="col-4">
                         Akun
                     </div>

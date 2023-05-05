@@ -87,16 +87,16 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDateInput(this)">
                         </div>
                         <div class="mb-3">
-                            <label for="no-ref" class="form-label">No Ref</label>
+                            <label for="no-ref" class="form-label fw-bold">No Ref</label>
                             <input type="text" class="form-control" id="no-ref" placeholder="No Ref">
                         </div>
                         <div class="position-relative mb-3 z-index-1">
                             <div class="">
-                                <label for="contact" class="form-label">Nama Pelanggan</label>
+                                <label for="contact" class="form-label fw-bold">Nama Pelanggan</label>
                                 <div class="mb-1">
                                     <input type="text" class="form-control search-input-dropdown" placeholder="Nama Pelanggan" aria-label="Nama Pelanggan" aria-describedby="create-contact" onclick="showContactDropdown(this)" onkeyup="changeContactDropdown(this)" onchange="changeContact(this)" id="contact" autocomplete="off">
                                 </div>
@@ -106,12 +106,12 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
+                            <label for="description" class="form-label fw-bold">Deskripsi</label>
                             <input type="text" class="form-control" id="description" placeholder="Deskripsi">
                         </div>
                         <div class="mb-3 position-relative" id="invoice-dropdown-input">
                             <div class="">
-                                <label for="invoice" class="form-label">Faktur Pembelian</label>
+                                <label for="invoice" class="form-label fw-bold">Faktur Pembelian</label>
                                 <div class="mb-1">
                                     <input type="text" class="form-control search-input-dropdown" placeholder="Faktur Pembelian" aria-label="PurchaseGoods" aria-describedby="create-invoice" onclick="showPurchaseGoodsDropdown(this)" onkeyup="changePurchaseGoodsDropdown(this)" onchange="changePurchaseGoods(this)" id="invoice" autocomplete="off">
                                 </div>
@@ -121,12 +121,12 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="no-ref" class="form-label">Jumlah Bayar</label>
+                            <label for="no-ref" class="form-label fw-bold">Jumlah Bayar</label>
                             <input type="text" class="form-control text-end" id="value" placeholder="Jumlah Bayar" onkeyup="setCurrencyFormat(this)" inputmode="numeric" autocomplete="off" onclick="this.select()" value="0" onchange="changeValue(this)">
                         </div>
                         <div class="mb-3 position-relative" id="account-dropdown-input">
                             <div class="">
-                                <label for="account" class="form-label">Kas (Kredit)</label>
+                                <label for="account" class="form-label fw-bold">Kas (Kredit)</label>
                                 <div class="mb-1">
                                     <input type="text" class="form-control search-input-dropdown" placeholder="Kredit" aria-label="Kredit" aria-describedby="create-account" onclick="showAccountDropdown(this)" onkeyup="changeAccountDropdown(this)" onchange="changeAccount(this)" id="account" autocomplete="off">
                                 </div>
@@ -259,7 +259,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="description-input" class="form-label">Tanggal</label>
+                        <label for="description-input" class="form-label fw-bold">Tanggal</label>
                         <select class="form-select" id="select-filter" onchange="changeFilter(this)">
                             <option value="today">Hari Ini</option>
                             <option value="this week">Minggu Ini</option>
@@ -272,14 +272,14 @@
                     <div class="row d-none" id="date-range">
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
-                                <label for="start-filter" class="form-label">Dari</label>
+                                <label for="start-filter" class="form-label fw-bold">Dari</label>
                                 <input type="date" class="form-control" id="start-filter" placeholder="Tanggal">
                                 
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
-                                <label for="end-filter" class="form-label">Ke</label>
+                                <label for="end-filter" class="form-label fw-bold">Ke</label>
                                 <input type="date" class="form-control" id="end-filter" placeholder="Tanggal">
                             </div>
                         </div>

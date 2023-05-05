@@ -194,7 +194,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="description-input" class="form-label">Tanggal</label>
+                        <label for="description-input" class="form-label fw-bold">Tanggal</label>
                         <select class="form-select" id="select-filter" onchange="changeFilter(this)">
                             <option value="today">Hari Ini</option>
                             <option value="this week">Minggu Ini</option>
@@ -207,14 +207,14 @@
                     <div class="row d-none" id="date-range">
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
-                                <label for="start-filter" class="form-label">Dari</label>
+                                <label for="start-filter" class="form-label fw-bold">Dari</label>
                                 <input type="date" class="form-control" id="start-filter" placeholder="Tanggal">
                                 
                             </div>
                         </div>
                         <div class="col-12 col-lg-6">
                             <div class="mb-3">
-                                <label for="end-filter" class="form-label">Ke</label>
+                                <label for="end-filter" class="form-label fw-bold">Ke</label>
                                 <input type="date" class="form-control" id="end-filter" placeholder="Tanggal">
                             </div>
                         </div>
