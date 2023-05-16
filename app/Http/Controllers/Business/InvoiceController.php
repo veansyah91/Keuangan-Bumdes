@@ -119,6 +119,8 @@ class InvoiceController extends Controller
             $product = Product::find($listInput['productId']);
             $invoice->products()->save($product, ['qty' => $listInput['qty'], 'value' => $listInput['total']]);
         }
+        
+        $cash_balance = $request->debit['value'];
 
         foreach ($request->listInput as $listInput) {
             //akun Penjualan Berdasarkan Kategori (credit)
@@ -141,6 +143,24 @@ class InvoiceController extends Controller
                     'business_id' => $business['id']
                 ]);
             //
+
+            //arus kas
+            if ($request->debit['value'] > 0 && $cash_balance >= $listInput['total']) {    
+                //tambahkan data pada tabel arus kas pada debit (operation)
+                Businesscashflow::create([
+                    'account_id' => $account['id'],
+                    'no_ref' => $attributes['no_ref'],
+                    'date' => $attributes['date'],
+                    'account_code' => $account['code'],
+                    'account_name' => $account['name'],
+                    'type' => 'operation',
+                    'debit' => $listInput['total'],
+                    'credit' => 0,
+                    'business_id' => $business['id']
+                ]);
+
+                $cash_balance -= $listInput['total'];
+            }
 
             //lakukan loop berdasarkan list
                 if ($product['is_stock_checked']) {
@@ -227,23 +247,6 @@ class InvoiceController extends Controller
                 'author' => $request->user()->name,
                 'business_id' => $business['id']
             ]);
-
-            $account_name = 'Penjualan Produk';
-            $account = Businessaccount::where('business_id', $business['id'])           
-                                        ->where('name', $account_name)
-                                        ->first();
-            //tambahkan data pada tabel arus kas pada debit (operation)
-            Businesscashflow::create([
-                'account_id' => $account['id'],
-                'no_ref' => $attributes['no_ref'],
-                'date' => $attributes['date'],
-                'account_code' => $account['code'],
-                'account_name' => $account['name'],
-                'type' => 'operation',
-                'debit' => $request->debit['value'],
-                'credit' => 0,
-                'business_id' => $business['id']
-            ]);
         }
 
         //akun piutang datang jika balance <= 0
@@ -277,7 +280,6 @@ class InvoiceController extends Controller
                     'date' => $attributes['date'],
                     'description' => $attributes['description'],
                 ]);
-
             // 
         }
 
@@ -372,6 +374,8 @@ class InvoiceController extends Controller
             $invoice->products()->attach($product, ['qty' => $listInput['qty'], 'value' => $listInput['total']]);
         }
 
+        $cash_balance = $request->debit['value'];
+
         foreach ($request->listInput as $listInput) {
             
             //akun Penjualan Berdasarkan Kategori (credit)
@@ -394,6 +398,24 @@ class InvoiceController extends Controller
                     'business_id' => $business['id']
                 ]);
             //
+
+            //arus kas
+            if ($request->debit['value'] > 0 && $cash_balance >= $listInput['total']) {    
+                //tambahkan data pada tabel arus kas pada debit (operation)
+                Businesscashflow::create([
+                    'account_id' => $account['id'],
+                    'no_ref' => $attributes['no_ref'],
+                    'date' => $attributes['date'],
+                    'account_code' => $account['code'],
+                    'account_name' => $account['name'],
+                    'type' => 'operation',
+                    'debit' => $listInput['total'],
+                    'credit' => 0,
+                    'business_id' => $business['id']
+                ]);
+
+                $cash_balance -= $listInput['total'];
+            }
 
             //lakukan loop berdasarkan list
                 if ($product['is_stock_checked']) {
@@ -478,23 +500,6 @@ class InvoiceController extends Controller
                 'description' => $attributes['description'],
                 'account_code' => $account['code'],
                 'author' => $request->user()->name,
-                'business_id' => $business['id']
-            ]);
-
-            $account_name = 'Penjualan Produk';
-            $account = Businessaccount::where('business_id', $business['id'])           
-                                        ->where('name', $account_name)
-                                        ->first();
-            //tambahkan data pada tabel arus kas pada debit (operation)
-            Businesscashflow::create([
-                'account_id' => $account['id'],
-                'no_ref' => $attributes['no_ref'],
-                'date' => $attributes['date'],
-                'account_code' => $account['code'],
-                'account_name' => $account['name'],
-                'type' => 'operation',
-                'debit' => $request->debit['value'],
-                'credit' => 0,
                 'business_id' => $business['id']
             ]);
         }
