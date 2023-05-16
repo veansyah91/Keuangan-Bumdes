@@ -190,7 +190,7 @@ class PurchaseGoodsController extends Controller
         }
 
         //akun utang jika balance <= 0
-        if ($request->balance <= 0) {
+        if ($request->balance < 0) {
             $account = Businessaccount::where('business_id', $business['id'])           
                                         ->where('name', 'Utang Usaha')
                                         ->first();
@@ -363,7 +363,7 @@ class PurchaseGoodsController extends Controller
         }
 
         //akun piutang datang jika balance <= 0
-        if ($request->balance <= 0) {
+        if ($request->balance = 0) {
             $account = Businessaccount::where('business_id', $business['id'])           
                                         ->where('name', 'Utang Usaha')
                                         ->first();
