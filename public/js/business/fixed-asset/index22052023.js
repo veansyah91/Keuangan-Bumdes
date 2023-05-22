@@ -83,7 +83,7 @@ function setDefault(){
 function validateInputData(){
     let is_validated = false;
 
-    if (formData.no_ref && formData.name  && formData.credit_account.name && formData.date && formData.value > 0 && formData.useful_life > 0)    {
+    if (formData.no_ref && formData.name  && formData.credit_account.name && formData.date && formData.value > 0)    {
         is_validated = true
     }
 

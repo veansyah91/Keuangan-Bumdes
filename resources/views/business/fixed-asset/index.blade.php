@@ -331,6 +331,6 @@
 @endsection
 
 @section('script')
-    <script src="/js/business/fixed-asset/index21052023.js"></script>
+    <script src="/js/business/fixed-asset/index22052023.js"></script>
     <script src="/js/business/fixed-asset/api.js"></script>
 @endsection
