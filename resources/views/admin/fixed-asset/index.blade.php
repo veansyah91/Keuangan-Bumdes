@@ -268,15 +268,15 @@
                         </div>
                         <div class="mb-3">
                             <label for="value-input" class="form-label fw-bold">Nilai Perolehan</label>
-                            <input type="text" class="form-control text-end" id="value-input" placeholder="" required onchange="valueInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="setCurrencyFormat(this)">
+                            <input type="text" class="form-control text-end" id="value-input" placeholder="" required onchange="valueInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="valueInputChange(this)">
                         </div>
                         <div class="mb-3">
                             <label for="salvage-input" class="form-label fw-bold">Nilai Residu</label>
-                            <input type="text" class="form-control text-end" id="salvage-input" placeholder="" required onchange="salvageInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="setCurrencyFormat(this)">
+                            <input type="text" class="form-control text-end" id="salvage-input" placeholder="" required onchange="salvageInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="salvageInputChange(this)">
                         </div>
                         <div class="mb-3">
                             <label for="useful-life-input" class="form-label fw-bold">Umur Penggunaan (bulan)</label>
-                            <input type="text" class="form-control text-end" id="useful-life-input" placeholder="" required onchange="useFulInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="setCurrencyFormat(this)">
+                            <input type="text" class="form-control text-end" id="useful-life-input" placeholder="" required onchange="useFulInputChange(this)" inputmode="numeric" onclick="this.select()" onkeyup="useFulInputChange(this)">
                         </div>
                         <div class="form-check form-switch" id="is-active">
                             <input class="form-check-input" type="checkbox" role="switch" id="is-active-input" checked onchange="changeIsActiveInput(this)">
@@ -326,6 +326,6 @@
 @endsection
 
 @section('script')
-    <script src="/js/admin/fixed-asset/index.js"></script>
+    <script src="/js/admin/fixed-asset/index22052023.js"></script>
     <script src="/js/admin/fixed-asset/api.js"></script>
 @endsection

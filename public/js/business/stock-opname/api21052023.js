@@ -1,10 +1,10 @@
 const business = document.querySelector('#content').dataset.business;
-const id = document.querySelector('#content').dataset.purchaseGoods;
+const id = document.querySelector('#content').dataset.stockOpname;
 
 const token = `Bearer ${localStorage.getItem('token')}`;
 
-const newRef = async (search = '') => {
-    let url = `/api/${business}/no-ref-purchase-goods-recomendation?search=${search}`;
+const newRef = async (date = '') => {
+    let url = `/api/${business}/no-ref-stock-opname-recomendation?date=${date}`;
     let response = await axios.get(url, {
         headers:{
             Authorization : token
@@ -14,19 +14,8 @@ const newRef = async (search = '') => {
     return response;
 }
 
-const getContacts = async (search) => {
-    let url = `/api/contact?search=${search}&type=Supplier`;
-    let result = await axios.get(url, {
-        headers:{
-            Authorization : token
-        }
-    }) 
-
-    return result.data.data;
-}
-
 const getAccounts = async (search) => {
-    let url = `/api/${business}/account?search=${search}&payable=1`
+    let url = `/api/${business}/account?search=${search}`
     let result = await axios.get(url, {
         headers:{
             Authorization : token
@@ -37,7 +26,7 @@ const getAccounts = async (search) => {
 }
 
 const getProducts = async (search) => {
-    let url = `/api/${business}/product?search=${search}&stock_check=1`
+    let url = `/api/${business}/product-stock-opname?search=${search}&stock_check=true`
     let result = await axios.get(url, {
         headers:{
             Authorization : token
@@ -47,8 +36,8 @@ const getProducts = async (search) => {
     return result.data.data;
 }
 
-const getPurchaseGoods = async (search = '', page, date_from, date_to, thisWeek, thisMonth, thisYear) => {
-    let url = `/api/${business}/purchase-goods?search=${search}&page=${page}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}`;
+const getStockOpname = async (search = '', page, date_from, date_to, thisWeek, thisMonth, thisYear) => {
+    let url = `/api/${business}/stock-opname?search=${search}&page=${page}&date_from=${date_from}&date_to=${date_to}&this_week=${thisWeek}&this_month=${thisMonth}&this_year=${thisYear}`;
     
     let response = await axios.get(url, {
         headers:{
@@ -59,8 +48,8 @@ const getPurchaseGoods = async (search = '', page, date_from, date_to, thisWeek,
     return response.data.data;
 }
 
-const getSinglePurchaseGoods = async (id) => {
-    let url = `/api/${business}/purchase-goods/${id}`;
+const getSingleStockOpname = async (id) => {
+    let url = `/api/${business}/stock-opname/${id}`;
     let response = await axios.get(url, {
         headers:{
             Authorization : token
@@ -70,8 +59,8 @@ const getSinglePurchaseGoods = async (id) => {
     return response.data.data;
 }
 
-const postPurchaseGoods = async (data) => {
-    let url = `/api/${business}/purchase-goods`;
+const postStockOpname = async (data) => {
+    let url = `/api/${business}/stock-opname`;
     
     let result = await axios.post(url, data, {
         headers:{
@@ -82,8 +71,8 @@ const postPurchaseGoods = async (data) => {
     return result.data.data;
 }
 
-const updatePurchaseGoods = async (data) => {
-    let url = `/api/${business}/purchase-goods/${id}`;
+const updateStockOpname = async (data) => {
+    let url = `/api/${business}/stock-opname/${id}`;
     let result = await axios.put(url, data, {
         headers:{
             Authorization : token
@@ -93,8 +82,8 @@ const updatePurchaseGoods = async (data) => {
     return result.data.data;
 }
 
-const destroyPurchaseGoods = async (id) => {
-    let url = `/api/${business}/purchase-goods/${id}`;
+const destroyStockOpname = async (id) => {
+    let url = `/api/${business}/stock-opname/${id}`;
     let result = await axios.delete(url, {
         headers:{
             Authorization : token
@@ -105,7 +94,7 @@ const destroyPurchaseGoods = async (id) => {
 }
 
 const showData = async () =>{
-    let url = `/api/${business}/purchase-goods/${id}`;
+    let url = `/api/${business}/stock-opname/${id}`;
     let result = await axios.get(url, {
         headers:{
             Authorization : token
@@ -113,9 +102,4 @@ const showData = async () =>{
     }) 
 
     return result.data.data;
-}
-
-function goToPintPurchaseGoods(id)
-{
-    window.open(`/${business}/purchase-goods/${id}/print-detail`)
 }

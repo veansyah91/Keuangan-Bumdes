@@ -27,19 +27,19 @@
                     
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDataInput(this)">
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="no-ref-input" class="form-label">No Referensi</label>
+                            <label for="no-ref-input" class="form-label fw-bold">No Referensi</label>
                             <input type="text" class="form-control" id="no-ref-input" placeholder="Kode Akun" onchange="noRefChange(this)">
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3 position-relative">
-                            <label for="credit-account-input" class="form-label">Akun Credit</label>
+                            <label for="credit-account-input" class="form-label fw-bold">Akun Credit</label>
                             <div class="input-group mb-2 ">
                                 <input type="text" class="form-control search-input-dropdown" placeholder="Akun Credit" aria-label="Pemasok" aria-describedby="credit-account--input" list="data-account" onclick="showAccountCreditDropdown(this)" onkeyup="showAccountCreditDropdown(this)"
                                 onchange="changeAccount(this)" id="credit-account-input" autocomplete="off">
@@ -53,7 +53,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="description-input" class="form-label">Deskripsi</label>
+                            <label for="description-input" class="form-label fw-bold">Deskripsi</label>
                             <input type="text" class="form-control" id="description-input" placeholder="Detail" onchange="detailInputChange(this)">
                         </div>
                     </div>

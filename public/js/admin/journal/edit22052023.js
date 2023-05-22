@@ -119,10 +119,10 @@ const componentListInput = (index) => {
                 </div>
             </div>
             <div class="col-3 text-end">
-                <input type="text" class="form-control text-end debit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].debit.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeDebit(this)" data-order="${index}">
+                <input type="text" class="form-control text-end debit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].debit.toString())}" onkeyup="changeDebit(this)" onchange="changeDebit(this)" data-order="${index}">
             </div>
             <div class="col-3 text-end">
-                <input type="text" class="form-control text-end credit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].credit.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeCredit(this)" data-order="${index}">
+                <input type="text" class="form-control text-end credit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].credit.toString())}" onkeyup="changeCredit(this)" onchange="changeCredit(this)" data-order="${index}">
             </div>
             <div class="col-1">
                 <button class="btn btn-sm btn-danger btn-remove-row" onclick="deleteRowInput(this)" data-order="${index}">
@@ -255,6 +255,7 @@ const adjustDebitValues = () => {
 }
 
 const changeDebit = (value) => {
+    setCurrencyFormat(value);
     adjustDebitValues();
 
     formData.listInput[value.dataset.order].debit = parseInt(toPrice(value.value));
@@ -263,6 +264,7 @@ const changeDebit = (value) => {
 }
 
 const changeCredit = (value) => {
+    setCurrencyFormat(value);
     adjustCreditValues();
 
     formData.listInput[value.dataset.order].credit = parseInt(toPrice(value.value));

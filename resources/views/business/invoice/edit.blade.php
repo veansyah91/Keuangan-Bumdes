@@ -41,20 +41,20 @@
                     
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDataInput(this)">
                             
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="no-ref-input" class="form-label">No Referensi</label>
+                            <label for="no-ref-input" class="form-label fw-bold">No Referensi</label>
                             <input type="text" class="form-control" id="no-ref-input" placeholder="Kode Akun" onchange="noRefChange(this)">
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3 position-relative">
-                            <label for="contact-input" class="form-label">Pelanggan</label>
+                            <label for="contact-input" class="form-label fw-bold">Pelanggan</label>
                             <div class="input-group mb-2 ">
                                 <input type="text" class="form-control search-input-dropdown" placeholder="Kontak" aria-label="Pemasok" aria-describedby="contact--input" list="data-contact" onclick="showContactDropdown(this)" onkeyup="showContactDropdown(this)"
                                 onchange="changeContact(this)" id="contact-input" autocomplete="off">
@@ -68,7 +68,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="description-input" class="form-label">Deskripsi</label>
+                            <label for="description-input" class="form-label fw-bold">Deskripsi</label>
                             <input type="text" class="form-control" id="description-input" placeholder="Detail" onchange="detailInputChange(this)">
                         </div>
                     </div>
@@ -107,8 +107,8 @@
                     <button class="btn btn-secondary w-100" onclick="addListInput()">Tambah</button>
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12  fs-1">
                         <div class="row">
                             <div class="col-6">
                                 Grand Total
@@ -120,8 +120,8 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12">
                         <div class="row">
                             <div class="col-6">
                                 Jumlah Bayar
@@ -133,8 +133,8 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12">
                         <div class="row">
                             <div class="col-6">
                                 Kembali
@@ -146,11 +146,11 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12">
                         <div class="row">
-                            <div class="col-6 form-label">
-                                Akun (Debit)
+                            <div class="col-6 form-label fw-bold fw-bold">
+                                Kasir (Akun Debit)
                             </div>
                             <div class="col-6 position-relative" id="account-debit-debit">
                                 <div class="input-group mb-2">
@@ -165,11 +165,11 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-2 col-6 text-end">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-3 col-6 text-end">
                         <a class="btn btn-outline-primary w-100" href="{{ route('business.invoice.index', $business->id) }}">Batal</a>
                     </div>  
-                    <div class="col-lg-2 col-6 text-end d-none" id="btn-submit-invoice">
+                    <div class="col-lg-3 col-6 text-end d-none" id="btn-submit-invoice">
                         <button class="btn btn-primary w-100" onclick="submitInvoice()" id="btn-submit">
                             <span id="submit-button-label">
                                 Simpan
@@ -205,6 +205,6 @@
 @endsection
 
 @section('script')
-    <script src="/js/business/invoice/api.js"></script>
-    <script src="/js/business/invoice/edit.js"></script>
+    <script src="/js/business/invoice/api21052023.js"></script>
+    <script src="/js/business/invoice/edit21052023.js"></script>
 @endsection

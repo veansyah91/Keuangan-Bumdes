@@ -27,13 +27,13 @@
                     
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDataInput(this)">
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="no-ref-input" class="form-label">No Referensi</label>
+                            <label for="no-ref-input" class="form-label fw-bold">No Referensi</label>
                             <input type="text" class="form-control" id="no-ref-input" placeholder="Kode Akun" onchange="noRefChange(this)">
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="description-input" class="form-label">Deskripsi</label>
+                            <label for="description-input" class="form-label fw-bold">Deskripsi</label>
                             <input type="text" class="form-control" id="description-input" placeholder="Detail" onchange="detailInputChange(this)">
                         </div>
                     </div>
@@ -97,6 +97,6 @@
 @endsection
 
 @section('script')
-    <script src="/js/business/stock-opname/api.js"></script>
-    <script src="/js/business/stock-opname/edit.js"></script>
+    <script src="/js/business/stock-opname/api21052023.js"></script>
+    <script src="/js/business/stock-opname/edit21052023.js"></script>
 @endsection

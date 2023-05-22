@@ -27,21 +27,21 @@
                     
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="date-input" class="form-label">Tanggal</label>
+                            <label for="date-input" class="form-label fw-bold">Tanggal</label>
                             <input type="date" class="form-control" id="date-input" placeholder="Tanggal" onchange="changeDataInput(this)">
                             
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="description-input" class="form-label">Deskripsi</label>
+                            <label for="description-input" class="form-label fw-bold">Deskripsi</label>
                             <input type="text" class="form-control" id="description-input" placeholder="Deskripsi" onchange="getNoRefAccountAuto(this)">
                             
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">
                         <div class="mb-3">
-                            <label for="no-ref-input" class="form-label">No Referensi</label>
+                            <label for="no-ref-input" class="form-label fw-bold">No Referensi</label>
                             <input type="text" class="form-control" id="no-ref-input" placeholder="Kode Akun" onchange="noRefChange(this)">
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="detail-input" class="form-label">Detail (optional) </label>
+                            <label for="detail-input" class="form-label fw-bold">Detail (optional) </label>
                             <input type="text" class="form-control" id="detail-input" placeholder="Detail" onchange="detailInputChange(this)">
                         </div>
                     </div>
@@ -81,13 +81,13 @@
                 </div>
 
                 <div class="row justify-content-between pt-2 border-top mt-2 pb-2 font-bold">
-                    <div class="col-4 text-end">
+                    <div class="col-4 text-end fw-bold">
                         Total
                     </div>
-                    <div class="col-3 text-end" id="total-debit">
+                    <div class="col-3 text-end fw-bold" id="total-debit">
                         Rp. 0
                     </div>
-                    <div class="col-3 text-end" id="total-credit">
+                    <div class="col-3 text-end fw-bold" id="total-credit">
                         Rp. 0
                     </div>
                     <div class="col-1">
@@ -96,13 +96,13 @@
                 </div>
 
                 <div class="row justify-content-between pt-2 border-bottom pb-2 font-bold">
-                    <div class="col-4 text-end">
+                    <div class="col-4 text-end fw-bold">
                         Selisih
                     </div>
                     <div class="col-3 text-end">
                         
                     </div>
-                    <div class="col-3 text-end" id="difference-debit-credit">
+                    <div class="col-3 text-end fw-bold" id="difference-debit-credit">
                         Rp. 0
                     </div>
                     <div class="col-1">
@@ -129,5 +129,5 @@
 
 @section('script')
     <script src="/js/business/journal/api.js"></script>
-    <script src="/js/business/journal/edit.js"></script>
+    <script src="/js/business/journal/edit21052023.js"></script>
 @endsection

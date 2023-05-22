@@ -22,7 +22,7 @@ class BusinessCashflowReportController extends Controller
         $accounts = Businessaccount::where('business_id', $business['id'])->whereIsActive(true)->get();
 
         foreach ($accounts as $ly) {
-            $businessCashflowTemp = Businesscashflow::where('business_id', $business['id'])->filter(request(['search','date_from','date_to','this_week','this_month','this_year']))->where('account_id', $ly->id)->get();
+            $businessCashflowTemp = Businesscashflow::where('business_id', $business['id'])->filter(request(['search','date_from','date_to','this_week','this_month','this_year']))->where('account_id', $ly->id)->orderBy('account_code')->orderBy('account_code')->get();
 
             if ($businessCashflowTemp->sum('debit') > 0 || $businessCashflowTemp->sum('credit') > 0) {
                 $businessCashflows[$i] = [
@@ -59,6 +59,7 @@ class BusinessCashflowReportController extends Controller
                                                             $query->whereYear('date', request('year'))
                                                             ->orWhereYear('date', request('year')-1);
                                                         })
+                                                        ->orderBy('account_code')
                                                         ->get();
 
                 $businessCashflowTempNows = Businesscashflow::where('business_id', $business['id'])
@@ -66,6 +67,7 @@ class BusinessCashflowReportController extends Controller
                                                         ->where(function($query){
                                                             $query->whereYear('date', request('year'));
                                                         })
+                                                        ->orderBy('account_code')
                                                         ->get();
 
                 $businessCashflowTempBefores = Businesscashflow::where('business_id', $business['id'])
@@ -125,6 +127,7 @@ class BusinessCashflowReportController extends Controller
         if (request('year')) {
             $period = Carbon::now()->isoformat(request('year'));
             $totalBalance = Businesscashflow::where('business_id', $business['id'])->whereYear('date', '<=', request('year'))
+                                ->orderBy('account_code')
                                 ->get();
         }
 

@@ -3,8 +3,8 @@ const id = document.querySelector('#content').dataset.invoice;
 
 const token = `Bearer ${localStorage.getItem('token')}`;
 
-const newRef = async (search = '') => {
-    let url = `/api/${business}/no-ref-invoice-recomendation?search=${search}`;
+const newRef = async (date) => {
+    let url = `/api/${business}/no-ref-invoice-recomendation?date=${date}`;
     let response = await axios.get(url, {
         headers:{
             Authorization : token

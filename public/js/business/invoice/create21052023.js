@@ -45,7 +45,8 @@ let formData = {
 const setDefaultValue = async () => {
     totalInputList = 1;
 
-    let newRefValue = await newRef();
+    let dateToString = dateNow().toString().split('-');
+    let newRefValue = await newRef(`${dateToString[0]}${dateToString[1]}${dateToString[2]}`);
 
     formData = {
         date: dateNow(),
@@ -120,8 +121,14 @@ const setValueInputComponent = () => {
     listInputContent.innerHTML = list;
 }
 
-const changeDataInput = (value) => {
+const changeDataInput = async (value) => {
     formData.date = value.value;
+
+    let dateToString = formData.date.toString().split('-');
+    let newRefValue = await newRef(`${dateToString[0]}${dateToString[1]}${dateToString[2]}`);
+
+    formData.no_ref = newRefValue.data.data;
+    noRefInput.value = formData.no_ref;
 }
 
 const componentListInput = (index) => {
@@ -147,13 +154,13 @@ const componentListInput = (index) => {
                 </div>
             </div>
             <div class="col-2 col-md-2 text-end">
-                <input type="text" class="form-control text-end qty-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].qty}" onkeyup="setCurrencyFormat(this)" onchange="changeQty(this)" data-order="${index}">
+                <input type="text" class="form-control text-end qty-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].qty}" onkeyup="changeQty(this)" onchange="changeQty(this)" data-order="${index}">
             </div>
             <div class="col-2 col-md-2 text-end">
-                <input type="text" class="form-control text-end selling-price-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].selling_price}" onkeyup="setCurrencyFormat(this)" onchange="changeSellingPrice(this)" data-order="${index}">
+                <input type="text" class="form-control text-end selling-price-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].selling_price}" onkeyup="changeSellingPrice(this)" onchange="changeSellingPrice(this)" data-order="${index}">
             </div>
             <div class="col-3 col-md-2 text-end">
-                <input type="text" class="form-control text-end total-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].total}" onkeyup="setCurrencyFormat(this)" onchange="changeTotal(this)" data-order="${index}" disabled>
+                <input type="text" class="form-control text-end total-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].total}" onkeyup="changeTotal(this)" onchange="changeTotal(this)" data-order="${index}">
             </div>
             <div class="col-1">
                 <button class="btn btn-sm btn-danger btn-remove-row" onclick="deleteRowInput(this)" data-order="${index}">
@@ -340,6 +347,7 @@ const selectProduct = (value) => {
 }
 
 const changeQty = (value) => {
+    setCurrencyFormat(value);
     const totalInput = Array.from(document.getElementsByClassName('total-input'));
 
     formData.listInput[value.dataset.order].qty = parseInt(toPrice(value.value));
@@ -352,12 +360,26 @@ const changeQty = (value) => {
 }
 
 const changeSellingPrice = (value) => {
+    setCurrencyFormat(value);
     const totalInput = Array.from(document.getElementsByClassName('total-input'));
 
     formData.listInput[value.dataset.order].selling_price = parseInt(toPrice(value.value));
     formData.listInput[value.dataset.order].total = formData.listInput[value.dataset.order].qty * formData.listInput[value.dataset.order].selling_price;
 
     totalInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].total.toString());
+
+    grandTotal();
+    validationInput();
+}
+
+const changeTotal = (value) => {
+    setCurrencyFormat(value);
+    const sellingInput = Array.from(document.getElementsByClassName('selling-price-input'));
+    
+    formData.listInput[value.dataset.order].total = parseInt(toPrice(value.value));
+    formData.listInput[value.dataset.order].unit_price = Math.round(formData.listInput[value.dataset.order].total / formData.listInput[value.dataset.order].qty);
+
+    sellingInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].unit_price.toString());
 
     grandTotal();
     validationInput();

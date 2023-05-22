@@ -30,7 +30,7 @@ class PurchaseGoodsController extends Controller
 
     public function noRefPurchaseGoodsRecomendation(Business $business){
         $fix_ref_no = '';
-        $date = date('Ymd');
+        $date = request('date');
 
         $endPurchaseGoods = PurchaseGoods::where('business_id', $business['id'])
                             ->where('no_ref', 'like', 'PG-' . $date . '%')

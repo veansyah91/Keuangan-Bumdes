@@ -7,14 +7,15 @@ const noRefInput = document.querySelector('#no-ref-input');
 const contactInput = document.querySelector('#contact-input');
 
 const listInputContent = document.querySelector('#list-input-content');
-const btnSubmitInvoice = document.querySelector('#btn-submit-invoice');
+const btnSubmitPurchaseGoods = document.querySelector('#btn-submit-purchase-goods');
 
 const submitButtonLabel = document.querySelector('#submit-button-label');
 const btnSubmit = document.querySelector('#btn-submit');
 
 let totalInputList = 1;
 let orderProductReq = 0;
-let invoices = {}
+
+let purchaseGoods;
 
 let formData = {
     date: '',
@@ -30,11 +31,11 @@ let formData = {
             productName:'',
             productCategory:'',
             qty:0,
-            selling_price:0,
+            unit_price:0,
             total: 0
         }
     ],
-    debit: {
+    credit: {
         account_id:null,
         account_name: '',
         value: 0
@@ -44,43 +45,45 @@ let formData = {
 }
 
 const setDefaultValue = async () => {
-    
-    totalInputList = invoices.products.length;
-    let debitValue =  0;
-    if (invoices.debit.account.sub_category !== 'Piutang Usaha') {
-        debitValue = invoices.debit.debit
+    totalInputList = purchaseGoods.products.length;
+    let creditValue = 0;
+
+    if (purchaseGoods.credit.account.sub_category !== 'Utang Usaha') {
+        creditValue = purchaseGoods.credit.credit
     }
 
     formData = {
-        date: invoices.date,
-        description: invoices.description,
-        no_ref: invoices.no_ref,
+        date: purchaseGoods.date,
+        description: purchaseGoods.description,
+        no_ref: purchaseGoods.no_ref,
         detail: '',
         contact: {
-            id: invoices.contact_id,
-            name: invoices.contact_name,
+            id: purchaseGoods.contact_id,
+            name: purchaseGoods.contact_name,
         },
         listInput:[
             
         ],
-        debit: {
-            account_id: invoices.debit.account_id,
-            account_name: invoices.debit.account_name,
-            value: debitValue
+        credit: {
+            account_id: purchaseGoods.credit.account_id,
+            account_name: purchaseGoods.credit.account_name,
+            value: creditValue
         },
-        total: invoices.value,
-        balance: debitValue - invoices.value
+        total: purchaseGoods.value,
+        balance: creditValue - purchaseGoods.value
     }
 
-    invoices.products.map(product => {
+    purchaseGoods.products.map(product => {
         formData.listInput = [...formData.listInput, {
             productId:product.id,
             productName:product.name,
             qty:product.pivot.qty,
-            selling_price:product.pivot.value / product.pivot.qty,
+            unit_price:Math.round(product.pivot.value / product.pivot.qty),
             total: product.pivot.value
         }]
     })
+    
+    
 
     validationInput();
     setValueInputComponent();
@@ -90,34 +93,31 @@ const validationInput = () => {
     
     let isValidated = false;
 
-    if (formData.description && formData.no_ref && formData.contact.name && formData.debit.account_name) {
+    if (formData.description && formData.no_ref && formData.contact.name && formData.credit.account_name) {
         isValidated = true
         
         formData.listInput.map(list => {
             if (!list.productName || !list.total > 0) {
                 isValidated = false;
+                
             }
         })
     }
-
     isValidated 
-    ? btnSubmitInvoice.classList.remove('d-none')
-    : btnSubmitInvoice.classList.add('d-none')
+    ? btnSubmitPurchaseGoods.classList.remove('d-none')
+    : btnSubmitPurchaseGoods.classList.add('d-none')
     
 }
 
 const setValueInputComponent = () => {
-    
     dateInput.value = formData.date;
     descriptionInput.value = formData.description;
     noRefInput.value = formData.no_ref;
     contactInput.value = formData.contact.name;
     document.querySelector('#grand-total').innerHTML = `Rp.${formatRupiah(formData.total.toString())}`;
-    document.querySelector('#payment-input').value = formatRupiah(formData.debit.value.toString());
+    document.querySelector('#payment-input').value = formatRupiah(formData.credit.value.toString());
     document.querySelector('#return-payment-input').innerHTML = `Rp.${formatRupiah(formData.balance.toString())}`;
-    document.querySelector('#account-debit-input').value = formData.debit.account_name;
-
-    btnSubmitInvoice.classList.add('d-none');
+    document.querySelector('#account-credit-input').value = formData.credit.account_name;
 
     submitButtonLabel.innerHTML = `Simpan`;
     btnSubmit.removeAttribute('disabled');
@@ -127,12 +127,16 @@ const setValueInputComponent = () => {
         list += componentListInput(index)
     }
     listInputContent.innerHTML = list;
-    validationInput();
-
 }
 
-const changeDataInput = (value) => {
+const changeDataInput = async (value) => {
     formData.date = value.value;
+
+    let dateToString = formData.date.toString().split('-');
+    let newRefValue = await newRef(`${dateToString[0]}${dateToString[1]}${dateToString[2]}`);
+
+    formData.no_ref = newRefValue.data.data;
+    noRefInput.value = formData.no_ref;
 }
 
 const componentListInput = (index) => {
@@ -161,10 +165,10 @@ const componentListInput = (index) => {
                 <input type="text" class="form-control text-end qty-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].qty}" onkeyup="setCurrencyFormat(this)" onchange="changeQty(this)" data-order="${index}">
             </div>
             <div class="col-2 col-md-2 text-end">
-                <input type="text" class="form-control text-end selling-price-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].selling_price.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeSellingPrice(this)" data-order="${index}">
+                <input type="text" class="form-control text-end unit-price-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].unit_price.toString())}" onkeyup="changeSellingPrice(this)" onchange="changeSellingPrice(this)" data-order="${index}">
             </div>
             <div class="col-3 col-md-2 text-end">
-                <input type="text" class="form-control text-end total-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].total.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeTotal(this)" data-order="${index}" disabled>
+                <input type="text" class="form-control text-end total-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].total.toString())}" onkeyup="changeTotal(this)" onchange="changeTotal(this)" data-order="${index}">
             </div>
             <div class="col-1">
                 <button class="btn btn-sm btn-danger btn-remove-row" onclick="deleteRowInput(this)" data-order="${index}">
@@ -201,7 +205,7 @@ function changeContact(value){
 function selectContact(value) {
     formData.contact.name = value.dataset.name;
     formData.contact.id = parseInt(value.dataset.id);
-    formData.description = `Faktur Penjualan Kepada ${formData.contact.name}`;
+    formData.description = `Faktur Pembelian Dari ${formData.contact.name}`;
 
     contactInput.value = formData.contact.name;
     descriptionInput.value = formData.description;
@@ -263,16 +267,10 @@ const componentProductDropdownList = async (value, index) => {
 
     let list = '';
     products.data.map(product => {
-        let check = true;
-        let qty = product.is_stock_checked > 0 ? (product.stocks_sum_qty ? product.stocks_sum_qty : 0 ) : '';
-        if (product.is_stock_checked > 0) {
-            check = product.stocks_sum_qty > 0 ? true : false;
-        }
-        
-        list += `<button type="button" class="list-group-item list-group-item-action" onclick="selectProduct(this)" data-name="${product.name}" data-id="${product.id}" data-category="${product.category}" data-order="${index}" data-selling-price="${product.selling_price}" ${ check ? '' : 'disabled'}>
+        list += `<button type="button" class="list-group-item list-group-item-action" onclick="selectProduct(this)" data-name="${product.name}" data-id="${product.id}" data-category="${product.category}" data-order="${index}" data-unit-price="${product.unit_price}">
         <div class="row justify-content-between" style="font-size: 10px">
             <div class="col-6">${product.code}</div>
-            <div class="col-6 text-end ${(product.stocks_sum_qty > 0 && product.is_stock_checked == 1) ? 'text-success' : 'text-danger'}">${qty} ${product.is_stock_checked ? product.unit : ''}</div>
+            <div class="col-6 text-end ${product.stocks_sum_qty > 0 ? 'text-success' : 'text-danger'}">${product.stocks_sum_qty ? product.stocks_sum_qty : 0} ${product.unit}</div>
         </div>
             ${product.name}
     </button>`
@@ -319,30 +317,29 @@ const grandTotal = () => {
         total += list.total;
     })
     formData.total = total;
-    formData.debit.value = total;
-    formData.balance = 0;
+    formData.balance = formData.credit.value - formData.total;
 
     document.querySelector('#grand-total').innerHTML = `Rp. ${formatRupiah(formData.total.toString())}`;
-    document.querySelector('#payment-input').value = `${formatRupiah(formData.total.toString())}`;
+    document.querySelector('#return-payment-input').innerHTML = `${formatRupiah(formData.balance.toString())}`;
 }
 
 const selectProduct = (value) => {
     const searchProductInputDropdown = Array.from(document.getElementsByClassName('search-product-input-dropdown'));
     const searchProductInput = Array.from(document.getElementsByClassName('search-product-input'));
-    const sellingPriceInput = Array.from(document.getElementsByClassName('selling-price-input'));
+    const unitPriceInput = Array.from(document.getElementsByClassName('unit-price-input'));
     const qtyInput = Array.from(document.getElementsByClassName('qty-input'));
     const totalInput = Array.from(document.getElementsByClassName('total-input'));
 
     formData.listInput[value.dataset.order].productName = value.dataset.name;
     formData.listInput[value.dataset.order].productCategory = value.dataset.category;
     formData.listInput[value.dataset.order].productId = parseInt(value.dataset.id);
-    formData.listInput[value.dataset.order].selling_price = parseInt(value.dataset.sellingPrice);
+    formData.listInput[value.dataset.order].unit_price = parseInt(value.dataset.unitPrice);
     formData.listInput[value.dataset.order].qty = 1;
-    formData.listInput[value.dataset.order].total = parseInt(value.dataset.sellingPrice);
+    formData.listInput[value.dataset.order].total = parseInt(value.dataset.unitPrice);
 
     searchProductInputDropdown[value.dataset.order].value = formData.listInput[value.dataset.order].productName;
     searchProductInput[value.dataset.order].value = formData.listInput[value.dataset.order].productName;
-    sellingPriceInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].selling_price.toString());
+    unitPriceInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].unit_price.toString());
     qtyInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].qty.toString());
     totalInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].total.toString());
 
@@ -354,7 +351,7 @@ const changeQty = (value) => {
     const totalInput = Array.from(document.getElementsByClassName('total-input'));
 
     formData.listInput[value.dataset.order].qty = parseInt(toPrice(value.value));
-    formData.listInput[value.dataset.order].total = formData.listInput[value.dataset.order].qty * formData.listInput[value.dataset.order].selling_price;
+    formData.listInput[value.dataset.order].total = formData.listInput[value.dataset.order].qty * formData.listInput[value.dataset.order].unit_price;
 
     totalInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].total.toString());
 
@@ -363,12 +360,26 @@ const changeQty = (value) => {
 }
 
 const changeSellingPrice = (value) => {
+    setCurrencyFormat(value);
     const totalInput = Array.from(document.getElementsByClassName('total-input'));
 
-    formData.listInput[value.dataset.order].selling_price = parseInt(toPrice(value.value));
-    formData.listInput[value.dataset.order].total = formData.listInput[value.dataset.order].qty * formData.listInput[value.dataset.order].selling_price;
+    formData.listInput[value.dataset.order].unit_price = parseInt(toPrice(value.value));
+    formData.listInput[value.dataset.order].total = formData.listInput[value.dataset.order].qty * formData.listInput[value.dataset.order].unit_price;
 
     totalInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].total.toString());
+
+    grandTotal();
+    validationInput();
+}
+
+const changeTotal = (value) => {
+    setCurrencyFormat(value);
+    const cogsInput = Array.from(document.getElementsByClassName('unit-price-input'));
+    
+    formData.listInput[value.dataset.order].total = parseInt(toPrice(value.value));
+    formData.listInput[value.dataset.order].unit_price = Math.round(formData.listInput[value.dataset.order].total / formData.listInput[value.dataset.order].qty);
+
+    cogsInput[value.dataset.order].value = formatRupiah(formData.listInput[value.dataset.order].unit_price.toString());
 
     grandTotal();
     validationInput();
@@ -379,7 +390,7 @@ const addListInput = () => {
         productId:null,
         productName:'',
         qty:0,
-        selling_price:0,
+        unit_price:0,
         total: 0
     }];
 
@@ -408,54 +419,52 @@ const deleteRowInput = (value) => {
         document.getElementsByClassName('search-product-input-dropdown')[index].setAttribute('data-order', index);
         document.getElementsByClassName('search-product-input')[index].setAttribute('data-order', index);
         document.getElementsByClassName('qty-input')[index].setAttribute('data-order', index);
-        document.getElementsByClassName('selling-price-input')[index].setAttribute('data-order', index);
+        document.getElementsByClassName('unit-price-input')[index].setAttribute('data-order', index);
         document.getElementsByClassName('total-input')[index].setAttribute('data-order', index);
         document.getElementsByClassName('btn-remove-row')[index].setAttribute('data-order', index);
     }
-    grandTotal();
+
     validationInput();
 
 }
 
-async function submitInvoice(){
+async function submitPurchaseGoods(){
+
     try {
         btnSubmit.setAttribute('disabled','disabled');
         submitButtonLabel.innerHTML = `<div class="spinner-border-sm spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>`
-        let result = await updateInvoice(formData);
+        let result = await updatePurchaseGoods(formData);
         let message = `${result.description} Berhasil Diubah`;
         
         myToast(message, 'success');
-
-        invoices = await getSingleInvoice(id);
-        setDefaultValue();
         setValueInputComponent();
-        goToPintInvoice(result['id']);
+        goToPintPurchaseGoods(result['id']);
     } catch (error) {
         console.log(error);
     }
 }
 
 function selectAccount(value) {
-    formData.debit.account_name = value.dataset.name;
-    formData.debit.account_id = parseInt(value.dataset.id);
+    formData.credit.account_name = value.dataset.name;
+    formData.credit.account_id = parseInt(value.dataset.id);
 
-    document.querySelector('#account-debit-input').value = formData.debit.account_name;
+    document.querySelector('#account-credit-input').value = formData.credit.account_name;
     validationInput();
 }
 
-function changeAccountDebit(value){
-    value.value = formData.debit.account_name
+function changeAccountCredit(value){
+    value.value = formData.credit.account_name
 }
 
-const componentAccountDebitDropdownList = async (value) => {
+const componentAccountCreditDropdownList = async (value) => {
     let account = await getAccounts(value);
 
     let list = '';
     account.data.map(account => {
-        if (formData.debit.value < 1) {
-            if (account.sub_category == 'Piutang Usaha') {
+        if (formData.credit.value < 1) {
+            if (account.sub_category == 'Utang Usaha') {
                 list += `<button type="button" class="list-group-item list-group-item-action" onclick="selectAccount(this)" data-name="${account.name}" data-id="${account.id}">
                     <div style="font-size: 10px">${account.code}</div>
                     ${account.name}
@@ -472,8 +481,8 @@ const componentAccountDebitDropdownList = async (value) => {
     return list;
 }
 
-async function showAccountDebitDropdown(value){
-    const accountLists = document.querySelector('#account-debit-list');
+async function showAccountCreditDropdown(value){
+    const accountLists = document.querySelector('#account-credit-list');
 
     accountLists.innerHTML = `
     <button type="button" class="list-group-item list-group-item-action text-center">
@@ -489,7 +498,7 @@ async function showAccountDebitDropdown(value){
     </button>`
 
     setTimeout(async () => {
-        let list = await componentAccountDebitDropdownList(value.value, value.dataset.order);
+        let list = await componentAccountCreditDropdownList(value.value, value.dataset.order);
         let empty = `<button type="button" class="list-group-item list-group-item-action text-center disabled" disabled>
             No Option
         </button>`
@@ -500,25 +509,25 @@ async function showAccountDebitDropdown(value){
     accountLists.classList.remove('d-none');
 }
 
-function debitAccountInputChange(value){
-    value.value = formData.debit.account_name;
+function creditAccountInputChange(value){
+    value.value = formData.credit.account_name;
 }
 
 function changePayment(value)
 {
-    formData.debit.value = toPrice(value.value);
-    formData.balance = formData.debit.value - formData.total;
+    formData.credit.value = toPrice(value.value);
+    formData.balance = formData.credit.value - formData.total;
 
     document.querySelector('#return-payment-input').innerHTML = `Rp. ${formatRupiah(formData.balance.toString())}`
 
     if (value.value < 1) {
-        formData.debit = {
+        formData.credit = {
             account_id:null,
             account_name: '',
             value: 0
         }
 
-        document.querySelector('#account-debit-input').value = '';
+        document.querySelector('#account-credit-input').value = '';
         
     }
 }
@@ -538,7 +547,7 @@ async function componentProductModalList(value, index){
     let list = '';
     products.data.map(product => {
         list += `
-            <button class="list-group-item list-group-item-action" aria-current="true" onclick="selectProduct(this)" data-name="${product.name}" data-id="${product.id}" data-category="${product.category}" data-order="${index}" data-selling-price="${product.selling_price}" data-bs-dismiss="modal">
+            <button class="list-group-item list-group-item-action" aria-current="true" onclick="selectProduct(this)" data-name="${product.name}" data-id="${product.id}" data-category="${product.category}" data-order="${index}" data-unit-price="${product.unit_price}" data-bs-dismiss="modal">
                 ${product.name}
             </button>`
     });
@@ -559,8 +568,8 @@ function changeSearchProductModal(value){
 }
 
 window.addEventListener('load', async function(){
-    invoices = await getSingleInvoice(id);
-
+    purchaseGoods = await getSinglePurchaseGoods(id);
+    
     setDefaultValue();
     setValueInputComponent();
 })

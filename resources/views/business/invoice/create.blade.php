@@ -107,8 +107,8 @@
                     <button class="btn btn-secondary w-100" onclick="addListInput()">Tambah</button>
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12  fs-1">
                         <div class="row">
                             <div class="col-6">
                                 Grand Total
@@ -120,8 +120,8 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12">
                         <div class="row">
                             <div class="col-6">
                                 Jumlah Bayar
@@ -133,8 +133,8 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12">
                         <div class="row">
                             <div class="col-6">
                                 Kembali
@@ -146,8 +146,8 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-4 col-12">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-6 col-12">
                         <div class="row">
                             <div class="col-6 form-label fw-bold">
                                 Kasir (Akun Debit)
@@ -165,11 +165,11 @@
                     </div> 
                 </div>
 
-                <div class="row justify-content-end pt-2 border-bottom pb-2 fw-bold">
-                    <div class="col-lg-2 col-6 text-end">
+                <div class="row justify-content-start pt-2 border-bottom pb-2 fw-bold">
+                    <div class="col-lg-3 col-6 text-end">
                         <a class="btn btn-outline-primary w-100" href="{{ route('business.invoice.index', $business->id) }}">Batal</a>
                     </div>  
-                    <div class="col-lg-2 col-6 text-end d-none" id="btn-submit-invoice">
+                    <div class="col-lg-3 col-6 text-end d-none" id="btn-submit-invoice">
                         <button class="btn btn-primary w-100" onclick="submitInvoice()" id="btn-submit">
                             <span id="submit-button-label">
                                 Simpan
@@ -205,6 +205,6 @@
 @endsection
 
 @section('script')
-    <script src="/js/business/invoice/api.js"></script>
-    <script src="/js/business/invoice/create.js"></script>
+    <script src="/js/business/invoice/api21052023.js"></script>
+    <script src="/js/business/invoice/create21052023.js"></script>
 @endsection

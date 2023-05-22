@@ -34,29 +34,17 @@ let formData = {
 }
 
 const setDefaultValue = async () => {
-    totalInputList = 1;
+    let res = await showData();
 
-    let newRefValue = await newRef();
+    totalInputList = res.listInput.length;
 
     formData = {
-        date: dateNow(),
-        description: 'Stok Opname',
-        no_ref: newRefValue.data.data,
-        detail: '',
-        listInput:[
-            {
-                productId:null,
-                productName:'',
-                qty_book:0,
-                qty_physic:0,
-                qty_balance: 0,
-                account:{
-                    id: null,
-                    name: ''
-                }
-            },
-        ]
+        date: res.date,
+        description: res.description,
+        no_ref: res.no_ref,
+        listInput:res.listInput
     }
+    
     validationInput();
     setValueInputComponent();
 }
@@ -65,7 +53,7 @@ const validationInput = () => {
     
     let isValidated = false;
 
-    if (formData.listInput.length > 0 &&formData.description && formData.no_ref) {
+    if (formData.listInput.length > 0 && formData.description && formData.no_ref) {
         isValidated = true
         
         formData.listInput.map(list => {
@@ -86,8 +74,6 @@ const setValueInputComponent = () => {
     descriptionInput.value = formData.description;
     noRefInput.value = formData.no_ref;
 
-    btnSubmitStockOpname.classList.add('d-none');
-
     submitButtonLabel.innerHTML = `Simpan`;
     btnSubmit.removeAttribute('disabled');
 
@@ -98,8 +84,14 @@ const setValueInputComponent = () => {
     listInputContent.innerHTML = list;
 }
 
-const changeDataInput = (value) => {
+const changeDataInput = async (value) => {
     formData.date = value.value;
+
+    let dateToString = formData.date.toString().split('-');
+    let newRefValue = await newRef(`${dateToString[0]}${dateToString[1]}${dateToString[2]}`);
+
+    formData.no_ref = newRefValue.data.data;
+    noRefInput.value = formData.no_ref;
 }
 
 const componentListInput = (index) => {
@@ -397,9 +389,9 @@ async function submitStockOpname(){
         submitButtonLabel.innerHTML = `<div class="spinner-border-sm spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>`
-        let result = await postStockOpname(formData);
+        let result = await updateStockOpname(formData);
 
-        let message = `${result.desc} Berhasil Ditambahkan`;
+        let message = `${result.desc} Berhasil Diubah`;
         
         myToast(message, 'success');
 
@@ -412,5 +404,4 @@ async function submitStockOpname(){
 
 window.addEventListener('load', function(){
     setDefaultValue();
-    setValueInputComponent();
 })

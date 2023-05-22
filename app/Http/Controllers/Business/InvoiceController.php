@@ -31,7 +31,7 @@ class InvoiceController extends Controller
 
     public function noRefInvoiceRecomendation(Business $business){
         $fix_ref_no = '';
-        $date = date('Ymd');
+        $date = request('date');
 
         $endInvoice = Invoice::where('business_id', $business['id'])
                             ->where('no_ref', 'like', 'INV-' . $date . '%')
@@ -167,13 +167,23 @@ class InvoiceController extends Controller
                     //apabila pada produk dilakukan cek stok maka lakukan transaksi dibawah:
                     //tambah kan data pada table stok dimana nilai produk(total) pada kredit, dan qty bernilai negatif karena terjadi pengurangan jumlah stok
                     //untuk HPP dilakukan metode average, yakni 
-                    //1. cari tabel stok dimana qty > 1, misalkan nama variabel $stocks
-                    $stocks = Stock::where('product_id', $product['id'])
+                    //1a. hitung jumlah pembelian pada kartu stok
+                    $purchaseStocks = Stock::where('product_id', $product['id'])
                                     ->where('qty', '>', 0)
                                     ->get();
 
+
+                    //1b. hitung jumlah penjualan pada kartu stok
+                    $sellingStocks = Stock::where('product_id', $product['id'])
+                                            ->where('qty', '<', 0)
+                                            ->get();
+
+                    $qtys = $purchaseStocks->sum('qty') + $sellingStocks->sum('qty');
+                    $values = $purchaseStocks->sum('debit') - $sellingStocks->sum('credit');
+
                     //2. lalu cari hpp dengan rumus $stocks->sum('debit')/$stocks->sum('qty)
-                    $cogs = $stocks->sum('debit') / $stocks->sum('qty');
+                    
+                    $cogs = $values / $qtys;
                     $valueProducts = $cogs * $listInput['qty'];
 
                     //simpan hpp pada variabel lain untuk digunakan pada input buku besar
@@ -422,13 +432,23 @@ class InvoiceController extends Controller
                     //apabila pada produk dilakukan cek stok maka lakukan transaksi dibawah:
                     //tambah kan data pada table stok dimana nilai produk(total) pada kredit, dan qty bernilai negatif karena terjadi pengurangan jumlah stok
                     //untuk HPP dilakukan metode average, yakni 
-                    //1. cari tabel stok dimana qty > 1, misalkan nama variabel $stocks
-                    $stocks = Stock::where('product_id', $product['id'])
+                    //1a. hitung jumlah pembelian pada kartu stok
+                    $purchaseStocks = Stock::where('product_id', $product['id'])
                                     ->where('qty', '>', 0)
                                     ->get();
 
+
+                    //1b. hitung jumlah penjualan pada kartu stok
+                    $sellingStocks = Stock::where('product_id', $product['id'])
+                                            ->where('qty', '<', 0)
+                                            ->get();
+
+                    $qtys = $purchaseStocks->sum('qty') + $sellingStocks->sum('qty');
+                    $values = $purchaseStocks->sum('debit') - $sellingStocks->sum('credit');
+
                     //2. lalu cari hpp dengan rumus $stocks->sum('debit')/$stocks->sum('qty)
-                    $cogs = $stocks->sum('debit') / $stocks->sum('qty');
+                    
+                    $cogs = $values / $qtys;
                     $valueProducts = $cogs * $listInput['qty'];
 
                     //simpan hpp pada variabel lain untuk digunakan pada input buku besar

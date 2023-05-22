@@ -192,6 +192,7 @@
                                     <label for="type" class="form-label fw-bold">Tipe</label>
                                     <select class="form-select" aria-label="Default select example" id="type-input" required onchange="typeInputChange(this)">
                                         <option value="Customer">Customer</option>
+                                        <option value="Staff">Staff</option>
                                         <option value="Supplier">Supplier</option>
                                     </select>
                                 </div>

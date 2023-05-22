@@ -181,16 +181,19 @@ function nameInputChange(value){
 }
 
 function valueInputChange(value){
+    setCurrencyFormat(value);
     formData.value = parseInt(toPrice(value.value));    
     validateInputData();
 }
 
 function salvageInputChange(value){
+    setCurrencyFormat(value);
     formData.salvage = parseInt(toPrice(value.value));    
     validateInputData();
 }
 
-function useFulInputChange(value){
+function useFullInputChange(value){
+    setCurrencyFormat(value);
     formData.useful_life = parseInt(toPrice(value.value));    
     validateInputData();
 }

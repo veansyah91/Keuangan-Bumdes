@@ -1,8 +1,6 @@
 const successAlert = document.querySelector('#success-alert');
 const successAlertMessage = document.querySelector('#success-alert-message');
 
-const pageContent = document.querySelector('#page-content');
-
 const dateInput = document.querySelector('#date-input');
 const descriptionInput = document.querySelector('#description-input');
 const noRefInput = document.querySelector('#no-ref-input');
@@ -33,38 +31,39 @@ let formData = {
 }
 
 const setDefaultValue = async () => {
-    try {
-        let response = await getSingleJournal(pageContent.dataset.id);
+    totalInputList = 2;
+    differenceDebitCredit = 0;
+    totalDebitInput = 0;
+    totalCreditInput = 0;
 
-        totalInputList = response.ledgers.length;
-        differenceDebitCredit = 0;
-        totalDebitInput = parseInt(response.value);
-        totalCreditInput = parseInt(response.value);
-
-        formData = {
-            date: response.date,
-            desc: response.desc,
-            no_ref: response.no_ref,
-            detail: response.detail,
-            listInput:[]
-        }
-
-        response.ledgers.map(ledgers => formData.listInput = [...formData.listInput, {
-            accountId:ledgers.account_id,
-            accountName:ledgers.account_name,
-            debit:ledgers.debit,
-            credit:ledgers.credit
-        }])
-
-        
-    } catch (error) {
-        console.log(error);
+    formData = {
+        date: dateNow(),
+        desc: 'Jurnal Umum',
+        no_ref: '',
+        detail: '',
+        listInput:[
+            {
+                accountId:null,
+                accountName:'',
+                debit:0,
+                credit:0
+            },
+            {
+                accountId:null,
+                accountName:'',
+                debit:0,
+                credit:0
+            }
+        ]
     }
+    
+    await setNewRef(formData.desc);
 }
 
 const validationInput = () => {
 
     let isValidated = false;
+
     if (formData.desc && formData.no_ref) {
         isValidated = true
         
@@ -81,20 +80,18 @@ const validationInput = () => {
     
 }
 
-const changeDataInput = (value) => {
-    formData.date = value.value;
-}
-
 const setValueInputComponent = () => {
     dateInput.value = formData.date;
     descriptionInput.value = formData.desc;
     noRefInput.value = formData.no_ref;
     detailInput.value = formData.detail;
 
-    totalDebit.innerHTML = `Rp.${formatRupiah(totalDebitInput.toString())}`;
-    totalCredit.innerHTML = `Rp.${formatRupiah(totalCreditInput.toString())}`;
+    totalDebit.innerHTML = 'Rp.0';
+    totalCredit.innerHTML = 'Rp.0';
 
-    submitButtonLabel.innerHTML = `Ubah`;
+    btnSubmitJournal.classList.add('d-none');
+
+    submitButtonLabel.innerHTML = `Simpan`;
     btnSubmit.removeAttribute('disabled');
 
     let list = '';
@@ -102,9 +99,11 @@ const setValueInputComponent = () => {
         list += componentListInput(index)
     }
     listInputContent.innerHTML = list;
-
-    validationInput();
 }
+
+const changeDataInput = (value) => {
+    formData.date = value.value;
+}   
 
 const componentListInput = (index) => {
     return `<div class="list-input-journal">
@@ -119,10 +118,10 @@ const componentListInput = (index) => {
                 </div>
             </div>
             <div class="col-3 text-end">
-                <input type="text" class="form-control text-end debit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].debit.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeDebit(this)" data-order="${index}">
+                <input type="text" class="form-control text-end debit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].debit}" onkeyup="changeDebit(this)" onchange="changeDebit(this)" data-order="${index}">
             </div>
             <div class="col-3 text-end">
-                <input type="text" class="form-control text-end credit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formatRupiah(formData.listInput[index].credit.toString())}" onkeyup="setCurrencyFormat(this)" onchange="changeCredit(this)" data-order="${index}">
+                <input type="text" class="form-control text-end credit-input" inputmode="numeric" autocomplete="off" onclick="this.select()" value="${formData.listInput[index].credit}" onkeyup="changeCredit(this)" onchange="changeCredit(this)" data-order="${index}">
             </div>
             <div class="col-1">
                 <button class="btn btn-sm btn-danger btn-remove-row" onclick="deleteRowInput(this)" data-order="${index}">
@@ -133,15 +132,20 @@ const componentListInput = (index) => {
     </div>`
 }
 
-async function getNoRefAccountAuto (value) {
-    formData.desc = capital(value.value);
-    descriptionInput.value = formData.desc;
-
-    let referenceNo = `${abbreviation(value.value)}-`;
+async function setNewRef(value)
+{
+    let referenceNo = `${abbreviation(value)}-`;
     let result = await newRef(referenceNo);
 
     formData.no_ref = result.data.data;
     noRefInput.value = formData.no_ref;
+}
+
+async function getNoRefAccountAuto(value) {
+    formData.desc = capital(value.value);
+    descriptionInput.value = formData.desc;
+
+    await setNewRef(descriptionInput.value);
 
     validationInput();
 }
@@ -255,6 +259,7 @@ const adjustDebitValues = () => {
 }
 
 const changeDebit = (value) => {
+    setCurrencyFormat(value);
     adjustDebitValues();
 
     formData.listInput[value.dataset.order].debit = parseInt(toPrice(value.value));
@@ -263,6 +268,7 @@ const changeDebit = (value) => {
 }
 
 const changeCredit = (value) => {
+    setCurrencyFormat(value);
     adjustCreditValues();
 
     formData.listInput[value.dataset.order].credit = parseInt(toPrice(value.value));
@@ -319,9 +325,9 @@ async function submitJournal(){
         submitButtonLabel.innerHTML = `<div class="spinner-border-sm spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>`
-        let result = await updateJournal(formData, pageContent.dataset.id);
+        let result = await postJournal(formData);
 
-        let message = `${result.desc} Berhasil Diubah`;
+        let message = `${result.desc} Berhasil Ditambahkan`;
         
         myToast(message, 'success');
 
@@ -330,11 +336,9 @@ async function submitJournal(){
     } catch (error) {
         console.log(error);
     }
-
-    
 }
 
-window.addEventListener('load', async function(){
-    await setDefaultValue();
+window.addEventListener('load', function(){
+    setDefaultValue();
     setValueInputComponent();
 })

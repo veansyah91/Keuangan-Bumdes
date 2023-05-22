@@ -225,5 +225,5 @@
 
 @section('script')
     <script src="/js/business/stock-opname/index.js"></script>
-    <script src="/js/business/stock-opname/api.js"></script>
+    <script src="/js/business/stock-opname/api21052023.js"></script>
 @endsection

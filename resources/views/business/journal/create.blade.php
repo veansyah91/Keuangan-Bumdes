@@ -81,13 +81,13 @@
                 </div>
 
                 <div class="row justify-content-between pt-2 border-top mt-2 pb-2 font-bold">
-                    <div class="col-4 text-end">
+                    <div class="col-4 text-end fw-bold">
                         Total
                     </div>
-                    <div class="col-3 text-end" id="total-debit">
+                    <div class="col-3 text-end fw-bold" id="total-debit">
                         Rp. 0
                     </div>
-                    <div class="col-3 text-end" id="total-credit">
+                    <div class="col-3 text-end fw-bold" id="total-credit">
                         Rp. 0
                     </div>
                     <div class="col-1">
@@ -96,13 +96,13 @@
                 </div>
 
                 <div class="row justify-content-between pt-2 border-bottom pb-2 font-bold">
-                    <div class="col-4 text-end">
+                    <div class="col-4 text-end fw-bold">
                         Selisih
                     </div>
                     <div class="col-3 text-end">
                         
                     </div>
-                    <div class="col-3 text-end" id="difference-debit-credit">
+                    <div class="col-3 text-end fw-bold" id="difference-debit-credit">
                         Rp. 0
                     </div>
                     <div class="col-1">
@@ -129,5 +129,5 @@
 
 @section('script')
     <script src="/js/business/journal/api.js"></script>
-    <script src="/js/business/journal/create.js"></script>
+    <script src="/js/business/journal/create21052023.js"></script>
 @endsection

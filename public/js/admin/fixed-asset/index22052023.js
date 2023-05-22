@@ -83,7 +83,7 @@ function setDefault(){
 function validateInputData(){
     let is_validated = false;
 
-    if (formData.no_ref && formData.name  && formData.credit_account.name && formData.date && formData.value > 0 && formData.useful_life > 0)    {
+    if (formData.no_ref && formData.name  && formData.credit_account.name && formData.date && formData.value > 0)    {
         is_validated = true
     }
 
@@ -181,16 +181,19 @@ function nameInputChange(value){
 }
 
 function valueInputChange(value){
+    setCurrencyFormat(value);
     formData.value = parseInt(toPrice(value.value));    
     validateInputData();
 }
 
 function salvageInputChange(value){
+    setCurrencyFormat(value);
     formData.salvage = parseInt(toPrice(value.value));    
     validateInputData();
 }
 
 function useFulInputChange(value){
+    setCurrencyFormat(value);
     formData.useful_life = parseInt(toPrice(value.value));    
     validateInputData();
 }

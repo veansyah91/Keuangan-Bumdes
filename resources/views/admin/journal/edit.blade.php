@@ -125,5 +125,5 @@
 
 @section('script')
     <script src="/js/admin/journal/api.js"></script>
-    <script src="/js/admin/journal/edit.js"></script>
+    <script src="/js/admin/journal/edit22052023.js"></script>
 @endsection

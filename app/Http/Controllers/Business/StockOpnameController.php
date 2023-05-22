@@ -85,13 +85,24 @@ class StockOpnameController extends Controller
             $account = Businessaccount::where('business_id', $business['id'])           
                                         ->where('name', $account_name)
                                         ->first();
-            
-            $stocks = Stock::where('product_id', $attribute['productId'])
-                                    ->where('qty', '>', 0)
-                                    ->get();
 
-            //lalu cari hpp dengan rumus $stocks->sum('debit')
-            $cogs = $stocks->sum('debit') / $stocks->sum('qty');
+            //hitung HPP/cogs
+            //1a. hitung jumlah pembelian pada kartu stok
+            $purchaseStocks = Stock::where('product_id', $product['id'])
+                            ->where('qty', '>', 0)
+                            ->get();
+                            
+            //1b. hitung jumlah penjualan pada kartu stok
+            $sellingStocks = Stock::where('product_id', $product['id'])
+                                ->where('qty', '<', 0)
+                                ->get();
+
+            $qtys = $purchaseStocks->sum('qty') + $sellingStocks->sum('qty');
+            $values = $purchaseStocks->sum('debit') - $sellingStocks->sum('credit');
+
+            //2. lalu cari hpp dengan rumus $stocks->sum('debit')/$stocks->sum('qty)
+
+            $cogs = $values / $qtys;
             $valueProducts = $cogs * $attribute['qty_balance'];
             $total +=  abs($valueProducts);
 
@@ -183,14 +194,24 @@ class StockOpnameController extends Controller
                                         ->where('name', $account_name)
                                         ->first();
             
-            $stocks = Stock::where('product_id', $attribute['productId'])
-                                    ->where('qty', '>', 0)
-                                    ->get();
+            //hitung HPP/cogs
+            //1a. hitung jumlah pembelian pada kartu stok
+            $purchaseStocks = Stock::where('product_id', $product['id'])
+                            ->where('qty', '>', 0)
+                            ->get();
+                            
+            //1b. hitung jumlah penjualan pada kartu stok
+            $sellingStocks = Stock::where('product_id', $product['id'])
+                                ->where('qty', '<', 0)
+                                ->get();
 
-            //lalu cari hpp dengan rumus $stocks->sum('debit')
-            $cogs = $stocks->sum('debit') / $stocks->sum('qty');
+            $qtys = $purchaseStocks->sum('qty') + $sellingStocks->sum('qty');
+            $values = $purchaseStocks->sum('debit') - $sellingStocks->sum('credit');
+
+            //2. lalu cari hpp dengan rumus $stocks->sum('debit')/$stocks->sum('qty)
+
+            $cogs = $values / $qtys;
             $valueProducts = $cogs * $attribute['qty_balance'];
-            $total +=  abs($valueProducts);
 
             $attributes['qty'] = $attribute['qty_balance'];
             $attributes['unit'] = $product['unit'];

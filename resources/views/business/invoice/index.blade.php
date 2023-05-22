@@ -250,5 +250,5 @@
 
 @section('script')
     <script src="/js/business/invoice/index.js"></script>
-    <script src="/js/business/invoice/api.js"></script>
+    <script src="/js/business/invoice/api21052023.js"></script>
 @endsection

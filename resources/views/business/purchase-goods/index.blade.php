@@ -240,5 +240,5 @@
 
 @section('script')
     <script src="/js/business/purchase-goods/index.js"></script>
-    <script src="/js/business/purchase-goods/api.js"></script>
+    <script src="/js/business/purchase-goods/api21052023.js"></script>
 @endsection
